@@ -6,3 +6,17 @@
     height: 350px;
 }
 
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+.head-main-title {
+    font-weight: 300;
+}
+
