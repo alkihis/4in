@@ -112,13 +112,6 @@ function explodeFile(string $filename) : void {
                         $id = explode(',', $match)[0];
 
                         // On insère le gène dans les associations
-                        if ($first) {
-                            $first = false;
-                        }
-                        else {
-                            $str .= ',';
-                        }
-
                         mysqli_query($sql, "INSERT INTO GeneAssociations
                         (id, gene_id, sequence_id, specie, addi)
                         VALUES ($id_insert, '$id', NULL, '{$assocs_species[$i - 6]}', '$full_line')"); 
