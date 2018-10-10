@@ -3,13 +3,17 @@
 ?>
 <div class="section no-pad-bot" id="index-banner">
     <div class="container">
-        <br><br>
-        <h1 class="header center orange-text">Starter Template</h1>
+        <h1 class="header center blue-text">NC Insect Innate Immunity</h1>
         <div class="row center">
-            <h5 class="header col s12 light">A modern responsive front-end framework based on Material Design</h5>
+            <!-- <h5 class="header col s12 light">Une base de données des gènes de l'immunité innée chez les insectes</h5> -->
+            <p class='flow-text head-main-title'>
+                Une base de données des gènes de l'immunité innée chez les insectes.
+                Développée dans le but de faciliter l'accès aux données récoltées au sein de différentes espèces,
+                cette base de données est centrée autour d'une étude génétique du charançon du riz (Sitophilus oryzae).
+            </p>
         </div>
         <div class="row center">
-            <a href="http://materializecss.com/getting-started.html" id="download-button" class="btn-large waves-effect waves-light orange">Get Started</a>
+            <a href="/begin" id="download-button" class="btn-large waves-effect waves-light blue lighten-2">Commencer</a>
         </div>
         <br><br>
 
