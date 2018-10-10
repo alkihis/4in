@@ -1,0 +1,8 @@
+.parallax-container .parallax {
+    z-index: unset;
+}
+
+.parallax-home-page {
+    height: 350px;
+}
+
