@@ -15,20 +15,6 @@ function connectBD() : void {
         mysqli_query($sql, 'SET NAMES UTF8mb4'); // requete pour avoir les noms en UTF8mb4
 }
 
-function isAllEmpty(array $array) : bool {
-    foreach ($array as $key => $element) {
-        if ($key > 21) {
-            break;
-        }
-
-        if (!empty($element)) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 function emptyTables() : void {
     global $sql;
 
@@ -60,16 +46,25 @@ function insertPathway(int $id_gene, string $pathway) : void {
  * explodeFile
  * 
  * Parse un fichier séparé par des tabulations, et l'enregistre dans une base de données conçue pour
- * @param string $filename : Fichier .tsv à parser
+ * @param string $filename : Chemin du fichier .tsv à parser
  * @return void
  */
-function explodeFile(string $filename) : void {
+function explodeFile(string $filename) : void { 
     global $sql; // importe la connexion SQL chargée avec l'appel à connectBD()
 
     $h = fopen($filename, 'r'); // ouvre le fichier $filename en lecture, et stocke le pointeur-sur-fichier dans $h
 
-    while ($h && !feof($h)) { // Si $h est valide et tant que le fichier n'est pas fini (feof signifie file-end-of-file)
+    if (!$h) {
+        throw new RuntimeException('Unable to open file');
+    }
+
+    while (!feof($h)) { // Si $h est valide et tant que le fichier n'est pas fini (feof signifie file-end-of-file)
         $line = fgets($h); // récupère une ligne du fichier
+
+        if (trim($line) === "") { 
+            // Si la ligne entièrement trimmée est vide, on skippe
+            continue;
+        }
 
         // On enlève le \r\n [CRLF] terminal à la droite de la ligne 
         // (il est présent dans le fichier .tsv), fgets le conserve lorsqu'il prend la ligne
@@ -142,6 +137,8 @@ function explodeFile(string $filename) : void {
             }
         }
     }
+
+    fclose($h);
 }
 
 /**
@@ -206,7 +203,10 @@ function showGenesWithPathways() : void {
 }
 
 connectBD();
-emptyTables();
-explodeFile('tab.tsv');
+
+if (isset($_GET['refresh']) && $_GET['refresh'] === 't') {
+    emptyTables();
+    explodeFile('tab.tsv');
+}
 
 showGenesWithPathways();
