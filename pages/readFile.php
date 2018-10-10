@@ -74,13 +74,6 @@ function explodeFile(string $filename) : void {
 
         // Si l'insertion a réussi
         if ($q) {
-            $insertion_gene_assoc = "INSERT INTO GeneAssociations
-            (id, gene_id, sequence_id, specie, addi)
-            VALUES ";
-            $str = "";
-
-            $first = true;
-
             // Récupération de l'ID numérique d'insertion (clé primaire de Gene)
             $id_insert = mysqli_insert_id($sql);
 
@@ -126,12 +119,12 @@ function explodeFile(string $filename) : void {
                             $str .= ',';
                         }
 
-                        $str .= "($id_insert, '$id', NULL, '{$assocs_species[$i - 6]}', '$full_line')"; 
+                        mysqli_query($sql, "INSERT INTO GeneAssociations
+                        (id, gene_id, sequence_id, specie, addi)
+                        VALUES ($id_insert, '$id', NULL, '{$assocs_species[$i - 6]}', '$full_line')"); 
                     }
                 }
             }
-
-            mysqli_query($sql, $insertion_gene_assoc . $str); 
         }
     }
 
