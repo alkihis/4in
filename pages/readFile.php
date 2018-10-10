@@ -3,18 +3,6 @@
 // Active l'affichage des erreurs sur le site web quand PHP en rencontre une
 ini_set('display_errors', 'on');
 
-$sql = null;
-
-function connectBD() : void {
-    global $sql;
-    $sql = mysqli_connect('localhost', 'user_projet', 'JavaScriptCestSuper32!#', 'projet');
-    if (mysqli_connect_errno()) {
-        printf("Échec de la connexion : %s\n", mysqli_connect_error());
-    }
-    else 
-        mysqli_query($sql, 'SET NAMES UTF8mb4'); // requete pour avoir les noms en UTF8mb4
-}
-
 function emptyTables() : void {
     global $sql;
 

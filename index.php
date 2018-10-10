@@ -1,3 +1,10 @@
+<?php
+
+require 'inc/cst.php';
+require 'inc/func.php';
+
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
