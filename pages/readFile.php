@@ -1,8 +1,5 @@
 <?php
 
-// Active l'affichage des erreurs sur le site web quand PHP en rencontre une
-ini_set('display_errors', 'on');
-
 function emptyTables() : void {
     global $sql;
 
@@ -77,6 +74,13 @@ function explodeFile(string $filename) : void {
 
         // Si l'insertion a réussi
         if ($q) {
+            $insertion_gene_assoc = "INSERT INTO GeneAssociations
+            (id, gene_id, sequence_id, specie, addi)
+            VALUES ";
+            $str = "";
+
+            $first = true;
+
             // Récupération de l'ID numérique d'insertion (clé primaire de Gene)
             $id_insert = mysqli_insert_id($sql);
 
@@ -115,14 +119,19 @@ function explodeFile(string $filename) : void {
                         $id = explode(',', $match)[0];
 
                         // On insère le gène dans les associations
-                        mysqli_query($sql, "INSERT INTO GeneAssociations
-                            (id, gene_id, sequence_id, specie, addi)
-                            VALUES
-                            ($id_insert, '$id', NULL, '{$assocs_species[$i - 6]}', '$full_line');
-                        "); 
-                    }  
+                        if ($first) {
+                            $first = false;
+                        }
+                        else {
+                            $str .= ',';
+                        }
+
+                        $str .= "($id_insert, '$id', NULL, '{$assocs_species[$i - 6]}', '$full_line')"; 
+                    }
                 }
             }
+
+            mysqli_query($sql, $insertion_gene_assoc . $str); 
         }
     }
 

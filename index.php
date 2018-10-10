@@ -3,6 +3,9 @@
 require 'inc/cst.php';
 require 'inc/func.php';
 
+// Active l'affichage des erreurs sur le site web quand PHP en rencontre une
+ini_set('display_errors', 'on');
+
 ?>
 
 <!DOCTYPE html>
