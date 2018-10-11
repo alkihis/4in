@@ -11,7 +11,7 @@
                 <h5 class="white-text">Menu</h5>
                 <ul>
                     <li><a class="white-text" href="#!">Accueil</a></li>
-                    <li><a class="white-text" href="#!">Rechercher</a></li>
+                    <li><a class="white-text" href="">Rechercher</a></li>
                     <li><a class="white-text" href="#!">Ajouter un gène</a></li>
                     <li><a class="white-text" href="https://blast.ncbi.nlm.nih.gov/Blast.cgi">BLAST</a></li>
                 </ul>
