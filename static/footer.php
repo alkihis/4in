@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="col l6 s12">
-                <h5 class="white-text">Company Bio</h5>
+                <h5 class="white-text">Developpeurs</h5>
                 <p class="grey-text text-lighten-4">
                     Nous somme une équipe d'étudiants en master qui travaillons sans relache pour créer la meilleure base de données de gènes liés à l'immunité du monde.
                 </p>
