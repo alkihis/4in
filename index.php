@@ -33,16 +33,6 @@ $ctrl = getRoute();
         <?php require 'static/nav.html' ?>
         
         <?php
-        // $page_name = 'static/start.php';
-        // if (isset($_GET['page']) && is_string($_GET['page']) && $_GET['page'] !== '') {
-        //     if(file_exists(addslashes('pages/' . $_GET['page']))) // le fichier existe
-        //         $page_name = addslashes('pages/' . $_GET['page']);
-        // }
-
-        // include $page_name;
-
-        // var_dump($_SERVER);
-
         // On appelle la fonction de "vue" de la page chargée dans le Controller
         $ctrl();
 

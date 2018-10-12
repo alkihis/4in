@@ -12,5 +12,5 @@ const MYSQL_BASE = 'projet';
 // ]
 const PAGES_REF = [
     'home' => ['file' => 'static/start.php', 'view' => 'homeView', 'controller' => 'homeControl'],
-    'fullBdd' => ['file' => 'php/readFile.php', 'view' => 'readFileView', 'controller' => 'readFileControl']
+    'fullBdd' => ['file' => 'pages/readFile.php', 'view' => 'readFileView', 'controller' => 'readFileControl']
 ];

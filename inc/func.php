@@ -34,3 +34,5 @@ function getRoute() : Controller {
 
     return $ctrl;
 }
+
+connectBD();

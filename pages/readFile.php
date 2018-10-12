@@ -185,11 +185,17 @@ function showGenesWithPathways() : void {
     <?php
 }
 
-connectBD();
+function readFileControl() : Controller {
+    if (isset($_GET['refresh']) && $_GET['refresh'] === 't') {
+        emptyTables();
+        explodeFile('tab.tsv');
+    }
 
-if (isset($_GET['refresh']) && $_GET['refresh'] === 't') {
-    emptyTables();
-    explodeFile('tab.tsv');
+    return new Controller([], 'Affichage de la base de données');
 }
 
-showGenesWithPathways();
+function readFileView(Controller $c) : void {
+    showGenesWithPathways();
+}
+
+
