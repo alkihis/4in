@@ -124,7 +124,7 @@ function explodeFile(string $filename) : void {
     fclose($h);
 }
 
-function getGenesWithPathways() : array {
+function getGenesWithPathways(bool $compact) : array {
     // Dans une fonction de Controller, il ne doit subsister AUCUN echo !
     // Rien n'est affiché à l'écran, tout est simplement récupéré / calculé puis renvoyé
     // L'avantage majeur est que cela permet de pouvoir réorganiser l'affichage sans modifier tout
@@ -135,7 +135,18 @@ function getGenesWithPathways() : array {
     // Initialise le tableau à renvoyer au contrôleur plus tard
     $return_values = [];
 
-    $q = mysqli_query($sql, "SELECT a.gene_id, a.specie, g.* FROM GeneAssociations a JOIN Gene g ON a.id=g.id;");
+    if ($compact) { // Groupe les colonnes espèce et ID de gène pour un résultat réduit
+        $q = mysqli_query($sql, "SELECT GROUP_CONCAT(DISTINCT a.specie SEPARATOR ', ') as specie, 
+        g.*, 
+        GROUP_CONCAT(DISTINCT a.gene_id SEPARATOR ', ') as gene_id
+        FROM GeneAssociations a 
+        JOIN Gene g 
+        ON a.id=g.id 
+        GROUP BY g.id");
+    } 
+    else {
+        $q = mysqli_query($sql, "SELECT a.gene_id, a.specie, g.* FROM GeneAssociations a JOIN Gene g ON a.id=g.id;");
+    }
 
     if (!$q) {
         throw new Exception("La base de données est hors ligne ou la requête a échoué");
@@ -211,14 +222,19 @@ function showGenesWithPathways(array $data) : void {
     <?php
 }
 
-function readFileControl() : Controller {
+function readFileControl($args) : Controller {
     // Dans le contrôleur, on exploite le GET ou le POST
     if (isset($_GET['refresh']) && $_GET['refresh'] === 't') {
         emptyTables();
         explodeFile('tab.tsv');
     }
 
-    $data = getGenesWithPathways();
+    $compact = true;
+    if (isset($args[0]) && $args[0] === 'full') {
+        $compact = false;
+    }
+
+    $data = getGenesWithPathways($compact);
 
     // On donne les données au contrôleur
     return new Controller($data, 'Affichage de la base de données');
