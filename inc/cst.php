@@ -10,6 +10,8 @@ const MYSQL_BASE = 'projet';
 //      'view' => fonction_generation_vue, 
 //      'controller' => fonction_generation_controller
 // ]
+// Intérêt, dans l'url, taper localhost/fullBdd accède à la page
+// pages/readFile.php
 const PAGES_REF = [
     'home' => ['file' => 'static/start.php', 'view' => 'homeView', 'controller' => 'homeControl'],
     'fullBdd' => ['file' => 'pages/readFile.php', 'view' => 'readFileView', 'controller' => 'readFileControl']
