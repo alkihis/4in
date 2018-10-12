@@ -21,17 +21,25 @@ function getRoute() : Controller {
         // Possible par le .htaccess
         $page_name = explode('/', $_SERVER['REDIRECT_URL'])[1];
 
-        if (! isset(PAGES_REF[$page_name])) {
+        if (! isset(PAGES_REF[$page_name])) { 
+            // Si la page demandée n'existe pas
             $page_name = 'home';
         }
     }
 
+    // Charge le fichier demandé
     require PAGES_REF[$page_name]['file'];
+    // Récupère le nom de la fonction servant à charger la vue
     $view = PAGES_REF[$page_name]['view'];
+    // Appelle la fonction servant à initialiser le Controller
+    // et le stocke dans $ctrl 
+    // (on peut appeler des variables qui sont une chaîne de caractères nommant une fonction en PHP, cherchez pas)
     $ctrl = PAGES_REF[$page_name]['controller']();
 
+    // Enregistre la fonction de vue dans le contrôleur
     $ctrl->setViewFunction($view);
 
+    // Retourne le contrôleur
     return $ctrl;
 }
 
