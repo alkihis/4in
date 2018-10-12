@@ -6,6 +6,10 @@
     height: 350px;
 }
 
+.clearb {
+    clear: both;
+}
+
 body {
     display: flex;
     min-height: 100vh;
@@ -43,4 +47,8 @@ main {
     margin: auto;
     padding: 10px 30px;
     background-color: #f1f1f1;
+}
+
+.card-border {
+    border-radius: 10px;
 }

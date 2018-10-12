@@ -11,7 +11,7 @@
             <div class="col l3 s12">
                 <h5 class="white-text">Menu</h5>
                 <ul>
-                    <li><a class="white-text" href="/home">Accueil</a></li>
+                    <li><a class="white-text" href="/login"><?= isUserLogged() ? "Déc" : 'C' ?>onnexion</a></li>
                     <li><a class="white-text" href="/search">Rechercher</a></li>
                     <li><a class="white-text" href="/add_gene">Ajouter un gène</a></li>
                     <li><a class="white-text" href="https://blast.ncbi.nlm.nih.gov/Blast.cgi">BLAST</a></li>

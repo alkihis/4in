@@ -77,4 +77,36 @@ function getRoute() : Controller {
     return $ctrl;
 }
 
+function initTableUser() : void {
+    global $sql;
+
+    mysqli_multi_query($sql, "DROP TABLE Users;
+    CREATE TABLE Users (
+        id_user INT NOT NULL AUTO_INCREMENT,
+        username VARCHAR(50) NOT NULL,
+        passw VARCHAR(255) NOT NULL,
+        rights INT NOT NULL,
+        PRIMARY KEY (id_user)
+    );
+    INSERT INTO Users (username, passw, rights) 
+    VALUES ('admin', '". password_hash('admin', PASSWORD_BCRYPT) . "', 2);");
+}
+
+function logUser($mysql_user_object) : void {
+    global $sql;
+
+    $_SESSION['user']['logged'] = true;
+    $_SESSION['user']['id'] = (int)$mysql_user_object['id_user'];
+    $_SESSION['user']['login'] = $mysql_user_object['username'];
+    $_SESSION['user']['rights'] = (int)$mysql_user_object['rights'];
+}
+
+function unlogUser() : void {
+    unset($_SESSION['user']);
+}
+
+function isUserLogged() : bool {
+    return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'];
+}
+
 connectBD();

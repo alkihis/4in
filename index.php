@@ -3,8 +3,8 @@
 // Active l'affichage des erreurs sur le site web quand PHP en rencontre une
 ini_set('display_errors', 'on');
 
-// Initialise la session (inutilisé actuellement)
-// session_start();
+// Initialise la session (permet d'être connecté)
+session_start();
 
 require 'inc/cst.php';
 require 'inc/func.php';
