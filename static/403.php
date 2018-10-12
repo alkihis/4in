@@ -3,8 +3,8 @@
 // Page d'erreur 403
 
 function forbiddenControl() : Controller {
-    header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
-    return new Controller([], 'Page non trouvée');
+    header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+    return new Controller([], 'Accès interdit');
 }
 
 function forbiddenView(Controller $c) : void {

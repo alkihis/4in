@@ -21,11 +21,14 @@ $ctrl = getRoute();
         <!--Import Google Icon Font-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <!--Import materialize.css-->
-        <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
-        <link type="text/css" rel="stylesheet" href="css/style.css"/>
+        <link type="text/css" rel="stylesheet" href="/css/materialize.min.css"  media="screen,projection"/>
+        <link type="text/css" rel="stylesheet" href="/css/style.css"/>
 
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <!-- favicon -->
+        <link rel="icon" type="image/png" href="/img/favicon.png">
 
         <title>
             <?= $ctrl->getTitle() ?? SITE_NAME ?>
@@ -47,8 +50,8 @@ $ctrl = getRoute();
         <?php require 'static/footer.php'; // footer.php contient déjà <footer></footer> ?>
 
         <!--JavaScript at end of body for optimized loading-->
-        <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
-        <script type="text/javascript" src="js/materialize.min.js"></script>
-        <script type="text/javascript" src="js/script.js"></script>
+        <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="/js/materialize.min.js"></script>
+        <script type="text/javascript" src="/js/script.js"></script>
     </body>
 </html>

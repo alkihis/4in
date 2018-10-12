@@ -5,6 +5,7 @@ const MYSQL_PASSWORD = 'psw';
 const MYSQL_BASE = 'projet';
 
 const SITE_NAME = 'NC3I';
+const DEBUG_MODE = true;
 
 // Définition des pages disponibles sur le site web
 // nom_page => [
@@ -19,4 +20,5 @@ const PAGES_REF = [
     'full_database' => ['file' => 'pages/readFile.php', 'view' => 'readFileView', 'controller' => 'readFileControl'],
     '404' => ['file' => 'static/404.php', 'view' => 'notFoundView', 'controller' => 'notFoundControl'],
     '403' => ['file' => 'static/403.php', 'view' => 'forbiddenView', 'controller' => 'forbiddenControl'],
+    '500' => ['file' => 'static/500.php', 'view' => 'serverErrorView', 'controller' => 'serverErrorControl'],
 ];

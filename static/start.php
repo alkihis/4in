@@ -21,7 +21,7 @@ function homeView(Controller $c) { ?>
     </div>
 
     <div class="parallax-container parallax-home-page">
-        <div class="parallax"><img src="img/ch_jardin.jpg"></div>
+        <div class="parallax"><img src="/img/ch_jardin.jpg"></div>
     </div>
 
     <div class="container">
@@ -76,7 +76,7 @@ function homeView(Controller $c) { ?>
     </div>
 
     <div class="parallax-container parallax-home-page">
-        <div class="parallax"><img src="img/phagocyte.jpg"></div>
+        <div class="parallax"><img src="/img/phagocyte.jpg"></div>
     </div>
 
 <?php }

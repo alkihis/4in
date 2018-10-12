@@ -4,7 +4,7 @@
         <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href="/home"><i class='material-icons left'>home</i>Accueil</a></li>
             <li><a href="/search"><i class='material-icons left'>search</i>Rechercher</a></li>
-            <li><a href="/full_database"><i class='material-icons left'>settings_system_daydream</i>Explorer</a></li>
+            <li><a href="/add_gene"><i class='material-icons left'>add</i>Ajouter un gène</a></li>
         </ul>
     </div>
 </nav>

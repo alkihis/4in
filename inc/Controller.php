@@ -12,6 +12,7 @@ class Controller {
             $this->page_title = $title;
         }
     }
+    
     public function __invoke() {
         if ($this->view === null) {
             throw new UnexpectedValueException("No view function defined");

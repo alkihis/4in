@@ -15,6 +15,7 @@ function connectBD() : void {
 function getRoute() : Controller {
     // Get Controller object for asked page, Controller for home page if page undefined otherwise
     $page_name = 'home';
+    $page_arguments = [];
 
     if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] !== '/') { 
         // Si la requête est définie et que on ne vise pas la racine (page d'accueil)
@@ -24,7 +25,12 @@ function getRoute() : Controller {
 
         // Redirection par Apache, stockée dans cette variable
         // Possible par le .htaccess
-        $page_name = explode('/', $request_without_query_string)[1];
+        $page_arguments = explode('/', $request_without_query_string);
+        $page_name = $page_arguments[1];
+
+        // Récupère les arguments après la page
+        // Équivaut à $page_arguments[2:] en Python
+        $page_arguments = array_slice($page_arguments, 2);
 
         if (!isset(PAGES_REF[$page_name])) { 
             // Si la page demandée n'existe pas
@@ -45,7 +51,7 @@ function getRoute() : Controller {
     try {
         // Tente d'inclure l'original. Si il lance une exception, elle est attrapée en dessous et appelle
         // les pages adéquates
-        $ctrl = PAGES_REF[$page_name]['controller']();
+        $ctrl = PAGES_REF[$page_name]['controller']($page_arguments);
     } 
     catch (ForbiddenPageException $f) {
         $error = ['403', $f];

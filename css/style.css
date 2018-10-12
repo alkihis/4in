@@ -35,3 +35,12 @@ main {
 .logo-main {
     margin-left: 20px;
 }
+
+.server-error-text {
+    border-radius: 8px;
+    border: 1px #b3b2b2 solid;
+    width: fit-content;
+    margin: auto;
+    padding: 10px 30px;
+    background-color: #f1f1f1;
+}

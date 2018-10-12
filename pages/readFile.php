@@ -136,8 +136,12 @@ function getGenesWithPathways() : array {
     $return_values = [];
 
     $q = mysqli_query($sql, "SELECT a.gene_id, a.specie, g.* FROM GeneAssociations a JOIN Gene g ON a.id=g.id;");
+
+    if (!$q) {
+        throw new Exception("La base de données est hors ligne ou la requête a échoué");
+    }
     
-    if ($q && mysqli_num_rows($q) > 0) {
+    if (mysqli_num_rows($q) > 0) {
         while ($row = mysqli_fetch_assoc($q)) {
             $pathway = mysqli_query($sql, "SELECT pathway FROM Pathways WHERE id={$row['id']}");
             $pathways = [];
