@@ -1,10 +1,14 @@
 <?php
 
-require 'inc/cst.php';
-require 'inc/func.php';
-
 // Active l'affichage des erreurs sur le site web quand PHP en rencontre une
 ini_set('display_errors', 'on');
+
+require 'inc/cst.php';
+require 'inc/func.php';
+require 'inc/Controller.php';
+
+// Obtention du Controller pour afficher la page
+$ctrl = getRoute();
 
 ?>
 
@@ -19,19 +23,28 @@ ini_set('display_errors', 'on');
 
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <title>
+            <?= $ctrl->getTitle() ?? 'NC3I' ?>
+        </title>
     </head>
 
     <body>
         <?php require 'static/nav.html' ?>
         
         <?php
-        $page_name = 'static/start.php';
-        if (isset($_GET['page']) && is_string($_GET['page']) && $_GET['page'] !== '') {
-            if(file_exists(addslashes('pages/' . $_GET['page']))) // le fichier existe
-                $page_name = addslashes('pages/' . $_GET['page']);
-        }
+        // $page_name = 'static/start.php';
+        // if (isset($_GET['page']) && is_string($_GET['page']) && $_GET['page'] !== '') {
+        //     if(file_exists(addslashes('pages/' . $_GET['page']))) // le fichier existe
+        //         $page_name = addslashes('pages/' . $_GET['page']);
+        // }
 
-        include $page_name;
+        // include $page_name;
+
+        // var_dump($_SERVER);
+
+        // On appelle la fonction de "vue" de la page chargée dans le Controller
+        $ctrl();
 
         require 'static/footer.php';
 
