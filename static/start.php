@@ -7,7 +7,7 @@ function homeView(Controller $c) { ?>
             <div class="row center">
                 <!-- <h5 class="header col s12 light">Une base de données des gènes de l'immunité innée chez les insectes</h5> -->
                 <p class='flow-text head-main-title'>
-                    Une base de données des gènes de l'immunité innée chez les insectes.
+                    Bienvenue sur <?= SITE_NAME ?>, une base de données de gènes de l'immunité innée chez les insectes.
                     Développée dans le but de faciliter l'accès aux données récoltées au sein de différentes espèces,
                     cette base de données est centrée autour d'une étude génétique du charançon du riz (Sitophilus oryzae).
                 </p>
@@ -83,7 +83,7 @@ function homeView(Controller $c) { ?>
 
 function homeControl() : Controller {
     // Insérer ici des traitements à réaliser dans la page d'accueil
-    // Pour le moment aucun contenu dynamique n'est crée, on renvoie donc un Controller vide
+    // Pour le moment aucun contenu dynamique n'est créé, on renvoie donc un Controller vide
     // Si il y avait des traitements, ils seraient dans le tableau passé au Controller
 
     return new Controller([], 'Accueil');
