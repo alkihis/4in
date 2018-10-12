@@ -6,6 +6,10 @@
     height: 350px;
 }
 
+.parallax-search-page {
+    height: 290px;
+}
+
 .clearb {
     clear: both;
 }
@@ -51,4 +55,16 @@ main {
 
 .card-border {
     border-radius: 10px;
+}
+
+.dropdown-content li>a, .dropdown-content li>span {
+    color: #1a65b6;
+}
+
+.no-outline-focus:focus {
+    outline: none;
+}
+
+a.no-link-color {
+    color: inherit;
 }
