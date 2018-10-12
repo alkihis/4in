@@ -20,3 +20,18 @@ main {
     font-weight: 300;
 }
 
+.underline, .underline-hover:hover {
+    text-decoration: underline;
+}
+
+.mat-title {
+    font-size: inherit;
+}
+
+.text-justify {
+    text-align: justify;
+}
+
+.logo-main {
+    margin-left: 20px;
+}

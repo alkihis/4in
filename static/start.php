@@ -29,30 +29,45 @@ function homeView(Controller $c) { ?>
 
         <!--   Icon Section   -->
             <div class="row">
-                    <div class="col s12 m4">
-                        <div class="icon-block">
-                            <h2 class="center light-blue-text"><i class="material-icons">flash_on</i></h2>
-                            <h5 class="center">Speeds up development</h5>
-
-                            <p class="light">We did most of the heavy lifting for you to provide a default stylings that incorporate our custom components. Additionally, we refined animations and transitions to provide a smoother experience for developers.</p>
-                        </div>
-                    </div>
-
                 <div class="col s12 m4">
                     <div class="icon-block">
-                        <h2 class="center light-blue-text"><i class="material-icons">group</i></h2>
-                        <h5 class="center">User Experience Focused</h5>
+                        <h2 class="center">
+                            <a href='/search'><i class="material-icons mat-title light-blue-text">search</i></a>
+                        </h2>
+                        <h5 class="center">Recherche</h5>
 
-                        <p class="light">By utilizing elements and principles of Material Design, we were able to create a framework that incorporates components and animations that provide more feedback to users. Additionally, a single underlying responsive system across all platforms allow for a more unified user experience.</p>
+                        <p class="light text-justify">
+                            Vous pouvez rechercher les gènes de l'immunité chez les insectes
+                            par identifiant, voie, espèce et nom juste ici.
+                        </p>
                     </div>
                 </div>
 
                 <div class="col s12 m4">
                     <div class="icon-block">
-                        <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
-                        <h5 class="center">Easy to work with</h5>
+                        <h2 class="center">
+                            <a href='/full_database'><i class="material-icons mat-title light-blue-text">settings_system_daydream</i></a>
+                        </h2>
+                        <h5 class="center">Base de données</h5>
 
-                        <p class="light">We have provided detailed documentation as well as specific code examples to help new users get started. We are also always open to feedback and can answer any questions a user may have about Materialize.</p>
+                        <p class="light text-justify">
+                            Consultez l'ensemble de la base de données. Téléchargez les données au format de votre choix,
+                            triez les résultats selon votre besoin et renseignez vous sur les annotations fonctionnelles
+                            disponibles.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col s12 m4">
+                    <div class="icon-block">
+                        <h2 class="center">
+                            <a href='/blast_search'><i class="material-icons mat-title light-blue-text">sort</i></a>
+                        </h2>
+                        <h5 class="center">BLAST</h5>
+
+                        <p class="light text-justify">
+                            Alignez vos propres séquences en utilisant l'algorithme de BLAST sur notre base de données.
+                        </p>
                     </div>
                 </div>
             </div>

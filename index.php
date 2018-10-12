@@ -3,6 +3,9 @@
 // Active l'affichage des erreurs sur le site web quand PHP en rencontre une
 ini_set('display_errors', 'on');
 
+// Initialise la session (inutilisé actuellement)
+// session_start();
+
 require 'inc/cst.php';
 require 'inc/func.php';
 require 'inc/Controller.php';
@@ -25,20 +28,23 @@ $ctrl = getRoute();
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
         <title>
-            <?= $ctrl->getTitle() ?? 'NC3I' ?>
+            <?= $ctrl->getTitle() ?? SITE_NAME ?>
         </title>
     </head>
 
     <body>
-        <?php require 'static/nav.html' ?>
-        
+        <header>
+        <?php require 'static/nav.php'; ?>
+        </header>
+
+        <main>
         <?php
         // On appelle la fonction de "vue" de la page chargée dans le Controller
         $ctrl();
-
-        require 'static/footer.php';
-
         ?>
+        </main>
+        
+        <?php require 'static/footer.php'; // footer.php contient déjà <footer></footer> ?>
 
         <!--JavaScript at end of body for optimized loading-->
         <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>

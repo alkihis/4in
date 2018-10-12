@@ -16,25 +16,53 @@ function getRoute() : Controller {
     // Get Controller object for asked page, Controller for home page if page undefined otherwise
     $page_name = 'home';
 
-    if (isset($_SERVER['REDIRECT_URL'])) { 
+    if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] !== '/') { 
+        // Si la requête est définie et que on ne vise pas la racine (page d'accueil)
+
+        // REQUEST_URI contient la query string GET, on l'enlève
+        $request_without_query_string = explode('?', $_SERVER['REQUEST_URI'])[0];
+
         // Redirection par Apache, stockée dans cette variable
         // Possible par le .htaccess
-        $page_name = explode('/', $_SERVER['REDIRECT_URL'])[1];
+        $page_name = explode('/', $request_without_query_string)[1];
 
-        if (! isset(PAGES_REF[$page_name])) { 
+        if (!isset(PAGES_REF[$page_name])) { 
             // Si la page demandée n'existe pas
-            $page_name = 'home';
+            $page_name = '404';
         }
     }
 
     // Charge le fichier demandé
-    require PAGES_REF[$page_name]['file'];
+    require_once PAGES_REF[$page_name]['file'];
     // Récupère le nom de la fonction servant à charger la vue
     $view = PAGES_REF[$page_name]['view'];
+
+    $error = null;
+
     // Appelle la fonction servant à initialiser le Controller
     // et le stocke dans $ctrl 
     // (on peut appeler des variables qui sont une chaîne de caractères nommant une fonction en PHP, cherchez pas)
-    $ctrl = PAGES_REF[$page_name]['controller']();
+    try {
+        // Tente d'inclure l'original. Si il lance une exception, elle est attrapée en dessous et appelle
+        // les pages adéquates
+        $ctrl = PAGES_REF[$page_name]['controller']();
+    } 
+    catch (ForbiddenPageException $f) {
+        $error = ['403', $f];
+    } 
+    catch (PageNotFoundException $n) {
+        $error = ['404', $n];
+    } 
+    catch (Throwable $e) { // Toute autre exception
+        $error = ['500', $e];
+    }
+
+    if ($error) {
+        $code = $error[0]; $ex = $error[1];
+        require_once PAGES_REF[$code]['file'];
+        $ctrl = PAGES_REF[$code]['controller']($ex);
+        $view = PAGES_REF[$code]['view']; 
+    }
 
     // Enregistre la fonction de vue dans le contrôleur
     $ctrl->setViewFunction($view);
