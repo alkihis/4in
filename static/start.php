@@ -1,33 +1,32 @@
 <?php
 
 function homeView(Controller $c) { ?>
-    <div class="section no-pad-bot" id="index-banner">
-        <div class="container">
-            <h1 class="header center blue-text">NC Insect Innate Immunity</h1>
-            <div class="row center">
-                <!-- <h5 class="header col s12 light">Une base de données des gènes de l'immunité innée chez les insectes</h5> -->
-                <p class='flow-text head-main-title'>
-                    Bienvenue sur <?= SITE_NAME ?>, une base de données de gènes de l'immunité innée chez les insectes.
-                    Développée dans le but de faciliter l'accès aux données récoltées au sein de différentes espèces,
-                    cette base de données est centrée autour d'une étude génétique du charançon du riz (Sitophilus oryzae).
-                </p>
-            </div>
-            <div class="row center">
-                <a href="/begin" id="download-button" class="btn-large waves-effect waves-light blue lighten-2">Commencer</a>
-            </div>
-            <br><br>
-
-        </div>
-    </div>
-
     <div class="parallax-container parallax-home-page">
-        <div class="parallax"><img src="/img/ch_jardin.jpg"></div>
+        <div class="section no-pad-bot">
+            <div class="container">
+                <br><br>
+                <h1 class="header center blue-text text-lighten-4">NC Insect Innate Immunity</h1>
+                <div class="row center">
+                    <p class='flow-text head-main-title white-text'>
+                        Une base de données de gènes de l'immunité innée chez les insectes
+                    </p>
+                </div>
+                <br><br>
+
+            </div>
+        </div>
+        <div class="parallax" style='z-index: -1;'><img src="/img/ch_jardin.jpg" style='filter: brightness(0.80)'></div>
     </div>
 
     <div class="container">
         <div class="section">
             <!--   Icon Section   -->
             <div class="row">
+                <p class='flow-text text-justify head-main-title'>
+                    Développée dans le but de faciliter l'accès aux données récoltées au sein de différentes espèces,
+                    cette base de données est centrée autour de l'étude génétique du charançon du riz, 
+                    également nommé Sitophilus oryzae.
+                </p>
                 <div class="col s12 m4">
                     <div class="icon-block">
                         <h2 class="center">
