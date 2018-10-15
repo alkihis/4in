@@ -7,11 +7,3 @@ $(document).ready(function () {
         outDuration: 150
     });
 });
-
-$(document).ready(function(){
-    $('select').formSelect();
-});
-
-$(document).ready(function() {
-    $('input#input_text, textarea#textarea2').characterCounter();
-});
