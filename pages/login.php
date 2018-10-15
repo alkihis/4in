@@ -67,7 +67,7 @@ function loginView(Controller $c) : void {
                         echo '<h6 class="green-text">Vous avez été déconnecté-e.</h6>';
                     }
                     else if (isset($data['successful_connection'])) {
-                        echo '<h6 class="green-text">Vous vous été connecté-e avec succès.</h6>';
+                        echo '<h6 class="green-text">Vous vous êtes connecté-e avec succès.</h6>';
                     }
                     ?>
                     <form method='post' action='/login'>
