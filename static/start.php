@@ -1,6 +1,6 @@
 <?php
 
-function homeView(Controller $c) { ?>
+function homeView(Controller $c) : void { ?>
     <div class="parallax-container parallax-home-page">
         <div class="section no-pad-bot">
             <div class="container">

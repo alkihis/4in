@@ -16,6 +16,7 @@ function getRoute() : Controller {
     // Get Controller object for asked page, Controller for home page if page undefined otherwise
     $page_name = 'home';
     $page_arguments = [];
+    $ctrl = null;
 
     if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] !== '/') { 
         // Si la requête est définie et que on ne vise pas la racine (page d'accueil)
@@ -32,7 +33,7 @@ function getRoute() : Controller {
         // Équivaut à $page_arguments[2:] en Python
         $page_arguments = array_slice($page_arguments, 2);
 
-        if (!isset(PAGES_REF[$page_name])) { 
+        if (!array_key_exists($page_name, PAGES_REF)) {
             // Si la page demandée n'existe pas
             $page_name = '404';
         }
@@ -51,7 +52,7 @@ function getRoute() : Controller {
     try {
         // Tente d'inclure l'original. Si il lance une exception, elle est attrapée en dessous et appelle
         // les pages adéquates
-        $ctrl = PAGES_REF[$page_name]['controller']($page_arguments);
+        $ctrl = (PAGES_REF[$page_name]['controller'])($page_arguments);
     } 
     catch (ForbiddenPageException $f) {
         $error = ['403', $f];
@@ -66,7 +67,7 @@ function getRoute() : Controller {
     if ($error) {
         $code = $error[0]; $ex = $error[1];
         require_once PAGES_REF[$code]['file'];
-        $ctrl = PAGES_REF[$code]['controller']($ex);
+        $ctrl = (PAGES_REF[$code]['controller'])($ex);
         $view = PAGES_REF[$code]['view']; 
     }
 

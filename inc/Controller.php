@@ -17,9 +17,6 @@ class Controller {
         if ($this->view === null) {
             throw new UnexpectedValueException("No view function defined");
         }
-        if (! is_callable($this->view)) {
-            throw new UnexpectedValueException("View function is not callable");
-        }
 
         ($this->view)($this);
     }

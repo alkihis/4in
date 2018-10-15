@@ -23,9 +23,9 @@ function serverErrorView(Controller $c) : void {
             </p>
             
             <?php if (DEBUG_MODE) { ?>
-            <p class='server-error-text center'>
-                <?= $e->getMessage() ?>
-            </p>
+            <div class='server-error-text center' style="margin: 10px auto">
+                <pre><?= htmlspecialchars($e->getMessage()) ?></pre>
+            </div>
             <?php } ?>
 
             <p class='flow-text center'>
