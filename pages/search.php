@@ -122,7 +122,7 @@ function showSearchHome(array $data) : void {
 function searchById() : array {
     $r = [];
 
-    if (isset($_GET['id']) && is_string($_GET['id'])) {
+    if (isset($_GET['id']) && is_string($_GET['id']) && strlen($_GET['id']) > 1) {
         $r['previous_search'] = [];
         $r['previous_search']['id'] = htmlspecialchars($_GET['id'], ENT_QUOTES);
 
@@ -136,7 +136,7 @@ function searchById() : array {
              WHERE g.id = p.id) as pathways 
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
-        WHERE a.gene_id='$id'
+        WHERE a.gene_id LIKE '$id%'
         GROUP BY a.gene_id, g.id ORDER BY g.id");
 
         if (!$q) {
@@ -144,14 +144,14 @@ function searchById() : array {
         }
 
         if (mysqli_num_rows($q)) { // Il y a un identifiant trouvé, on le récupère
-            $row = mysqli_fetch_assoc($q); // Il y en a qu'un seul possible, pas de besoin de mettre ça dans une boucle
-
-            // results empêche la génération du formulaire de recherche,
-            // et affiche les résultats à la page
-            $r['results'][] = new GeneObject($row);
+            while ($row = mysqli_fetch_assoc($q)) {
+                // results empêche la génération du formulaire de recherche,
+                // et affiche les résultats à la page
+                $r['results'][] = new GeneObject($row);
+            }            
         }
         else {
-            $r['previous_search']['empty_id'] = true;
+            $r['results'] = []; // Résultats vides
         }
     }
 
@@ -159,10 +159,9 @@ function searchById() : array {
 }
 
 function showSearchById(array $data) : void {
-    if (! isset($data['results'])) { // Aucun résultat : formulaire à générer
-        generateSearchForm('id', $data['previous_search'] ?? []);
-    }
-    else { // résultats : tableau de résultat à générer
+    generateSearchForm('id', $data['previous_search'] ?? []);
+
+    if (isset($data['results'])) { // résultats : tableau de résultat à générer
         generateSearchResultsArray($data['results']);
     }
 }
@@ -171,22 +170,33 @@ function showSearchById(array $data) : void {
 function generateSearchForm($mode = 'id', $previous_data = []) {
     ?>
     <div class='container'>
-        <div class='row section'>
+        <div class='row section no-margin-bottom'>
             <div class='card col s12 card-border'>
                 <div class='card-content'>
                     <form method='get' action='/search/<?= $mode ?>'>
                         <?php if ($mode === 'id') { ?>
-                        <?= (isset($previous_data['empty_id']) ? 
-                            "<div class='error-search-text red-text text-lighten-1'>
-                                Votre recherche n'a retourné aucun résultat.
-                            </div>" 
-                            : '') 
-                        ?>
                         <div class='input-field col s12'>
                             <i class="material-icons prefix">label</i>
-                            <input type='text' autocomplete='off' name="id" id="gene_id">
+                            <input type='text' autocomplete='off' name="id"
+                                id="gene_id" value='<?= $previous_data['id'] ?? '' ?>'>
                             <label for='gene_id'>Identifiant</label>
                         </div>
+
+                        <script>
+                            $(document).ready(function() {
+                                // Récupération du tableau d'ID
+                                $.get(
+                                    "/api/search/ids.json", 
+                                    { } 
+                                ).then(function (json) {
+                                    $('#gene_id').autocomplete({
+                                        data: json,
+                                        limit: 6,
+                                        minLength: 2
+                                    });
+                                });
+                            });
+                        </script>
 
                         <?php } ?>
 
@@ -213,6 +223,10 @@ function generateSearchResultsArray(array $res) : void {
                     </a>
                     Résultats de votre recherche
                 </h3>
+                <?php if (empty($res)) { ?>
+                <h4 class='red-text header'>Aucun résultat</h4>
+                <?php } else { ?>
+                <h6><?= count($res) ?> résultat<?= count($res) > 1 ? 's' : '' ?></h6>
                 <table>
                     <thead>
                         <tr>
@@ -235,6 +249,7 @@ function generateSearchResultsArray(array $res) : void {
                         ?>
                     </tbody>
                 </table>
+                <?php } ?>
             </div>
         </div>
     </div>
