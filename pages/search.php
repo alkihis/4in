@@ -237,7 +237,7 @@ function showSearchByName(array $data) : void {
     }
 }
 
-////// NAME //////
+////// PATHWAY //////
 function searchPathway() : array {
     $r = [];
 
@@ -299,8 +299,7 @@ function showSearchByPathway(array $data) : void {
 }
 
 ////// FONCTIONS GENERALES //////
-function generateSearchForm($mode = 'id', $previous_data = []) {
-    ?>
+function generateSearchForm(string $mode = 'id', array $previous_data = []) : void { ?>
     <div class='container'>
         <div class='row section no-margin-bottom'>
             <div class='card col s12 card-border'>
@@ -362,7 +361,8 @@ function generateSearchForm($mode = 'id', $previous_data = []) {
 
                         <?php } elseif ($mode === 'pathway') { ?>
                             <div class='input-field col s12'>
-                                <select id='pathway_select' name='pathway'>
+                                <select id='pathway_select' 
+                                    name='pathway' onchange="document.getElementById('submit_form').submit();">
                                     <?php 
                                     // Génération des options du select en fonction des pathways dans la base de données
                                     foreach ($previous_data['select'] as $option) {
@@ -439,6 +439,7 @@ function generateSearchResultsArray(array $res) : void {
 
     <?php
 }
+
 function generateArrayLine(Gene $line) : void { ?>
     <tr>
         <td><?= $line->getName() ?></td>
