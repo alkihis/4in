@@ -81,7 +81,7 @@ function getRoute() : Controller {
 function initTableUser() : void {
     global $sql;
 
-    mysqli_multi_query($sql, "DROP TABLE Users;
+    mysqli_multi_query($sql, "
     CREATE TABLE Users (
         id_user INT NOT NULL AUTO_INCREMENT,
         username VARCHAR(50) NOT NULL,

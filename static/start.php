@@ -74,7 +74,7 @@ function homeView(Controller $c) : void { ?>
     </div>
 
     <div class="parallax-container parallax-home-page">
-        <div class="parallax"><img src="/img/phagocyte.jpg"></div>
+        <div class="parallax"><img src="/img/ADN.jpg"></div>
     </div>
 
 <?php }
