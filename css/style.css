@@ -6,6 +6,14 @@
     height: 350px;
 }
 
+.parallax-search-page {
+    height: 290px;
+}
+
+.clearb {
+    clear: both;
+}
+
 body {
     display: flex;
     min-height: 100vh;
@@ -20,3 +28,43 @@ main {
     font-weight: 300;
 }
 
+.underline, .underline-hover:hover {
+    text-decoration: underline;
+}
+
+.mat-title {
+    font-size: inherit;
+}
+
+.text-justify {
+    text-align: justify;
+}
+
+.logo-main {
+    margin-left: 20px;
+}
+
+.server-error-text {
+    border-radius: 8px;
+    border: 1px #b3b2b2 solid;
+    width: fit-content;
+    margin: auto;
+    padding: 10px 30px;
+    background-color: #f1f1f1;
+}
+
+.card-border {
+    border-radius: 10px;
+}
+
+.dropdown-content li>a, .dropdown-content li>span {
+    color: #1a65b6;
+}
+
+.no-outline-focus:focus {
+    outline: none;
+}
+
+a.no-link-color {
+    color: inherit;
+}
