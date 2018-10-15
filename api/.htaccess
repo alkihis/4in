@@ -1,0 +1,5 @@
+# DirectoryIndex /api/main.php
+# FallbackResource /api/main.php
+RewriteEngine On
+RewriteBase /api/
+RewriteRule ^ main.php [QSA,L]

@@ -68,3 +68,7 @@ main {
 a.no-link-color {
     color: inherit;
 }
+
+.no-margin-bottom {
+    margin-bottom: 0;
+}
