@@ -25,3 +25,11 @@ CREATE TABLE GeneAssociations (
     PRIMARY KEY (gene_id),
     FOREIGN KEY (id) REFERENCES Gene(id) ON DELETE CASCADE
 );
+
+CREATE TABLE Users (
+    id_user INT NOT NULL AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    passw VARCHAR(255) NOT NULL,
+    rights INT NOT NULL,
+    PRIMARY KEY (id_user)
+);
