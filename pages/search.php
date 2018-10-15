@@ -245,19 +245,12 @@ function generateSearchForm($mode = 'id', $previous_data = []) {
                             });
                         </script>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+                         <?php } elseif ($mode ==='name') { ?>
+                            <div class='input-field col s12'>
+                                <i class="material-icons prefix">label</i>
+                                <input type='text' autocomplete='off' name="name" id="gene_name" value='<?= $previous_data['name'] ?? '' ?>'>
+                                <label for='gene_name'>Nom</label>
+                            </div>
 
                         <?php } ?>
                         <button type='submit' class='btn-flat right blue-text'>Rechercher</button>
