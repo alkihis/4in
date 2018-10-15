@@ -167,6 +167,53 @@ function showSearchById(array $data) : void {
     }
 }
 
+////// NAME //////
+function searchByName() : array {
+    $r = [];
+
+    if (isset($_GET['name']) && is_string($_GET['name'])) {
+        $r['previous_search'] = [];
+        $r['previous_search']['name'] = htmlspecialchars($_GET['name'], ENT_QUOTES);
+
+        global $sql;
+        // Recherche du nom dans la base de données
+        $name = mysqli_real_escape_string($sql, $_GET['name']);
+
+        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, 
+            (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
+             FROM Pathways p 
+             WHERE g.id = p.id) as pathways 
+        FROM GeneAssociations a 
+        JOIN Gene g ON a.id=g.id
+        WHERE g.gene_name LIKE '$name%'
+        GROUP BY a.gene_id, g.id ORDER BY g.id");
+
+        if (!$q) {
+            throw new UnexpectedValueException("Echec de la requête SQL");
+        }
+
+        if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
+            while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
+                $r['results'][] = new GeneObject($row);
+            } 
+            // results empêche la génération du formulaire de recherche,
+            // et affiche les résultats à la page
+        }
+        else {
+            $r['results'] = [];
+        }
+    }
+
+    return $r;
+}
+
+function showSearchByName(array $data) : void {
+    generateSearchForm('name', $data['previous_search'] ?? []);
+
+    if (isset($data['results'])) {
+        generateSearchResultsArray($data['results']);
+    }
+}
 ////// FONCTIONS GENERALES //////
 function generateSearchForm($mode = 'id', $previous_data = []) {
     ?>
@@ -176,20 +223,19 @@ function generateSearchForm($mode = 'id', $previous_data = []) {
                 <div class='card-content'>
                     <form method='get' action='/search/<?= $mode ?>'>
                         <?php if ($mode === 'id') { ?>
-                        <?= (isset($previous_data['empty_id']) ? 
-                            "<div class='error-search-text red-text text-lighten-1'>
-                                Votre recherche n'a retourné aucun résultat.
-                            </div>" 
-                            : '') 
-                        ?>
-                        <div class='input-field col s12'>
-                            <i class="material-icons prefix">label</i>
-                            <input type='text' autocomplete='off' name="id" id="gene_id">
-                            <label for='gene_id'>Identifiant</label>
-                        </div>
+                            <div class='input-field col s12'>
+                                <i class="material-icons prefix">label</i>
+                                <input type='text' autocomplete='off' name="id" id="gene_id">
+                                <label for='gene_id'>Identifiant</label>
+                            </div>
 
+                        <?php } elseif ($mode ==='name') { ?>
+                            <div class='input-field col s12'>
+                                <i class="material-icons prefix">label</i>
+                                <input type='text' autocomplete='off' name="name" id="gene_name" value='<?= $previous_data['name'] ?? '' ?>'>
+                                <label for='gene_name'>Nom</label>
+                            </div>
                         <?php } ?>
-
                         <button type='submit' class='btn-flat right blue-text'>Rechercher</button>
                         <div class='clearb'></div>
                     </form>
