@@ -30,6 +30,8 @@ $ctrl = getRoute();
         <!-- favicon -->
         <link rel="icon" type="image/png" href="/img/favicon.png">
 
+        <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+
         <title>
             <?= $ctrl->getTitle() ?? SITE_NAME ?>
         </title>
@@ -50,7 +52,6 @@ $ctrl = getRoute();
         <?php require 'static/footer.php'; // footer.php contient déjà <footer></footer> ?>
 
         <!--JavaScript at end of body for optimized loading-->
-        <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="/js/materialize.min.js"></script>
         <script type="text/javascript" src="/js/script.js"></script>
     </body>
