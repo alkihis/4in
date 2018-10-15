@@ -222,35 +222,51 @@ function generateSearchForm($mode = 'id', $previous_data = []) {
                 <div class='card-content'>
                     <form method='get' action='/search/<?= $mode ?>'>
                         <?php if ($mode === 'id') { ?>
-                        <div class='input-field col s12'>
-                            <i class="material-icons prefix">label</i>
-                            <input type='text' autocomplete='off' name="id"
-                                id="gene_id" value='<?= $previous_data['id'] ?? '' ?>'>
-                            <label for='gene_id'>Identifiant</label>
-                        </div>
+                            <div class='input-field col s12'>
+                                <i class="material-icons prefix">label</i>
+                                <input type='text' autocomplete='off' name="id"
+                                    id="gene_id" value='<?= $previous_data['id'] ?? '' ?>'>
+                                <label for='gene_id'>Identifiant</label>
+                            </div>
 
-                        <script>
-                            $(document).ready(function() {
-                                // Récupération du tableau d'ID
-                                $.get(
-                                    "/api/search/ids.json", 
-                                    { } 
-                                ).then(function (json) {
-                                    $('#gene_id').autocomplete({
-                                        data: json,
-                                        limit: 6,
-                                        minLength: 2
+                            <script>
+                                $(document).ready(function() {
+                                    // Récupération du tableau d'ID
+                                    $.get(
+                                        "/api/search/ids.json", 
+                                        { } 
+                                    ).then(function (json) {
+                                        $('#gene_id').autocomplete({
+                                            data: json,
+                                            limit: 6,
+                                            minLength: 2
+                                        });
                                     });
                                 });
-                            });
-                        </script>
+                            </script>
 
                          <?php } elseif ($mode ==='name') { ?>
                             <div class='input-field col s12'>
-                                <i class="material-icons prefix">label</i>
+                                <i class="material-icons prefix">assignment</i>
                                 <input type='text' autocomplete='off' name="name" id="gene_name" value='<?= $previous_data['name'] ?? '' ?>'>
                                 <label for='gene_name'>Nom</label>
                             </div>
+
+                            <script>
+                                $(document).ready(function() {
+                                    // Récupération du tableau de noms
+                                    $.get(
+                                        "/api/search/names.json", 
+                                        { } 
+                                    ).then(function (json) {
+                                        $('#gene_name').autocomplete({
+                                            data: json,
+                                            limit: 6,
+                                            minLength: 1
+                                        });
+                                    });
+                                });
+                            </script>
 
                         <?php } ?>
                         <button type='submit' class='btn-flat right blue-text'>Rechercher</button>
