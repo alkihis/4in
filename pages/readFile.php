@@ -83,7 +83,8 @@ function explodeFile(string $filename) : void {
                 $paths = explode('/', $pathway);
                 
                 foreach ($paths as $p) {
-                    insertPathway($id_insert, trim($p));
+                    if (!empty(trim($p)))
+                        insertPathway($id_insert, trim($p));
                 }
             }
 

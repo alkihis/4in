@@ -20,5 +20,7 @@
     <li class="divider" tabindex="-1"></li>
     <li><a href="/search/id">Par identifiant</a></li>
     <li class="divider" tabindex="-1"></li>
+    <li><a href="/search/pathway">Par voie</a></li>
+    <li class="divider" tabindex="-1"></li>
     <li><a href="/search/global">Avancée</a></li>
 </ul>
