@@ -1,65 +1,90 @@
 <?php
 
-?>
-<div class="section no-pad-bot" id="index-banner">
-    <div class="container">
-        <h1 class="header center blue-text">NC Insect Innate Immunity</h1>
-        <div class="row center">
-            <!-- <h5 class="header col s12 light">Une base de données des gènes de l'immunité innée chez les insectes</h5> -->
-            <p class='flow-text head-main-title'>
-                Une base de données des gènes de l'immunité innée chez les insectes.
-                Développée dans le but de faciliter l'accès aux données récoltées au sein de différentes espèces,
-                cette base de données est centrée autour d'une étude génétique du charançon du riz (Sitophilus oryzae).
-            </p>
-        </div>
-        <div class="row center">
-            <a href="/begin" id="download-button" class="btn-large waves-effect waves-light blue lighten-2">Commencer</a>
-        </div>
-        <br><br>
+function homeView(Controller $c) : void { ?>
+    <div class="parallax-container parallax-home-page">
+        <div class="section no-pad-bot">
+            <div class="container">
+                <br><br>
+                <h1 class="header center blue-text text-lighten-4">NC Insect Innate Immunity</h1>
+                <div class="row center">
+                    <p class='flow-text head-main-title white-text'>
+                        Une base de données de gènes de l'immunité innée chez les insectes
+                    </p>
+                </div>
+                <br><br>
 
+            </div>
+        </div>
+        <div class="parallax" style='z-index: -1;'><img src="/img/ch_jardin.jpg" style='filter: brightness(0.80)'></div>
     </div>
-</div>
 
-<div class="parallax-container parallax-home-page">
-    <div class="parallax"><img src="img/ch_jardin.jpg"></div>
-</div>
-
-<div class="container">
-    <div class="section">
-
-      <!--   Icon Section   -->
-        <div class="row">
+    <div class="container">
+        <div class="section">
+            <!--   Icon Section   -->
+            <div class="row">
+                <p class='flow-text text-justify head-main-title'>
+                    Développée dans le but de faciliter l'accès aux données récoltées au sein de différentes espèces,
+                    cette base de données est centrée autour de l'étude génétique du charançon du riz, 
+                    également nommé Sitophilus oryzae.
+                </p>
                 <div class="col s12 m4">
                     <div class="icon-block">
-                        <h2 class="center light-blue-text"><i class="material-icons">flash_on</i></h2>
-                        <h5 class="center">Speeds up development</h5>
+                        <h2 class="center">
+                            <a href='/search'><i class="material-icons mat-title light-blue-text">search</i></a>
+                        </h2>
+                        <h5 class="center">Recherche</h5>
 
-                        <p class="light">We did most of the heavy lifting for you to provide a default stylings that incorporate our custom components. Additionally, we refined animations and transitions to provide a smoother experience for developers.</p>
+                        <p class="light text-justify">
+                            Vous pouvez rechercher les gènes de l'immunité chez les insectes
+                            par identifiant, voie, espèce et nom juste ici.
+                        </p>
                     </div>
                 </div>
 
-            <div class="col s12 m4">
-                <div class="icon-block">
-                    <h2 class="center light-blue-text"><i class="material-icons">group</i></h2>
-                    <h5 class="center">User Experience Focused</h5>
+                <div class="col s12 m4">
+                    <div class="icon-block">
+                        <h2 class="center">
+                            <a href='/full_database'><i class="material-icons mat-title light-blue-text">settings_system_daydream</i></a>
+                        </h2>
+                        <h5 class="center">Base de données</h5>
 
-                    <p class="light">By utilizing elements and principles of Material Design, we were able to create a framework that incorporates components and animations that provide more feedback to users. Additionally, a single underlying responsive system across all platforms allow for a more unified user experience.</p>
+                        <p class="light text-justify">
+                            Consultez l'ensemble de la base de données. Téléchargez les données au format de votre choix,
+                            triez les résultats selon votre besoin et renseignez vous sur les annotations fonctionnelles
+                            disponibles.
+                        </p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col s12 m4">
-                <div class="icon-block">
-                    <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
-                    <h5 class="center">Easy to work with</h5>
+                <div class="col s12 m4">
+                    <div class="icon-block">
+                        <h2 class="center">
+                            <a href='/blast_search'><i class="material-icons mat-title light-blue-text">sort</i></a>
+                        </h2>
+                        <h5 class="center">BLAST</h5>
 
-                    <p class="light">We have provided detailed documentation as well as specific code examples to help new users get started. We are also always open to feedback and can answer any questions a user may have about Materialize.</p>
+                        <p class="light text-justify">
+                            Alignez vos propres séquences en utilisant l'algorithme de BLAST sur notre base de données.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
+        <br><br>
     </div>
-    <br><br>
-</div>
 
-<div class="parallax-container parallax-home-page">
-    <div class="parallax"><img src="img/phagocyte.jpg"></div>
-</div>
+    <div class="parallax-container parallax-home-page">
+        <div class="parallax"><img src="/img/phagocyte.jpg"></div>
+    </div>
+
+<?php }
+
+function homeControl() : Controller {
+    // Insérer ici des traitements à réaliser dans la page d'accueil
+    // Pour le moment aucun contenu dynamique n'est créé, on renvoie donc un Controller vide
+    // Si il y avait des traitements, ils seraient dans le tableau passé au Controller
+
+    return new Controller([], 'Accueil');
+}
+
+// Il ne doit subsister aucun code HTML dans la page, tout est dans des fonctions PHP
