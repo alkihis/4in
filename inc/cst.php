@@ -20,6 +20,7 @@ const PAGES_REF = [
     'full_database' => ['file' => 'pages/readFile.php', 'view' => 'readFileView', 'controller' => 'readFileControl'],
     'login' => ['file' => 'pages/login.php', 'view' => 'loginView', 'controller' => 'loginControl'],
     'search' => ['file' => 'pages/search.php', 'view' => 'searchView', 'controller' => 'searchControl'],
+    'blast' => ['file' => 'pages/blast.php', 'view' => 'blastView', 'controller' => 'blastControl'],
     '404' => ['file' => 'static/404.php', 'view' => 'notFoundView', 'controller' => 'notFoundControl'],
     '403' => ['file' => 'static/403.php', 'view' => 'forbiddenView', 'controller' => 'forbiddenControl'],
     '500' => ['file' => 'static/500.php', 'view' => 'serverErrorView', 'controller' => 'serverErrorControl'],
