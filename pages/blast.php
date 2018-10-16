@@ -1,34 +1,48 @@
 <?php
 
 function blastControl(array $args) : Controller {
-    function isValidFasta(string $str, string $mode = 'adn') : bool {
+    /**
+     * isValidFasta
+     * Returns TRUE if FASTA is OK,
+     * -1 if no valid line
+     * 0+ (line position) if line 0+ failed
+     *
+     * @param string $str FASTA string
+     * @param string $mode adn or pro
+     * @return int|boolean
+     */
+    function isValidFasta(string $str, string $mode = 'adn') {
         $lines = explode("\n", $str);
         $real_lines = 0;
 
         if ($mode === 'adn')
-            $valid_nuc = ['A', 'T', 'G', 'C'];
+            $mode = 0;
         else
-            $valid_nuc = ['G', 'A', 'L', 'M', 'F', 'W', 'K', 
-                'Q', 'E', 'S', 'P', 'V', 'I', 'C', 
-                'Y', 'H', 'R', 'N', 'D', 'T'
-            ];
+            $mode = 1;
 
         foreach ($lines as $key => $line) {
             if (strpos($line, '>') === 0) {
                 continue;
             }
-            
-            $i = 0;
-            while ($i < strlen($line)) {
-                if (! in_array(strtoupper($line[$i]), $valid_nuc)) {
-                    return false;
-                }
-                $i++;
-            }
+
+            // REGEX
+            if ($mode === 0)
+                $is_ok = preg_match("/^[ATGC]+$/i", $line);
+            else
+                $is_ok = preg_match("/^[GALMFWKQESPVICYHRNDT]+$/i", $line);
+
+            if (!$is_ok)
+                return $key;
+
             $real_lines++;
         }
 
-        return $real_lines > 0;
+        if ($real_lines === 0) {
+            return -1;
+        }
+        else {
+            return true;
+        }
     }
 
     $re = [];
@@ -44,11 +58,16 @@ function blastControl(array $args) : Controller {
     if (isset($_POST['query']) && is_string($_POST['query'])) {
         $_POST['query'] = trim($_POST['query']);
 
-        if (isValidFasta($_POST['query'], 'pro')) {
+        // $valid contiendra true si la chaîne est valide,
+        // -1 si aucune ligne ne contient de séquence,
+        // position_de_ligne de la ligne invalide sinon
+        $valid = isValidFasta($_POST['query'], 'pro');
+
+        if ($valid === true) {
             $query_file = $_POST['query'];
         }
         else {
-            $re['error']['query'] = true;
+            $re['error']['query'] = $valid;
         }
     }
 
@@ -92,9 +111,23 @@ function blastView(Controller $c) : void {
 
     ?>
     <div class='container'>
-        <?= (isset($data['error']['query']) ? 
-            "<h4 class='red-text'>Votre fichier est malformaté.</h4><h6>Utilisation du jeu de test.</h6>
-            <div class='divider'></div>" : '') ?>
+        <?php 
+        if (isset($data['error']['query'])) {
+            echo "<h4 class='red-text'>Votre fichier est malformaté.</h4><h6>Utilisation du jeu de test.</h6>
+            <div class='divider divider-margin'></div>";
+            echo '<h6 class="red-text">';
+
+            if ($data['error']['query'] === -1) {
+                echo "Aucune ligne ne contient de séquence.";
+            }
+            else {
+                $data['error']['query']++; // Lines are 0+ formatted, switch to 1+ format
+                echo "Ligne {$data['error']['query']} invalide.";
+            }
+
+            echo '</h6>';
+        }
+        ?>
         <?= $data['html'] ?>
     </div>
     <?php

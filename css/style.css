@@ -94,3 +94,8 @@ textarea.materialize-textarea:focus:not([readonly]) {
     -webkit-box-shadow: 0 1px 0 0 #1a65b6;
     box-shadow: 0 1px 0 0 #1a65b6;
 }
+
+.divider-margin {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
