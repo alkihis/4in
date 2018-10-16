@@ -146,8 +146,8 @@ function searchById() : array {
     $r = [];
 
     if (isset($_GET['id']) && is_string($_GET['id']) && strlen($_GET['id']) > 1) {
-        $r['previous_search'] = [];
-        $r['previous_search']['id'] = htmlspecialchars($_GET['id'], ENT_QUOTES);
+        $r['form_data'] = [];
+        $r['form_data']['id'] = htmlspecialchars($_GET['id'], ENT_QUOTES);
 
         global $sql;
         // Recherche de l'identifiant dans la base de données
@@ -194,8 +194,8 @@ function searchByName() : array {
     $r = [];
 
     if (isset($_GET['name']) && is_string($_GET['name'])) {
-        $r['previous_search'] = [];
-        $r['previous_search']['name'] = htmlspecialchars($_GET['name'], ENT_QUOTES);
+        $r['form_data'] = [];
+        $r['form_data']['name'] = htmlspecialchars($_GET['name'], ENT_QUOTES);
 
         global $sql;
         // Recherche du nom dans la base de données
@@ -249,13 +249,15 @@ function searchPathway() : array {
         throw new Exception("Base SQL inopérante");
     }
 
-    $r['previous_search'] = [];
+    $r['form_data'] = [];
+    $r['form_data']['no_search_btn'] = true;
+
     while($row = mysqli_fetch_assoc($q)) {
-        $r['previous_search']['select'][] = $row['pathway'];
+        $r['form_data']['select'][] = $row['pathway'];
     }
 
     if (isset($_GET['pathway']) && is_string($_GET['pathway'])) {
-        $r['previous_search']['pathway'] = htmlspecialchars($_GET['pathway'], ENT_QUOTES);
+        $r['form_data']['pathway'] = htmlspecialchars($_GET['pathway'], ENT_QUOTES);
 
         // Recherche du nom dans la base de données
         // Normalement, le pathway est UNIQUEMENT un md5, on cherche donc avec la fonction sql MD5
@@ -291,109 +293,122 @@ function searchPathway() : array {
 }
 
 function showSearchByPathway(array $data) : void {
-    generateSearchForm('pathway', $data['previous_search'] ?? []);
+    generateSearchForm('pathway', $data['form_data'] ?? []);
 
     if (isset($data['results'])) {
         generateSearchResultsArray($data['results']);
     }
 }
 
+////// AVANCEE //////
+function searchAdvanced() : array {
+    throw new NotImplementedException("Recherche avancée non implémentée.");
+}
+
+function showGlobalSearch(array $data) : void {
+    // TODO
+}
+
 ////// FONCTIONS GENERALES //////
-function generateSearchForm(string $mode = 'id', array $previous_data = []) : void { ?>
+function generateSearchForm(string $mode = 'id', array $form_data = []) : void { ?>
     <div class='container'>
-        <div class='row section no-margin-bottom'>
-            <div class='card col s12 card-border'>
-                <div class='card-content'>
-                    <form method='get' id='submit_form' action='#'>
-                        <?php if ($mode === 'id') { ?>
-                            <div class='input-field col s12'>
-                                <i class="material-icons prefix">label</i>
-                                <input type='text' autocomplete='off' name="id"
-                                    id="gene_id" value='<?= $previous_data['id'] ?? '' ?>'>
-                                <label for='gene_id'>Identifiant</label>
-                            </div>
+    <div class='row section no-margin-bottom'>
+    <div class='card col s12 card-border'>
+        <div class='card-content'>
+            <form method='get' id='submit_form' action='#'>
+                <?php if ($mode === 'id') { ?>
+                    <div class='input-field col s12'>
+                        <i class="material-icons prefix">label</i>
+                        <input type='text' autocomplete='off' name="id"
+                            id="gene_id" value='<?= $form_data['id'] ?? '' ?>'>
+                        <label for='gene_id'>Identifiant</label>
+                    </div>
 
-                            <script>
-                                $(document).ready(function() {
-                                    // Récupération du tableau d'ID
-                                    $.get(
-                                        "/api/search/ids.json", 
-                                        { } 
-                                    ).then(function (json) {
-                                        $('#gene_id').autocomplete({
-                                            data: json,
-                                            limit: 6,
-                                            minLength: 2,
-                                            onAutocomplete: function() {
-                                                document.getElementById('submit_form').submit();
-                                            }
-                                        });
-                                    });
-                                });
-                            </script>
-
-                        <?php } elseif ($mode === 'name') { ?>
-                            <div class='input-field col s12'>
-                                <i class="material-icons prefix">assignment</i>
-                                <input type='text' autocomplete='off' name="name" id="gene_name" value='<?= $previous_data['name'] ?? '' ?>'>
-                                <label for='gene_name'>Nom</label>
-                            </div>
-
-                            <script>
-                                $(document).ready(function() {
-                                    // Récupération du tableau de noms
-                                    $.get(
-                                        "/api/search/names.json", 
-                                        { } 
-                                    ).then(function (json) {
-                                        var g = document.getElementById('gene_name');
-                                        $(g).autocomplete({
-                                            data: json,
-                                            limit: 6,
-                                            minLength: 0,
-                                            onAutocomplete: function() {
-                                                document.getElementById('submit_form').submit();
-                                            }
-                                        });
-                                    });
-                                });
-                            </script>
-
-                        <?php } elseif ($mode === 'pathway') { ?>
-                            <div class='input-field col s12'>
-                                <select id='pathway_select' 
-                                    name='pathway' onchange="document.getElementById('submit_form').submit();">
-                                    <?php 
-                                    // Génération des options du select en fonction des pathways dans la base de données
-                                    foreach ($previous_data['select'] as $option) {
-                                        $md5 = md5($option);
-                                        $option = htmlspecialchars($option);
-                                        echo "<option value='$md5'>$option</option>";
+                    <script>
+                        $(document).ready(function() {
+                            // Récupération du tableau d'ID
+                            $.get(
+                                "/api/search/ids.json", 
+                                { } 
+                            ).then(function (json) {
+                                $('#gene_id').autocomplete({
+                                    data: json,
+                                    limit: 6,
+                                    minLength: 2,
+                                    onAutocomplete: function() {
+                                        document.getElementById('submit_form').submit();
                                     }
+                                });
+                            });
+                        });
+                    </script>
 
-                                    if (isset($previous_data['pathway'])) { 
-                                        // Si l'utilisateur avait choisi quelque chose, on l'insère dans le 
-                                        // select via JS ?>
+                <?php } 
+                else if ($mode === 'name') { ?>
+                    <div class='input-field col s12'>
+                        <i class="material-icons prefix">assignment</i>
+                        <input type='text' autocomplete='off' name="name" id="gene_name" 
+                            value='<?= $form_data['name'] ?? '' ?>'>
+                        <label for='gene_name'>Nom</label>
+                    </div>
 
-                                        <script>
-                                            $(document).ready(function() {
-                                                $('#pathway_select').val("<?= $previous_data['pathway'] ?>");
-                                            });
-                                        </script>
-                                    <?php } ?>
-                                </select>
-                                <label>Voie métabolique</label>
-                            </div>
+                    <script>
+                        $(document).ready(function() {
+                            // Récupération du tableau de noms
+                            $.get(
+                                "/api/search/names.json", 
+                                { } 
+                            ).then(function (json) {
+                                var g = document.getElementById('gene_name');
+                                $(g).autocomplete({
+                                    data: json,
+                                    limit: 6,
+                                    minLength: 0,
+                                    onAutocomplete: function() {
+                                        document.getElementById('submit_form').submit();
+                                    }
+                                });
+                            });
+                        });
+                    </script>
 
-                        <?php } ?>
-                        <button type='submit' id='submit_btn' class='btn-flat right blue-text'>Rechercher</button>
-                        <div class='clearb'></div>
-                    </form>
-                </div>
-            </div>
+                <?php } 
+                else if ($mode === 'pathway') { ?>
+                    <div class='input-field col s12'>
+                        <select id='pathway_select' 
+                            name='pathway' onchange="document.getElementById('submit_form').submit();">
+                            <?php 
+                            // Génération des options du select en fonction des pathways dans la base de données
+                            foreach ($form_data['select'] as $option) {
+                                $md5 = md5($option);
+                                $option = htmlspecialchars($option);
+                                echo "<option value='$md5'>$option</option>";
+                            }
+
+                            if (isset($form_data['pathway'])) { 
+                                // Si l'utilisateur avait choisi quelque chose, on l'insère dans le 
+                                // select via JS ?>
+
+                                <script>
+                                    $(document).ready(function() {
+                                        $('#pathway_select').val("<?= $form_data['pathway'] ?>");
+                                    });
+                                </script>
+                            <?php } ?>
+                        </select>
+                        <label>Voie métabolique</label>
+                    </div>
+                <?php } ?>
+
+                <?php if (!isset($form_data['no_search_btn']) || !$form_data['no_search_btn']) { ?>
+                    <button type='submit' id='submit_btn' class='btn-flat right blue-text'>Rechercher</button>
+                <?php } ?>
+                <div class='clearb'></div>
+            </form>
         </div>
     </div>
-
+    </div>
+    </div>
     <?php
 }
 
