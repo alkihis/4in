@@ -15,6 +15,7 @@
                     <li><a class="white-text" href="/search">Rechercher</a></li>
                     <li><a class="white-text" href="/add_gene">Ajouter un gène</a></li>
                     <li><a class="white-text" href="https://blast.ncbi.nlm.nih.gov/Blast.cgi">BLAST</a></li>
+                    <li><a class="white-text" href="">Aide</a></li>
                 </ul>
             </div>
             <div class="col l3 s12">
