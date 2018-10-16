@@ -34,7 +34,7 @@ function insertPathway(int $id_gene, string $pathway) : void {
  * @param string $filename : Chemin du fichier .tsv à parser
  * @return void
  */
-function explodeFile(string $filename) : void { 
+function explodeFile(string $filename, bool $trim_first_line = false) : void { 
     global $sql; // importe la connexion SQL chargée avec l'appel à connectBD()
 
     $h = fopen($filename, 'r'); // ouvre le fichier $filename en lecture, et stocke le pointeur-sur-fichier dans $h
@@ -45,6 +45,11 @@ function explodeFile(string $filename) : void {
 
     while (!feof($h)) { // Si $h est valide et tant que le fichier n'est pas fini (feof signifie file-end-of-file)
         $line = fgets($h); // récupère une ligne du fichier
+
+        if ($trim_first_line) { // Si la première ligne doit être passée
+            $trim_first_line = false;
+            continue;
+        }
 
         if (trim($line) === "") { 
             // Si la ligne entièrement trimmée est vide, on skippe
@@ -83,7 +88,8 @@ function explodeFile(string $filename) : void {
                 $paths = explode('/', $pathway);
                 
                 foreach ($paths as $p) {
-                    insertPathway($id_insert, trim($p));
+                    if (!empty(trim($p)))
+                        insertPathway($id_insert, trim($p));
                 }
             }
 

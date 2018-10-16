@@ -19,6 +19,10 @@ function searchControl(array $args) : Controller {
         $data = searchAdvanced();
         $data['mode'] = "global";
     }
+    else if ($args[0] === 'pathway') {
+        $data = searchPathway();
+        $data['mode'] = "pathway";
+    }
     else {
         throw new PageNotFoundException();
     }
@@ -42,6 +46,9 @@ function searchView(Controller $c) : void {
         case 'global':
             showGlobalSearch($d);
             break;
+        case 'pathway':
+            showSearchByPathway($d);
+            break;
     }
 }
 
@@ -64,8 +71,8 @@ function showSearchHome(array $data) : void {
                     Quelle recherche souhaitez-vous effectuer ?
                 </h4>
             </div>
-            <div class="row">
-                <div class="col s12 m4">
+            <div class="row no-margin-bottom">
+                <div class="col s12 m5">
                     <div class="icon-block">
                         <h2 class="center">
                             <a href='/search/name'><i class="material-icons mat-title light-blue-text">assignment</i></a>
@@ -81,7 +88,7 @@ function showSearchHome(array $data) : void {
                     </div>
                 </div>
 
-                <div class="col s12 m4">
+                <div class="col s12 m5 offset-m2">
                     <div class="icon-block">
                         <h2 class="center">
                             <a href='/search/id'><i class="material-icons mat-title light-blue-text">label</i></a>
@@ -95,8 +102,24 @@ function showSearchHome(array $data) : void {
                         </p>
                     </div>
                 </div>
+            </div>
+            <div class='row'>
+                <div class="col s12 m5">
+                    <div class="icon-block">
+                        <h2 class="center">
+                            <a href='/search/pathway'><i class="material-icons mat-title light-blue-text">call_split</i></a>
+                        </h2>
+                        <h5 class="center">
+                            <a href='/search/pathway' class='no-link-color'>Voie</a>
+                        </h5>
 
-                <div class="col s12 m4">
+                        <p class="light text-justify">
+                            Naviguez parmi les gènes présentant une voie métabolique spécifique.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col s12 m5 offset-m2">
                     <div class="icon-block">
                         <h2 class="center">
                             <a href='/search/global'><i class="material-icons mat-title light-blue-text">all_inclusive</i></a>
@@ -123,8 +146,8 @@ function searchById() : array {
     $r = [];
 
     if (isset($_GET['id']) && is_string($_GET['id']) && strlen($_GET['id']) > 1) {
-        $r['previous_search'] = [];
-        $r['previous_search']['id'] = htmlspecialchars($_GET['id'], ENT_QUOTES);
+        $r['form_data'] = [];
+        $r['form_data']['id'] = htmlspecialchars($_GET['id'], ENT_QUOTES);
 
         global $sql;
         // Recherche de l'identifiant dans la base de données
@@ -171,8 +194,8 @@ function searchByName() : array {
     $r = [];
 
     if (isset($_GET['name']) && is_string($_GET['name'])) {
-        $r['previous_search'] = [];
-        $r['previous_search']['name'] = htmlspecialchars($_GET['name'], ENT_QUOTES);
+        $r['form_data'] = [];
+        $r['form_data']['name'] = htmlspecialchars($_GET['name'], ENT_QUOTES);
 
         global $sql;
         // Recherche du nom dans la base de données
@@ -185,7 +208,7 @@ function searchByName() : array {
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
         WHERE g.gene_name LIKE '$name%'
-        GROUP BY a.gene_id, g.id ORDER BY g.id");
+        GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id");
 
         if (!$q) {
             throw new UnexpectedValueException("Echec de la requête SQL");
@@ -213,70 +236,179 @@ function showSearchByName(array $data) : void {
         generateSearchResultsArray($data['results']);
     }
 }
+
+////// PATHWAY //////
+function searchPathway() : array {
+    $r = [];
+
+    // On récupère d'abord les différents pathways disponibles
+    global $sql;
+    $q = mysqli_query($sql, "SELECT DISTINCT pathway FROM Pathways;");
+
+    if (!$q) {
+        throw new Exception("Base SQL inopérante");
+    }
+
+    $r['form_data'] = [];
+    $r['form_data']['no_search_btn'] = true;
+
+    while($row = mysqli_fetch_assoc($q)) {
+        $r['form_data']['select'][] = $row['pathway'];
+    }
+
+    if (isset($_GET['pathway']) && is_string($_GET['pathway'])) {
+        $r['form_data']['pathway'] = htmlspecialchars($_GET['pathway'], ENT_QUOTES);
+
+        // Recherche du nom dans la base de données
+        // Normalement, le pathway est UNIQUEMENT un md5, on cherche donc avec la fonction sql MD5
+        $pathway = mysqli_real_escape_string($sql, $_GET['pathway']);
+
+        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie,
+            (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
+            FROM Pathways p 
+            WHERE g.id = p.id) as pathways 
+        FROM GeneAssociations a 
+        JOIN Gene g ON a.id=g.id
+        JOIN Pathways pa ON pa.id=g.id
+        WHERE MD5(pa.pathway)='$pathway'
+        GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id");
+
+        if (!$q) {
+            throw new UnexpectedValueException("Echec de la requête SQL");
+        }
+
+        if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
+            while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
+                $r['results'][] = new GeneObject($row);
+            } 
+            // results empêche la génération du formulaire de recherche,
+            // et affiche les résultats à la page
+        }
+        else {
+            $r['results'] = [];
+        }
+    }
+
+    return $r;
+}
+
+function showSearchByPathway(array $data) : void {
+    generateSearchForm('pathway', $data['form_data'] ?? []);
+
+    if (isset($data['results'])) {
+        generateSearchResultsArray($data['results']);
+    }
+}
+
+////// AVANCEE //////
+function searchAdvanced() : array {
+    throw new NotImplementedException("Recherche avancée non implémentée.");
+}
+
+function showGlobalSearch(array $data) : void {
+    // TODO
+}
+
 ////// FONCTIONS GENERALES //////
-function generateSearchForm($mode = 'id', $previous_data = []) {
-    ?>
+function generateSearchForm(string $mode = 'id', array $form_data = []) : void { ?>
     <div class='container'>
-        <div class='row section no-margin-bottom'>
-            <div class='card col s12 card-border'>
-                <div class='card-content'>
-                    <form method='get' action='/search/<?= $mode ?>'>
-                        <?php if ($mode === 'id') { ?>
-                            <div class='input-field col s12'>
-                                <i class="material-icons prefix">label</i>
-                                <input type='text' autocomplete='off' name="id"
-                                    id="gene_id" value='<?= $previous_data['id'] ?? '' ?>'>
-                                <label for='gene_id'>Identifiant</label>
-                            </div>
+    <div class='row section no-margin-bottom'>
+    <div class='card col s12 card-border'>
+        <div class='card-content'>
+            <form method='get' id='submit_form' action='#'>
+                <?php if ($mode === 'id') { ?>
+                    <div class='input-field col s12'>
+                        <i class="material-icons prefix">label</i>
+                        <input type='text' autocomplete='off' name="id"
+                            id="gene_id" value='<?= $form_data['id'] ?? '' ?>'>
+                        <label for='gene_id'>Identifiant</label>
+                    </div>
 
-                            <script>
-                                $(document).ready(function() {
-                                    // Récupération du tableau d'ID
-                                    $.get(
-                                        "/api/search/ids.json", 
-                                        { } 
-                                    ).then(function (json) {
-                                        $('#gene_id').autocomplete({
-                                            data: json,
-                                            limit: 6,
-                                            minLength: 2
-                                        });
-                                    });
+                    <script>
+                        $(document).ready(function() {
+                            // Récupération du tableau d'ID
+                            $.get(
+                                "/api/search/ids.json", 
+                                { } 
+                            ).then(function (json) {
+                                $('#gene_id').autocomplete({
+                                    data: json,
+                                    limit: 6,
+                                    minLength: 2,
+                                    onAutocomplete: function() {
+                                        document.getElementById('submit_form').submit();
+                                    }
                                 });
-                            </script>
+                            });
+                        });
+                    </script>
 
-                         <?php } elseif ($mode ==='name') { ?>
-                            <div class='input-field col s12'>
-                                <i class="material-icons prefix">assignment</i>
-                                <input type='text' autocomplete='off' name="name" id="gene_name" value='<?= $previous_data['name'] ?? '' ?>'>
-                                <label for='gene_name'>Nom</label>
-                            </div>
+                <?php } 
+                else if ($mode === 'name') { ?>
+                    <div class='input-field col s12'>
+                        <i class="material-icons prefix">assignment</i>
+                        <input type='text' autocomplete='off' name="name" id="gene_name" 
+                            value='<?= $form_data['name'] ?? '' ?>'>
+                        <label for='gene_name'>Nom</label>
+                    </div>
 
-                            <script>
-                                $(document).ready(function() {
-                                    // Récupération du tableau de noms
-                                    $.get(
-                                        "/api/search/names.json", 
-                                        { } 
-                                    ).then(function (json) {
-                                        $('#gene_name').autocomplete({
-                                            data: json,
-                                            limit: 6,
-                                            minLength: 1
-                                        });
-                                    });
+                    <script>
+                        $(document).ready(function() {
+                            // Récupération du tableau de noms
+                            $.get(
+                                "/api/search/names.json", 
+                                { } 
+                            ).then(function (json) {
+                                var g = document.getElementById('gene_name');
+                                $(g).autocomplete({
+                                    data: json,
+                                    limit: 6,
+                                    minLength: 0,
+                                    onAutocomplete: function() {
+                                        document.getElementById('submit_form').submit();
+                                    }
                                 });
-                            </script>
+                            });
+                        });
+                    </script>
 
-                        <?php } ?>
-                        <button type='submit' class='btn-flat right blue-text'>Rechercher</button>
-                        <div class='clearb'></div>
-                    </form>
-                </div>
-            </div>
+                <?php } 
+                else if ($mode === 'pathway') { ?>
+                    <div class='input-field col s12'>
+                        <select id='pathway_select' 
+                            name='pathway' onchange="document.getElementById('submit_form').submit();">
+                            <?php 
+                            // Génération des options du select en fonction des pathways dans la base de données
+                            foreach ($form_data['select'] as $option) {
+                                $md5 = md5($option);
+                                $option = htmlspecialchars($option);
+                                echo "<option value='$md5'>$option</option>";
+                            }
+
+                            if (isset($form_data['pathway'])) { 
+                                // Si l'utilisateur avait choisi quelque chose, on l'insère dans le 
+                                // select via JS ?>
+
+                                <script>
+                                    $(document).ready(function() {
+                                        $('#pathway_select').val("<?= $form_data['pathway'] ?>");
+                                    });
+                                </script>
+                            <?php } ?>
+                        </select>
+                        <label>Voie métabolique</label>
+                    </div>
+                <?php } ?>
+
+                <?php if (!isset($form_data['no_search_btn']) || !$form_data['no_search_btn']) { ?>
+                    <button type='submit' id='submit_btn' class='btn-flat right blue-text'>Rechercher</button>
+                <?php } ?>
+                <div class='clearb'></div>
+            </form>
         </div>
     </div>
-
+    </div>
+    </div>
     <?php
 }
 
@@ -287,9 +419,6 @@ function generateSearchResultsArray(array $res) : void {
         <div class='row'>
             <div class='col s12'>
                 <h3>
-                    <a href='#!' onclick='window.history.back()'>
-                        <i class='material-icons left mat-title' style='margin-top: 3px;'>arrow_back</i>
-                    </a>
                     Résultats de votre recherche
                 </h3>
                 <?php if (empty($res)) { ?>
@@ -325,6 +454,7 @@ function generateSearchResultsArray(array $res) : void {
 
     <?php
 }
+
 function generateArrayLine(Gene $line) : void { ?>
     <tr>
         <td><?= $line->getName() ?></td>

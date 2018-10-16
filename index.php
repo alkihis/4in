@@ -8,6 +8,7 @@ session_start();
 
 require 'inc/cst.php';
 require 'inc/func.php';
+require 'inc/CustomExceptions.php';
 require 'inc/Controller.php';
 
 // Obtention du Controller pour afficher la page

@@ -60,6 +60,9 @@ function getRoute() : Controller {
     catch (PageNotFoundException $n) {
         $error = ['404', $n];
     } 
+    catch (NotImplementedException $n) {
+        $error = ['501', $n];
+    } 
     catch (Throwable $e) { // Toute autre exception
         $error = ['500', $e];
     }

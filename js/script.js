@@ -6,4 +6,6 @@ $(document).ready(function () {
         hover: true,
         outDuration: 150
     });
+
+    $('select').formSelect();
 });

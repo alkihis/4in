@@ -5,7 +5,7 @@ function homeView(Controller $c) : void { ?>
         <div class="section no-pad-bot">
             <div class="container">
                 <br><br>
-                <h1 class="header center blue-text text-lighten-4">NC Insect Innate Immunity</h1>
+                <h1 class="header center blue-text text-lighten-4">NC Insect Innate Immunity DB</h1>
                 <div class="row center">
                     <p class='flow-text head-main-title white-text'>
                         Une base de données de gènes de l'immunité innée chez les insectes
