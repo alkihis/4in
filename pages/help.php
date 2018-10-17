@@ -125,13 +125,74 @@ function showHelpHome(array $data) : void {
 
 ////// DATABASE //////
 function showHelpDB(array $data) : void {
+    ?>
+    <div class="parallax-container parallax-search-page">
+            <div class="parallax"><img src="/img/database.jpg"></div>
+        </div>
 
+        <div class="container">
+            <div class="section">
+                <!--   Icon Section   -->
+                <div class="row">
+                    <h4 class='header'>
+                        Base de données
+                    </h4>
+                </div>
+                <p>
+                    La base de données contient plus de 8 000 gènes impliqués dans l'immunité innée chez 14 espèces d'insectes.
+
+                </p>
+            </div>
+        </div>
+
+    <?php
 }
 
 ////// SEARCH //////
 function showHelpSearch(array $data) : void {
+    ?>
+    <div class="parallax-container parallax-search-page">
+            <div class="parallax"><img src="/img/database.jpg"></div>
+        </div>
+
+        <div class="container">
+            <div class="section">
+                <!--   Icon Section   -->
+                <div class="row">
+                    <h4 class='header'>
+                        Recherche
+                    </h4>
+                </div>
+                <p>
+                    
+                </p>
+            </div>
+        </div>
+
+    <?php
+
 }
 
 ////// BLAST //////
 function showHelpBlast(array $data) : void {
+    ?>
+    <div class="parallax-container parallax-search-page">
+            <div class="parallax"><img src="/img/dna.jpg"></div>
+        </div>
+
+        <div class="container">
+            <div class="section">
+                <!--   Icon Section   -->
+                <div class="row">
+                    <h4 class='header'>
+                        BLAST
+                    </h4>
+                </div>
+                <p>
+                    
+                </p>
+            </div>
+        </div>
+
+    <?php
 }
