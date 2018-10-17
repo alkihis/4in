@@ -134,11 +134,11 @@ function showHelpDB(array $data) : void {
             <div class="section">
                 <!--   Icon Section   -->
                 <div class="row">
-                    <h4 class='header'>
+                    <h3 class='header'>
                         Base de données
-                    </h4>
+                    </h3>
                 </div>
-                <p>
+                <p class="flow-text">
                     La base de données contient plus de 8 000 gènes impliqués dans l'immunité innée chez 14 espèces d'insectes.
 
                 </p>
@@ -159,11 +159,11 @@ function showHelpSearch(array $data) : void {
             <div class="section">
                 <!--   Icon Section   -->
                 <div class="row">
-                    <h4 class='header'>
+                    <h3 class='header'>
                         Recherche
-                    </h4>
+                    </h3>
                 </div>
-                <p>
+                <p class="flow-text">
                     
                 </p>
             </div>
@@ -184,11 +184,11 @@ function showHelpBlast(array $data) : void {
             <div class="section">
                 <!--   Icon Section   -->
                 <div class="row">
-                    <h4 class='header'>
+                    <h3 class='header'>
                         BLAST
-                    </h4>
+                    </h3>
                 </div>
-                <p>
+                <p class="flow-text">
                     
                 </p>
             </div>
