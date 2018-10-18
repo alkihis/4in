@@ -8,7 +8,7 @@ function homeView(Controller $c) : void { ?>
                 <h1 class="header center blue-text text-lighten-4">NC Insect Innate Immunity DB</h1>
                 <div class="row center">
                     <p class='flow-text head-main-title white-text'>
-                        Une base de données de gènes de l'immunité innée chez les insectes
+                        A database for insects' innate immunity genes. 
                     </p>
                 </div>
                 <br><br>
@@ -23,20 +23,18 @@ function homeView(Controller $c) : void { ?>
             <!--   Icon Section   -->
             <div class="row">
                 <p class='flow-text text-justify head-main-title'>
-                    Développée dans le but de faciliter l'accès aux données récoltées au sein de différentes espèces,
-                    cette base de données est centrée autour de l'étude génétique du charançon du riz, 
-                    également nommé Sitophilus oryzae.
+                    Developeped in order to ease access to the data harvested from different species,
+                    this database is centered around the genetic study of the "rice charançon", also called Sitophilus oryzae.
                 </p>
                 <div class="col s12 m4">
                     <div class="icon-block">
                         <h2 class="center">
                             <a href='/search'><i class="material-icons mat-title light-blue-text">search</i></a>
                         </h2>
-                        <h5 class="center">Recherche</h5>
+                        <h5 class="center">Search</h5>
 
                         <p class="light text-justify">
-                            Vous pouvez rechercher les gènes de l'immunité chez les insectes
-                            par identifiant, voie, espèce et nom juste ici.
+                            You can search our insect's immunity genes by ID, pathway, species and name here.
                         </p>
                     </div>
                 </div>
@@ -46,11 +44,11 @@ function homeView(Controller $c) : void { ?>
                         <h2 class="center">
                             <a href='/full_database'><i class="material-icons mat-title light-blue-text">settings_system_daydream</i></a>
                         </h2>
-                        <h5 class="center">Base de données</h5>
+                        <h5 class="center">Database</h5>
 
                         <p class="light text-justify">
-                            Consultez l'ensemble de la base de données. Téléchargez les données au format de votre choix,
-                            triez les résultats selon votre besoin et renseignez vous sur les annotations fonctionnelles
+                            Consult our entire database here. Download the data in the format of your choice, 
+                            sort your results according to your needs and learn about the functionnal annotations available. 
                             disponibles.
                         </p>
                     </div>
@@ -64,7 +62,7 @@ function homeView(Controller $c) : void { ?>
                         <h5 class="center">BLAST</h5>
 
                         <p class="light text-justify">
-                            Alignez vos propres séquences en utilisant l'algorithme de BLAST sur notre base de données.
+                            Align your own sequences using BLAST's algorithm on our database's sequences.
                         </p>
                     </div>
                 </div>

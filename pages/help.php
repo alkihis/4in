@@ -62,7 +62,7 @@ function showHelpHome(array $data) : void {
             <!--   Icon Section   -->
             <div class="row">
                 <h4 class='header'>
-                    Rubrique Aide
+                    Help section
                 </h4>
             </div>
             <div class="row no-margin-bottom">
@@ -72,7 +72,7 @@ function showHelpHome(array $data) : void {
                             <a href='/help/DB'><i class="material-icons mat-title light-blue-text">settings_system_daydream</i></a>
                         </h2>
                         <h5 class="center">
-                            <a href='/help/DB' class='no-link-color'>Base de données</a>
+                            <a href='/help/DB' class='no-link-color'>Database</a>
                         </h5>
 
                         <p class="light text-justify">
@@ -90,7 +90,7 @@ function showHelpHome(array $data) : void {
                             <a href='/help/search'><i class="material-icons mat-title light-blue-text">search</i></a>
                         </h2>
                         <h5 class="center">
-                            <a href='/help/search' class='no-link-color'>Recherche</a>
+                            <a href='/help/search' class='no-link-color'>Search</a>
                         </h5>
 
                         <p class="light text-justify">
@@ -135,12 +135,11 @@ function showHelpDB(array $data) : void {
                 <!--   Icon Section   -->
                 <div class="row">
                     <h3 class='header'>
-                        Base de données
+                        Database
                     </h3>
                 </div>
                 <p class="flow-text">
-                    La base de données contient plus de 8 000 gènes impliqués dans l'immunité innée chez 14 espèces d'insectes.
-
+                    The database is home to over 8000 genes implicated in the innate immunity of 14 sepecies of insects.
                 </p>
             </div>
         </div>
@@ -160,7 +159,7 @@ function showHelpSearch(array $data) : void {
                 <!--   Icon Section   -->
                 <div class="row">
                     <h3 class='header'>
-                        Recherche
+                        Search
                     </h3>
                 </div>
                 <p class="flow-text">

@@ -13,10 +13,10 @@ function serverImplementView(Controller $c) : void {
     <div class='container'>
         <div class='row section'>
             <h1 class='header center'>501</h1>
-            <h3 class='header center red-text'>Fonction non disponible</h3>
+            <h3 class='header center red-text'>Unavailable function</h3>
             <p class='flow-text center'>
-                Cette page ou fonctionnalité n'est pas encore disponible sur le site.<br>
-                Nous vous invitons à revenir sur ce module ultérieurement.
+                This page or functionnality is not yet available on our website.<br>
+                Please try again later.
                 <br>
             </p>
             
@@ -27,7 +27,7 @@ function serverImplementView(Controller $c) : void {
             <?php } ?>
 
             <p class='flow-text center'>
-                <a href='#!' onclick='window.history.back()'>Page précédente</a>
+                <a href='#!' onclick='window.history.back()'>Previous</a>
             </p>
         </div>
     </div>

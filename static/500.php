@@ -13,12 +13,12 @@ function serverErrorView(Controller $c) : void {
     <div class='container'>
         <div class='row section'>
             <h1 class='header center'>500</h1>
-            <h3 class='header center red-text'>Erreur interne du serveur</h3>
+            <h3 class='header center red-text'>Internal server error</h3></h3>
             <p class='flow-text center'>
-                Les données transmises sont invalides, 
-                ou le serveur a rencontré un problème inattendu. <br>
+                The provided data is incorrect, 
+                or the server encountered an unexpected issue. <br>
                 
-                Veuillez réessayer ultérieurement.
+                Please try again later.
                 <br>
             </p>
             
@@ -29,7 +29,7 @@ function serverErrorView(Controller $c) : void {
             <?php } ?>
 
             <p class='flow-text center'>
-                <a href='#!' onclick='window.history.back()'>Page précédente</a>
+                <a href='#!' onclick='window.history.back()'>Previous</a>
             </p>
         </div>
     </div>

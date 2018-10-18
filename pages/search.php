@@ -68,7 +68,7 @@ function showSearchHome(array $data) : void {
             <!--   Icon Section   -->
             <div class="row">
                 <h4 class='header'>
-                    Quelle recherche souhaitez-vous effectuer ?
+                    What do you want to search ?
                 </h4>
             </div>
             <div class="row no-margin-bottom">
@@ -321,7 +321,7 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                         <i class="material-icons prefix">label</i>
                         <input type='text' autocomplete='off' name="id"
                             id="gene_id" value='<?= $form_data['id'] ?? '' ?>'>
-                        <label for='gene_id'>Identifiant</label>
+                        <label for='gene_id'>ID</label>
                     </div>
 
                     <script>
@@ -349,7 +349,7 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                         <i class="material-icons prefix">assignment</i>
                         <input type='text' autocomplete='off' name="name" id="gene_name" 
                             value='<?= $form_data['name'] ?? '' ?>'>
-                        <label for='gene_name'>Nom</label>
+                        <label for='gene_name'>Name</label>
                     </div>
 
                     <script>
@@ -396,12 +396,12 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                                 </script>
                             <?php } ?>
                         </select>
-                        <label>Voie métabolique</label>
+                        <label>Metabolic pathway</label>
                     </div>
                 <?php } ?>
 
                 <?php if (!isset($form_data['no_search_btn']) || !$form_data['no_search_btn']) { ?>
-                    <button type='submit' id='submit_btn' class='btn-flat right blue-text'>Rechercher</button>
+                    <button type='submit' id='submit_btn' class='btn-flat right blue-text'>Search</button>
                 <?php } ?>
                 <div class='clearb'></div>
             </form>
@@ -419,12 +419,12 @@ function generateSearchResultsArray(array $res) : void {
         <div class='row'>
             <div class='col s12'>
                 <h3>
-                    Résultats de votre recherche
+                    Search results
                 </h3>
                 <?php if (empty($res)) { ?>
-                <h4 class='red-text header'>Aucun résultat</h4>
+                <h4 class='red-text header'>No results</h4>
                 <?php } else { ?>
-                <h6><?= count($res) ?> résultat<?= count($res) > 1 ? 's' : '' ?></h6>
+                <h6><?= count($res) ?> result<?= count($res) > 1 ? 's' : '' ?></h6>
                 <table>
                     <thead>
                         <tr>

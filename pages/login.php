@@ -58,7 +58,7 @@ function loginView(Controller $c) : void {
         <div class='row'>
             <div class='card card-border col s10 offset-s1'>
                 <div class='card-content'>
-                    <h4 class='header'>Connexion</h4>
+                    <h4 class='header'>Login</h4>
                     <?php 
                     if (isset($data['try_connect'])) {
                         echo '<h6 class="red-text">Identifiant ou mot de passe incorrect.</h6>';
@@ -73,13 +73,13 @@ function loginView(Controller $c) : void {
                     <form method='post' action='/login'>
                         <div class='input-field col s12'>
                             <input type='text' name='login' id='login' value='<?= $data["login"] ?? "" ?>' required>
-                            <label for='login'>Identifiant</label>
+                            <label for='login'>ID</label>
                         </div>
                         <div class='input-field col s12'>
                             <input class='validate' type='password' name='password' id='password' required>
-                            <label for='password'>Mot de passe</label>
+                            <label for='password'>Passworde</label>
                         </div>
-                        <button class='btn-flat blue-text right'>Connexion</button>
+                        <button class='btn-flat blue-text right'>Login</button>
                         <div class='clearb'></div>
                     </form>
                 </div>

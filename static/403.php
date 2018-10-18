@@ -11,11 +11,11 @@ function forbiddenView(Controller $c) : void {
     ?>
     <div class='container'>
         <div class='row section'>
-            <h1 class='header center red-text'>Page non disponible</h1>
+            <h1 class='header center red-text'>Page not available</h1>
             <p class='flow-text center'>
-                Vous tentez d'accéder à une page qui demande certaines autorisations.<br>
-                Tentez de vous connecter, ou réessayez utlérieurement.<br><br>
-                <a href='/' class='underline-hover'>Accueil</a>
+                Yu're trying to reach a page that requires specific authorizations.<br>
+                Try logging in or try again later.<br><br>
+                <a href='/' class='underline-hover'>Home</a>
             </p>
         </div>
     </div>
