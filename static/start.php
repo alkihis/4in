@@ -82,7 +82,7 @@ function homeControl() : Controller {
     // Pour le moment aucun contenu dynamique n'est créé, on renvoie donc un Controller vide
     // Si il y avait des traitements, ils seraient dans le tableau passé au Controller
 
-    return new Controller([], 'Accueil');
+    return new Controller([], 'Home');
 }
 
 // Il ne doit subsister aucun code HTML dans la page, tout est dans des fonctions PHP

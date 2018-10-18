@@ -27,7 +27,7 @@ function searchControl(array $args) : Controller {
         throw new PageNotFoundException();
     }
 
-    return new Controller($data, "Recherche");
+    return new Controller($data, "Search");
 }
 
 function searchView(Controller $c) : void {
@@ -160,7 +160,7 @@ function searchById() : array {
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
         WHERE a.gene_id LIKE '$id%'
-        GROUP BY a.gene_id, g.id ORDER BY g.id");
+        GROUP BY a.gene_id, g.id ORDER BY g.id, a.specie");
 
         if (!$q) {
             throw new UnexpectedValueException("Echec de la requête SQL");
@@ -208,7 +208,7 @@ function searchByName() : array {
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
         WHERE g.gene_name LIKE '$name%'
-        GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id");
+        GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie");
 
         if (!$q) {
             throw new UnexpectedValueException("Echec de la requête SQL");
@@ -271,7 +271,7 @@ function searchPathway() : array {
         JOIN Gene g ON a.id=g.id
         JOIN Pathways pa ON pa.id=g.id
         WHERE MD5(pa.pathway)='$pathway'
-        GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id");
+        GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie");
 
         if (!$q) {
             throw new UnexpectedValueException("Echec de la requête SQL");
@@ -428,6 +428,8 @@ function generateSearchResultsArray(array $res) : void {
                 <table>
                     <thead>
                         <tr>
+                            <th></th>
+                            <th>Gene ID</th>
                             <th>Name</th>
                             <th>Role</th>
                             <th>Pathway</th>
@@ -435,8 +437,6 @@ function generateSearchResultsArray(array $res) : void {
                             <th>Family</th>
                             <th>Subfamily</th>
                             <th>Specie</th>
-                            <th>Gene ID</th>
-                            <th>Sequence ID</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -457,6 +457,13 @@ function generateSearchResultsArray(array $res) : void {
 
 function generateArrayLine(Gene $line) : void { ?>
     <tr>
+        <td>
+            <label>
+                <input type="checkbox" class="filled-in chk-srch" dataset-id="<?= $line->getID() ?>">
+                <span class="checkbox-search"></span>
+            </label>
+        </td>
+        <td><?= $line->getID() ?></td>
         <td><?= $line->getName() ?></td>
         <td><?= $line->getFunction() ?></td>
         <td><?= implode(', ', $line->getPathways()) ?></td>
@@ -464,8 +471,6 @@ function generateArrayLine(Gene $line) : void { ?>
         <td><?= $line->getFamily() ?></td>
         <td><?= $line->getSubFamily() ?></td>
         <td><?= $line->getSpecie() ?></td>
-        <td><?= $line->getID() ?></td>
-        <td><?= $line->getSequenceID() ?></td>
     </tr>
 
     <?php

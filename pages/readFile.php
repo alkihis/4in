@@ -243,7 +243,7 @@ function readFileControl($args) : Controller {
     $data = getGenesWithPathways($compact);
 
     // On donne les données au contrôleur
-    return new Controller($data, 'Affichage de la base de données');
+    return new Controller($data, 'View database');
 }
 
 function readFileView(Controller $c) : void {

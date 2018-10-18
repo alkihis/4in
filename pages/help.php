@@ -10,19 +10,19 @@ function helpControl(array $args) : Controller {
 
     if (! isset($args[0])) {
         $data['mode'] = "home";
-        $title = "Aide - Accueil";
+        $title = "Help";
     }
     else if ($args[0] === 'DB') {
         $data['mode'] = "DB";
-        $title = "Aide - Database";
+        $title = "Help - Database";
     }
     else if ($args[0] === 'search') {
         $data['mode'] = "search";
-        $title = "Aide - Recherche";
+        $title = "Help - Search";
     }
     else if ($args[0] === 'BLAST') {
         $data['mode'] = "BLAST";
-        $title = "Aide - BLAST";
+        $title = "Help - BLAST";
     }
     else {
         throw new PageNotFoundException();
@@ -127,22 +127,22 @@ function showHelpHome(array $data) : void {
 function showHelpDB(array $data) : void {
     ?>
     <div class="parallax-container parallax-search-page">
-            <div class="parallax"><img src="/img/database.jpg"></div>
-        </div>
+        <div class="parallax"><img src="/img/database.jpg"></div>
+    </div>
 
-        <div class="container">
-            <div class="section">
-                <!--   Icon Section   -->
-                <div class="row">
-                    <h3 class='header'>
-                        Database
-                    </h3>
-                </div>
-                <p class="flow-text">
-                    The database is home to over 8000 genes implicated in the innate immunity of 14 sepecies of insects.
-                </p>
+    <div class="container">
+        <div class="section">
+            <!--   Icon Section   -->
+            <div class="row">
+                <h3 class='header'>
+                    Database
+                </h3>
             </div>
+            <p class="flow-text">
+                The database is home to over 8000 genes implicated in the innate immunity of 14 sepecies of insects.
+            </p>
         </div>
+    </div>
 
     <?php
 }
@@ -151,47 +151,46 @@ function showHelpDB(array $data) : void {
 function showHelpSearch(array $data) : void {
     ?>
     <div class="parallax-container parallax-search-page">
-            <div class="parallax"><img src="/img/database.jpg"></div>
-        </div>
+        <div class="parallax"><img src="/img/database.jpg"></div>
+    </div>
 
-        <div class="container">
-            <div class="section">
-                <!--   Icon Section   -->
-                <div class="row">
-                    <h3 class='header'>
-                        Search
-                    </h3>
-                </div>
-                <p class="flow-text">
-                    
-                </p>
+    <div class="container">
+        <div class="section">
+            <!--   Icon Section   -->
+            <div class="row">
+                <h3 class='header'>
+                    Search
+                </h3>
             </div>
+            <p class="flow-text">
+                
+            </p>
         </div>
+    </div>
 
     <?php
-
 }
 
 ////// BLAST //////
 function showHelpBlast(array $data) : void {
     ?>
     <div class="parallax-container parallax-search-page">
-            <div class="parallax"><img src="/img/dna.jpg"></div>
-        </div>
+        <div class="parallax"><img src="/img/dna.jpg"></div>
+    </div>
 
-        <div class="container">
-            <div class="section">
-                <!--   Icon Section   -->
-                <div class="row">
-                    <h3 class='header'>
-                        BLAST
-                    </h3>
-                </div>
-                <p class="flow-text">
-                    
-                </p>
+    <div class="container">
+        <div class="section">
+            <!--   Icon Section   -->
+            <div class="row">
+                <h3 class='header'>
+                    BLAST
+                </h3>
             </div>
+            <p class="flow-text">
+                
+            </p>
         </div>
+    </div>
 
     <?php
 }

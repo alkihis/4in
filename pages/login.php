@@ -47,7 +47,7 @@ function loginControl($args) : Controller {
         $returns['login'] = htmlspecialchars($_POST['login'], ENT_QUOTES);
     }
 
-    return new Controller($returns, "Connexion");
+    return new Controller($returns, "Login");
 }
 
 function loginView(Controller $c) : void {

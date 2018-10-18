@@ -44,6 +44,15 @@ main {
     margin-left: 20px;
 }
 
+.checkbox-search {
+    margin-bottom: -9px;
+}
+
+[type="checkbox"].filled-in:checked+span:not(.lever):after {
+    border: 2px solid #2177d0;
+    background-color: #2177d0;
+}
+
 .server-error-text {
     border-radius: 8px;
     border: 1px #b3b2b2 solid;
