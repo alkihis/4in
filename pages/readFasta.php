@@ -45,7 +45,24 @@ function loadFasta(string $filename, $mode = 'adn') : void {
 
 function readFastaControl($args) : Controller {
     // Dans le contrôleur, on exploite le GET ou le POST
-    loadFasta('fasta.fasta');
+
+    if (isset($_GET['refresh'])) {
+        global $sql;
+        mysqli_multi_query($sql, "UPDATE GeneAssociations SET sequence_adn=NULL; 
+            UPDATE GeneAssociations SET sequence_pro=NULL;
+        ");
+
+        $adn = glob('fasta/adn/*.fasta');
+        $pro = glob('fasta/pro/*.fasta');
+    
+        foreach($adn as $a) {
+            loadFasta($a, 'adn');
+        }
+        foreach($pro as $a) {
+            loadFasta($a, 'pro');
+        }
+    }
+    
 
     // On donne les données au contrôleur
     return new Controller([], 'Read fasta');

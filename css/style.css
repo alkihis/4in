@@ -143,3 +143,7 @@ textarea.materialize-textarea:focus:not([readonly]) {
 .divider-color {
     background-color: grey;
 }
+
+.pointer {
+    cursor: pointer;
+}

@@ -73,38 +73,54 @@ function geneView(Controller $c) : void {
     $data = $c->getData(); 
     ?>
     <div class="container">
-        <h2> <?= $data['gene'] -> getID(); ?> </h2>
+        <h2> <?= $data['gene']->getID(); ?> </h2>
         <div class="section">
              <div class="light text-justify flow-text">
-            <?php 
-                if ( $data['gene'] -> getName())
-                    echo "<h4>Name:</h4>" . $data['gene'] -> getName();
-
-                if ($data['gene'] -> getFullname())
-                    echo "<h4>Fullname:</h4>" . $data['gene'] -> getFullname() . "<br>";  
-                
-                echo 'Specie : ' . $data['gene'] -> getSpecie(); ?>
                 <?php 
-                    echo "<h4> Family <br></h4>" . $data['gene'] -> getFamily();
-                    if ( $data['gene'] -> getSubFamily())
-                        echo "<h4> Sub-family<br></h4>" . $data['gene'] -> getSubFamily();
+                if ($data['gene']->getName())
+                    echo "<h4>Name</h4>" . $data['gene']->getName();
 
-                    if ($data['gene'] -> getFunction())
-                        echo "<h4>Function</h4>" . $data['gene'] -> getFunction();
+                if ($data['gene']->getFullname())
+                    echo "<h4>Fullname</h4>" . $data['gene']->getFullname() . "<br>";  
+                
+                echo '<h4>Specie</h4> ' . $data['gene']->getSpecie();
 
-                    if ($data['gene'] -> getPathways())
-                        echo "<h4>Pathways</h4>";
-                        foreach ($data['gene'] -> getPathways() as $element)
-                            echo $element . "<br>";
+                if ($data['gene']->getFamily()) {
+                    echo "<h4> Family <br></h4>" . $data['gene']->getFamily();
+                }
+                
+                if ($data['gene']->getSubFamily())
+                    echo "<h4> Sub-family<br></h4>" . $data['gene']->getSubFamily();
+
+                if ($data['gene']->getFunction())
+                    echo "<h4>Function</h4>" . $data['gene']->getFunction();
+
+                if (empty($data['gene']->getPathways())) {
+                    echo "<h4>Pathways</h4>";
+                    foreach ($data['gene']->getPathways() as $element) {
+                        echo $element . "<br>";
+                    }
+                }
                 ?>
-                 <div class="divider divider-margin divider-color"></div>
-                 <?php
-                    if (count($data['orthologues']))
-                        echo "<h4>Homologous</h4>";
-                        foreach (array_keys($data['orthologues']) as $specie) 
-                            echo $specie . '<br>';
-                    // autre séparateur 
-                    // liste des espèces avec des homologues et liens vers les pages concernées
+                <div class="divider divider-margin divider-color"></div>
+                <?php
+                if (count($data['orthologues'])) {
+                    echo "<h4>Homologous</h4>";
+
+                    $first = true;
+                    foreach (array_keys($data['orthologues']) as $specie) {
+                        if ($first)
+                            $first = false;
+                        else
+                            echo ", ";
+                        echo "<span class='specie underline-hover blue-text text-darken-3 pointer' data-genes='" . 
+                            implode(',', $data['orthologues'][$specie]) . 
+                        "'>$specie</span>";
+                    }
+                }
+                    
+                // autre séparateur 
+                // liste des espèces avec des homologues et liens vers les pages concernées
 
                 ?>
             </div>
