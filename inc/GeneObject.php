@@ -2,13 +2,11 @@
 
 interface Gene {
     public function getID() : string;
-    public function getIDs() : array;
 
     public function getSpecie() : string;
-    public function getSpecies() : array;
 
-    public function getSequenceID() : string;
-    public function getSequenceIDs() : array;
+    public function isSequenceADN() : bool;
+    public function isSequenceProt() : bool;
 
     public function getPathways() : array;
 
@@ -32,6 +30,7 @@ class GeneObject implements Gene {
     protected $pathways = [];
     protected $func;
     protected $sequence;
+    protected $sequence_pro;
     protected $fullname;
     protected $family;
     protected $sub_family;
@@ -45,7 +44,8 @@ class GeneObject implements Gene {
         $this->sub_family = $row['subfamily'];
         $this->func = $row['func'];
 
-        $this->sequence = "";
+        $this->sequence = $row['is_seq_adn'] ? true : false;
+        $this->sequence_pro = $row['is_seq_pro'] ? true : false;
 
         $this->pathways = explode(',', $row['pathways']);
     }
@@ -54,23 +54,17 @@ class GeneObject implements Gene {
     public function getID() : string {
         return $this->id;
     }
-    public function getIDs() : array {
-        return [$this->id];
-    }
 
     public function getSpecie() : string {
         return $this->specie;
     }
 
-    public function getSpecies() : array {
-        return [$this->specie];
-    }
-
-    public function getSequenceID() : string {
+    public function isSequenceADN() : bool {
         return $this->sequence;
     }
-    public function getSequenceIDs() : array {
-        return [$this->sequence];
+
+    public function isSequenceProt() : bool {
+        return $this->sequence_pro;
     }
 
     public function getPathways() : array {

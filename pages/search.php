@@ -156,7 +156,15 @@ function searchById() : array {
         $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, 
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
              FROM Pathways p 
-             WHERE g.id = p.id) as pathways 
+             WHERE g.id = p.id) as pathways,
+            (CASE 
+                WHEN a.sequence_adn IS NOT NULL THEN 1
+                ELSE 0
+            END) as is_seq_adn,
+            (CASE 
+                WHEN a.sequence_pro IS NOT NULL THEN 1
+                ELSE 0
+            END) as is_seq_pro
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
         WHERE a.gene_id LIKE '$id%'
@@ -204,7 +212,15 @@ function searchByName() : array {
         $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, 
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
              FROM Pathways p 
-             WHERE g.id = p.id) as pathways 
+             WHERE g.id = p.id) as pathways,
+            (CASE 
+                WHEN a.sequence_adn IS NOT NULL THEN 1
+                ELSE 0
+            END) as is_seq_adn,
+            (CASE 
+                WHEN a.sequence_pro IS NOT NULL THEN 1
+                ELSE 0
+            END) as is_seq_pro
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
         WHERE g.gene_name LIKE '$name%'
@@ -266,7 +282,15 @@ function searchPathway() : array {
         $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie,
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
             FROM Pathways p 
-            WHERE g.id = p.id) as pathways 
+            WHERE g.id = p.id) as pathways,
+            (CASE 
+                WHEN a.sequence_adn IS NOT NULL THEN 1
+                ELSE 0
+            END) as is_seq_adn,
+            (CASE 
+                WHEN a.sequence_pro IS NOT NULL THEN 1
+                ELSE 0
+            END) as is_seq_pro
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
         JOIN Pathways pa ON pa.id=g.id
@@ -500,13 +524,14 @@ function generateSearchResultsArray(array $res) : void {
 
 function generateArrayLine(Gene $line) : void { ?>
     <tr>
-        <td>
+        <td>    
             <label>
-                <input type="checkbox" class="filled-in chk-srch" data-id="<?= $line->getID() ?>">
+                <input type="checkbox" class="filled-in 
+                    <?= ($line->isSequenceADN() || $line->isSequenceProt() ? 'chk-srch"' : '" disabled') ?> data-id="<?= $line->getID() ?>">
                 <span class="checkbox-search"></span>
             </label>
         </td>
-        <td><?= $line->getID() ?></td>
+        <td><a href='/gene/<?= $line->getID() ?>' target='_blank'><?= $line->getID() ?></a></td>
         <td><?= $line->getName() ?></td>
         <td><?= $line->getFunction() ?></td>
         <td><?= implode(', ', $line->getPathways()) ?></td>
