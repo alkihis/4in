@@ -473,7 +473,6 @@ function generateSearchResultsArray(array $res) : void {
     <div class='popup-download'>
         <div class='card card-border'>
             <div class='card-content'>
-<<<<<<< HEAD
                 <a href='#!' class='btn-flat btn-perso green-text left' onclick="checkAllPageBoxes(true)">Check all</a>
                 <a href='#!' class='btn-flat btn-perso red-text left' onclick="checkAllPageBoxes(false)">Uncheck all</a>
                 <div href='#!' data-count="0" id='total_count_popup' class='grey-text dl-count-popup darken-4 left'>
@@ -485,14 +484,6 @@ function generateSearchResultsArray(array $res) : void {
                 <a href='#!' class='btn-flat btn-perso purple-text right' onclick="downloadCheckedSequences('adn')">
                     <i class='material-icons left'>file_download</i>ADN
                 </a>
-=======
-                <a href='#!' class='btn-flat green-text left' onclick="checkAllPageBoxes(true)">Check all</a>
-                <a href='#!' class='btn-flat blue-text left' onclick="checkAllPageBoxes(false)">Uncheck all</a>
-                <div href='#!' data-count="0" id='total_count_popup' class='grey-text dl-count-popup darken-4 left'>
-                    <span id='count_popup'>0</span> Selected<span id='count_popup_s'>s</span>
-                </div>
-                <a href='#!' class='btn-flat blue-text right' onclick="downloadCheckedSequences()"><i class='material-icons left'>file_download</i> Download </a>
->>>>>>> Dev
                 <div class='clearb'></div>
             </div>
         </div>
