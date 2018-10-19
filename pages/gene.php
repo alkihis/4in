@@ -73,9 +73,33 @@ function geneView(Controller $c) : void {
     $data = $c->getData(); 
     ?>
     <div class="container">
-        <h2> <?= $data['gene'] -> getID() ?> </h2>
+        <h2> <?= $data['gene'] -> getID(); ?> </h2>
         <?php var_dump($data); ?>
-    </div>
+        <div class="section">
+            <?php 
+                if ( $data['gene'] -> getName())
+                    echo "<h4> Name : {$data['gene'] -> getName()} </h4>";
+            ?>
+            <div class="light text-justify flow-text">
+                <?php
+                if ($data['gene'] -> getFullname())
+                    echo '<h6>Fullname</h6>' . $data['gene'] -> getFullname() . '<br>';  
+                
+                echo 'Specie : ' . $data['gene'] -> getSpecie(); ?>
+                <?php 
+                    echo "<h4> Family <br></h4>" . $data['gene'] -> getFamily();
+                    if ( $data['gene'] -> getSubFamily())
+                        echo "<h4> Sub-family<br></h4>" . $data['gene'] -> getSubFamily();
+                    // séparateur  ici 
+                    // rôle et pathway
+                    // autre séparateur 
+                    // liste des espèces avec des homologues et liens vers les pages concernées
+
+                ?>
+            </div>
+        </div>
+    </div>  
+    
     
     
     <?php
