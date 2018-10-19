@@ -89,6 +89,10 @@ function geneView(Controller $c) : void {
                     echo "<h4> Family <br></h4>" . $data['gene'] -> getFamily();
                     if ( $data['gene'] -> getSubFamily())
                         echo "<h4> Sub-family<br></h4>" . $data['gene'] -> getSubFamily();
+                    // séparateur  ici 
+                    // rôle et pathway
+                    // autre séparateur 
+                    // liste des espèces avec des homologues et liens vers les pages concernées
 
                 ?>
             </div>
