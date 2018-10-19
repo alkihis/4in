@@ -4,7 +4,7 @@
 
 function notFoundControl() : Controller {
     header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
-    return new Controller([], 'Page non trouvée');
+    return new Controller([], 'Page not found');
 }
 
 function notFoundView(Controller $c) : void {

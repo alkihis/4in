@@ -82,8 +82,7 @@ function showSearchHome(array $data) : void {
                         </h5>
 
                         <p class="light text-justify">
-                            En connaissant le nom formel d'un gène, trouvez ses occurences connues dans 
-                            les différentes espèces de la base de données.
+                            Find every gene bearing the same name across all our database's species.
                         </p>
                     </div>
                 </div>
@@ -94,11 +93,11 @@ function showSearchHome(array $data) : void {
                             <a href='/search/id'><i class="material-icons mat-title light-blue-text">label</i></a>
                         </h2>
                         <h5 class="center">
-                            <a href='/search/id' class='no-link-color'>Identifiant</a>
+                            <a href='/search/id' class='no-link-color'>ID</a>
                         </h5>
 
                         <p class="light text-justify">
-                            Consultez le détail d'un gène précis via son identifiant unique.
+                            Check the details of a specific gene with an ID search.
                         </p>
                     </div>
                 </div>
@@ -110,11 +109,11 @@ function showSearchHome(array $data) : void {
                             <a href='/search/pathway'><i class="material-icons mat-title light-blue-text">call_split</i></a>
                         </h2>
                         <h5 class="center">
-                            <a href='/search/pathway' class='no-link-color'>Voie</a>
+                            <a href='/search/pathway' class='no-link-color'>Pathway</a>
                         </h5>
 
                         <p class="light text-justify">
-                            Naviguez parmi les gènes présentant une voie métabolique spécifique.
+                            Browse through the genes involved in a specific pathway.
                         </p>
                     </div>
                 </div>
@@ -125,11 +124,12 @@ function showSearchHome(array $data) : void {
                             <a href='/search/global'><i class="material-icons mat-title light-blue-text">all_inclusive</i></a>
                         </h2>
                         <h5 class="center">
-                            <a href='/search/global' class='no-link-color'>Avancée</a>
+                            <a href='/search/global' class='no-link-color'>Advanced</a>
                         </h5>
 
                         <p class="light text-justify">
-                            Combinez les paramètres, recherchez par voie, espèce, nom et d'autres critères.
+                            Combine your search criterias, with pathways, species, names and others to find a 
+                            specific gene or group of genes.
                         </p>
                     </div>
                 </div>
@@ -163,7 +163,7 @@ function searchById() : array {
         GROUP BY a.gene_id, g.id ORDER BY g.id, a.specie");
 
         if (!$q) {
-            throw new UnexpectedValueException("Echec de la requête SQL");
+            throw new UnexpectedValueException("SQL request failed");
         }
 
         if (mysqli_num_rows($q)) { // Il y a un identifiant trouvé, on le récupère
@@ -211,7 +211,7 @@ function searchByName() : array {
         GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie");
 
         if (!$q) {
-            throw new UnexpectedValueException("Echec de la requête SQL");
+            throw new UnexpectedValueException("SQL request failed");
         }
 
         if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
@@ -246,7 +246,7 @@ function searchPathway() : array {
     $q = mysqli_query($sql, "SELECT DISTINCT pathway FROM Pathways;");
 
     if (!$q) {
-        throw new Exception("Base SQL inopérante");
+        throw new Exception("Inoperative SQL base");
     }
 
     $r['form_data'] = [];
@@ -274,7 +274,7 @@ function searchPathway() : array {
         GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie");
 
         if (!$q) {
-            throw new UnexpectedValueException("Echec de la requête SQL");
+            throw new UnexpectedValueException("SQL request failed");
         }
 
         if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
@@ -302,7 +302,7 @@ function showSearchByPathway(array $data) : void {
 
 ////// AVANCEE //////
 function searchAdvanced() : array {
-    throw new NotImplementedException("Recherche avancée non implémentée.");
+    throw new NotImplementedException("Advanced search not yet implemented.");
 }
 
 function showGlobalSearch(array $data) : void {
@@ -455,12 +455,12 @@ function generateSearchResultsArray(array $res) : void {
     <div class='popup-download'>
         <div class='card card-border'>
             <div class='card-content'>
-                <a href='#!' class='btn-flat green-text left' onclick="checkAllPageBoxes(true)">Tout cocher</a>
-                <a href='#!' class='btn-flat blue-text left' onclick="checkAllPageBoxes(false)">Tout décocher</a>
+                <a href='#!' class='btn-flat green-text left' onclick="checkAllPageBoxes(true)">Check all</a>
+                <a href='#!' class='btn-flat blue-text left' onclick="checkAllPageBoxes(false)">Uncheck all</a>
                 <div href='#!' data-count="0" id='total_count_popup' class='grey-text dl-count-popup darken-4 left'>
-                    <span id='count_popup'>0</span> sélectionné<span id='count_popup_s'>s</span>
+                    <span id='count_popup'>0</span> Selected<span id='count_popup_s'>s</span>
                 </div>
-                <a href='#!' class='btn-flat blue-text right' onclick="downloadCheckedSequences()"><i class='material-icons left'>file_download</i> Télécharger</a>
+                <a href='#!' class='btn-flat blue-text right' onclick="downloadCheckedSequences()"><i class='material-icons left'>file_download</i> Download </a>
                 <div class='clearb'></div>
             </div>
         </div>

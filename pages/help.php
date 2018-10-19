@@ -76,10 +76,10 @@ function showHelpHome(array $data) : void {
                         </h5>
 
                         <p class="light text-justify">
-                            La base de données contient des gènes provenant de 14 espèces d'insectes différentes. 
-                            Chaque gène dispose d'un nom, d'un identifiant unique, d'une ou plusieurs voies immunitaires associées
-                            ainsi que des gènes homologues si ils existent.
-                            La base de données à été crée avec MySQL et est accessible via le site web, qui permet d'effectuer différentes requêtes.
+                            This database contains genes from 14 different species of insects. 
+                            Every gene has a name, a unique ID, one or several associated immunity pathways,
+                            as well as the IDs of any homologous genes that might exist in the database.
+                            The database was set up with MySQL and is accessible via our website, which allows user to perform several requests.
                         </p>
                     </div>
                 </div>
@@ -94,9 +94,9 @@ function showHelpHome(array $data) : void {
                         </h5>
 
                         <p class="light text-justify">
-                            Le site web permet d'effectuer des recherches variées sur l'ensemble ou non de la base de données. 
-                            Vous pouvez effectuer des recherches de 4 types : par nom, par identifiant, par voie ou recherche avancée qui vous permet de
-                            cumuler les paramètres pour faire une recherche spécifique.
+                            The website is capable of performing a number of search on the totality or part of the database.
+                            You have access to 4 different types of searches : by name, by ID, by pathway or the advanced search which allows you 
+                            to cumulate your criterias to perform a specific request.
                         </p>
                     </div>
                 </div>
@@ -110,10 +110,9 @@ function showHelpHome(array $data) : void {
                         </h5>
 
                         <p class="light text-justify">
-                            Il est possible d'aligner des séquences importées depuis votre ordinateur sur l'ensemble ou une partie de la base de données en utilisant l'outil "BLAST".
-                            Il vous sera nécessaire d'avoir un fichier au format fasta ou bien de copier vos séquences directement dans la case associée.
-                            Le résultat de l'alignement sera présenté sous la forme d'une page web, contenant les résultats de l'alignement au format standard pour
-                            les différents gènes avec lesquels vous avez choisi d'aligner votre séquence.
+                            You can align sequences from your computer on the totality of the database sing the "BLAST" tool.
+                            Your results will be rendred in the form of a webpage, containing the alignments and links to those genes' webpage.
+                            You will need to provide a '.fasta' file or to copy and paste your sequences in the associated form.
                         </p>
                     </div>
                 </div>
@@ -139,7 +138,7 @@ function showHelpDB(array $data) : void {
                 </h3>
             </div>
             <p class="flow-text">
-                The database is home to over 8000 genes implicated in the innate immunity of 14 sepecies of insects.
+                The database is home to over 8000 genes implicated in the innate immunity system of 14 species of insects.
             </p>
         </div>
     </div>
