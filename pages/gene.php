@@ -23,7 +23,7 @@ function geneControl(array $args) : Controller {
     // Recherche de l'identifiant dans la base de données
     $id = mysqli_real_escape_string($sql, $args[0]);
 
-    $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, 
+    $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.sequence_adn, a.sequence_pro,
         (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
          FROM Pathways p 
          WHERE g.id = p.id) as pathways,
@@ -110,28 +110,40 @@ function geneView(Controller $c) : void {
                     }
                 }
                 ?>
-                <div class="divider divider-margin divider-color"></div>
-                <?php
-                if (count($data['orthologues'])) {
-                    echo "<h4>Homologous</h4>";
-
-                    $first = true;
-                    foreach (array_keys($data['orthologues']) as $specie) {
-                        if ($first)
-                            $first = false;
-                        else
-                            echo ", ";
-                        echo "<span class='specie underline-hover blue-text text-darken-3 pointer' data-genes='" . 
-                            implode(',', $data['orthologues'][$specie]) . 
-                        "'>$specie</span>";
-                    }
-                }
-                    
-                // autre séparateur 
-                // liste des espèces avec des homologues et liens vers les pages concernées
-
-                ?>
             </div>
+
+            <div class="divider divider-header-margin divider-color"></div>
+
+            <?php
+            if (count($data['orthologues'])) {
+                echo "<h4>Homologous</h4>";
+
+                $first = true;
+                foreach (array_keys($data['orthologues']) as $specie) {
+                    if ($first)
+                        $first = false;
+                    else
+                        echo ", ";
+                    echo "<span class='specie underline-hover blue-text text-darken-3 pointer' data-genes='" . 
+                        implode(',', $data['orthologues'][$specie]) . 
+                    "'>$specie</span>";
+                }
+            }
+
+            if ($data['gene']->getSeqADN()) {
+                echo '<div class="divider divider-header-margin divider-color"></div>';
+
+                echo '<h4>ADN Sequence</h4>';
+                echo '<pre class="break-word">' . $data['gene']->getSeqADN() . '</pre>';
+            }
+
+            if ($data['gene']->getSeqProt()) {
+                echo '<div class="divider divider-header-margin divider-color"></div>';
+
+                echo '<h4>Protein Sequence</h4>';
+                echo '<pre class="break-word">' . $data['gene']->getSeqProt() . '</pre>';
+            }
+            ?>
         </div>
     </div>  
     

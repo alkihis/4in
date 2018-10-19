@@ -1,28 +1,10 @@
 <?php
 
-interface Gene {
-    public function getID() : string;
-
-    public function getSpecie() : string;
-
-    public function isSequenceADN() : bool;
-    public function isSequenceProt() : bool;
-
-    public function getPathways() : array;
-
-    public function getFamily() : string;
-    public function getSubFamily() : string;
-    public function getFunction() : string;
-    public function getName() : string;
-    public function getFullName() : string;
-}
-
 // class GeneObject
 // Contient la représentation d'un gène
 // Peut faire référence à UN gène
-// Pour des groupes de gènes identiques, voir MultiGeneObject
 
-class GeneObject implements Gene {
+class GeneObject {
     protected $id;
     protected $specie;
 
@@ -31,6 +13,10 @@ class GeneObject implements Gene {
     protected $func;
     protected $sequence;
     protected $sequence_pro;
+
+    protected $full_adn;
+    protected $full_pro;
+
     protected $fullname;
     protected $family;
     protected $sub_family;
@@ -46,6 +32,9 @@ class GeneObject implements Gene {
 
         $this->sequence = $row['is_seq_adn'] ? true : false;
         $this->sequence_pro = $row['is_seq_pro'] ? true : false;
+
+        $this->full_adn = $row['sequence_adn'] ?? null;
+        $this->full_pro = $row['sequence_pro'] ?? null;
 
         $this->pathways = explode(',', $row['pathways']);
     }
@@ -85,6 +74,13 @@ class GeneObject implements Gene {
     }
     public function getFullName() : string {
         return $this->fullname;
+    }
+
+    public function getSeqADN() : ?string {
+        return $this->full_adn;
+    }
+    public function getSeqProt() : ?string {
+        return $this->full_pro;
     }
 }
 

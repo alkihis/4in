@@ -522,7 +522,7 @@ function generateSearchResultsArray(array $res) : void {
     <?php
 }
 
-function generateArrayLine(Gene $line) : void { ?>
+function generateArrayLine(GeneObject $line) : void { ?>
     <tr>
         <td>    
             <label>

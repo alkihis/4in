@@ -109,6 +109,9 @@ textarea.materialize-textarea:focus:not([readonly]) {
     margin-bottom: 15px;
 }
 
+.divider-header-margin {
+    margin-top: 1.52rem;
+}
 
 /* POPUP download */
 .popup-download {
@@ -146,4 +149,9 @@ textarea.materialize-textarea:focus:not([readonly]) {
 
 .pointer {
     cursor: pointer;
+}
+
+.break-word {
+    word-wrap: break-word;
+    white-space: pre-line;
 }
