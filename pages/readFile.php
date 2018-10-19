@@ -191,6 +191,7 @@ function showGenesWithPathways(array $data) : void {
     <table>
         <thead>
             <tr>
+                <th>Gene ID</th>
                 <th>Name</th>
                 <th>Role</th>
                 <th>Pathway</th>
@@ -198,7 +199,6 @@ function showGenesWithPathways(array $data) : void {
                 <th>Family</th>
                 <th>Subfamily</th>
                 <th>Specie</th>
-                <th>Gene ID</th>
             </tr>
         </thead>
         <tbody>
@@ -209,6 +209,7 @@ function showGenesWithPathways(array $data) : void {
 
             // Écriture de la table
             ?>
+                <td><?= $row['gene_id'] ?></td>
                 <td><?= $row['gene_name'] ?></td>
                 <td><?= $row['func'] ?></td>
                 <td><?= $row['pathways'] ?></td>
@@ -216,7 +217,6 @@ function showGenesWithPathways(array $data) : void {
                 <td><?= $row['family'] ?></td>
                 <td><?= $row['subfamily'] ?></td>
                 <td><?= $row['specie'] ?></td>
-                <td><?= $row['gene_id'] ?></td>
             <?php
 
             echo '</tr>';
