@@ -119,8 +119,8 @@ function explodeFile(string $filename, bool $trim_first_line = false) : void {
 
                         // On insère le gène dans les associations
                         mysqli_query($sql, "INSERT INTO GeneAssociations
-                        (id, gene_id, sequence_id, specie, addi)
-                        VALUES ($id_insert, '$id', NULL, '{$assocs_species[$i - 6]}', '$full_line')"); 
+                        (id, gene_id, sequence_adn, sequence_pro, specie, addi)
+                        VALUES ($id_insert, '$id', NULL, NULL, '{$assocs_species[$i - 6]}', '$full_line')"); 
                     }
                 }
             }

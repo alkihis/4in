@@ -19,7 +19,8 @@ CREATE TABLE Pathways (
 CREATE TABLE GeneAssociations (
     id INT NOT NULL,
     gene_id VARCHAR(30),
-    sequence_id VARCHAR(50),
+    sequence_adn TEXT,
+    sequence_pro TEXT,
     specie VARCHAR(50),
     addi TEXT,
     PRIMARY KEY (gene_id),

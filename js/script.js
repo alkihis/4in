@@ -24,13 +24,10 @@ function hidePopup() {
 
 function initCheckboxes() {
     var number_checked = document.getElementById('count_popup');
-    var number_checked_s = document.getElementById('count_popup_s');
 
     $('.chk-srch').on('change', function(evt) {
         var len = $('.chk-srch:checked').length;
         number_checked.innerText = len;
-
-        number_checked_s.innerText = (len > 1 ? 's' : '');
 
         if (this.checked) {
             showPopup();
@@ -44,7 +41,6 @@ function initCheckboxes() {
 function checkAllPageBoxes(checked) {
     var elements = document.getElementsByClassName('chk-srch');
     var number_checked = document.getElementById('count_popup');
-    var number_checked_s = document.getElementById('count_popup_s');
 
     if (checked) {
         for (var i = 0; i < elements.length; i++) {
@@ -61,5 +57,64 @@ function checkAllPageBoxes(checked) {
 
     var len = $('.chk-srch:checked').length;
     number_checked.innerText = len;
-    number_checked_s.innerText = (len > 1 ? 's' : '');
+}
+
+function downloadCheckedSequences(mode, download_all = false) {
+    var e = $('.chk-srch' + (download_all ? '' : ':checked'));
+
+    var ids = '';
+    var first = true;
+
+    e.each(function() {
+        if (first) {
+            first = false;
+        }
+        else {
+            ids += ',';
+        }
+
+        ids += this.dataset.id;
+    });
+
+    gotoUrl('/api/seq/get_sequences_fasta.php', {ids: ids, mode: mode}, 'post');
+}
+
+function gotoUrl(path, params, method) {
+    //Null check
+    method = method || "post"; // Set method to post by default if not specified.
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+    form.setAttribute("target", '_blank');
+
+    //Fill the hidden form
+    if (typeof params === 'string') {
+        var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", 'data');
+        hiddenField.setAttribute("value", params);
+        form.appendChild(hiddenField);
+    }
+    else {
+        for (var key in params) {
+            if (params.hasOwnProperty(key)) {
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", key);
+                if(typeof params[key] === 'object'){
+                    hiddenField.setAttribute("value", JSON.stringify(params[key]));
+                }
+                else{
+                    hiddenField.setAttribute("value", params[key]);
+                }
+                form.appendChild(hiddenField);
+            }
+        }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
 }

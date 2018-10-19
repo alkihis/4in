@@ -425,6 +425,24 @@ function generateSearchResultsArray(array $res) : void {
                 <h4 class='red-text header'>No results</h4>
                 <?php } else { ?>
                 <h6><?= count($res) ?> result<?= count($res) > 1 ? 's' : '' ?></h6>
+
+                <div class='download-results col s12'>
+                    <div class='col s6'>
+                        <a href='#!' class='btn-flat btn-perso purple-text right' 
+                            onclick="downloadCheckedSequences('adn', true);">
+                            <i class='material-icons left'>file_download</i>FASTA sequences (ADN)
+                        </a>
+                    </div>
+
+                    <div class='col s6'>
+                        <a href='#!' class='btn-flat btn-perso blue-text left' 
+                            onclick="downloadCheckedSequences('pro', true);">
+                            <i class='material-icons left'>file_download</i>FASTA sequences (Protein)
+                        </a>
+                    </div>
+                    
+                    <div class='clearb'></div>
+                </div>
                 <table>
                     <thead>
                         <tr>
@@ -455,12 +473,17 @@ function generateSearchResultsArray(array $res) : void {
     <div class='popup-download'>
         <div class='card card-border'>
             <div class='card-content'>
-                <a href='#!' class='btn-flat green-text left' onclick="checkAllPageBoxes(true)">Tout cocher</a>
-                <a href='#!' class='btn-flat blue-text left' onclick="checkAllPageBoxes(false)">Tout décocher</a>
+                <a href='#!' class='btn-flat btn-perso green-text left' onclick="checkAllPageBoxes(true)">Check all</a>
+                <a href='#!' class='btn-flat btn-perso red-text left' onclick="checkAllPageBoxes(false)">Uncheck all</a>
                 <div href='#!' data-count="0" id='total_count_popup' class='grey-text dl-count-popup darken-4 left'>
-                    <span id='count_popup'>0</span> sélectionné<span id='count_popup_s'>s</span>
+                    <span id='count_popup'>0</span> selected
                 </div>
-                <a href='#!' class='btn-flat blue-text right' onclick="downloadCheckedSequences()"><i class='material-icons left'>file_download</i> Télécharger</a>
+                <a href='#!' class='btn-flat btn-perso blue-text right' onclick="downloadCheckedSequences('pro')">
+                    <i class='material-icons left'>file_download</i>Protein
+                </a>
+                <a href='#!' class='btn-flat btn-perso purple-text right' onclick="downloadCheckedSequences('adn')">
+                    <i class='material-icons left'>file_download</i>ADN
+                </a>
                 <div class='clearb'></div>
             </div>
         </div>
@@ -479,7 +502,7 @@ function generateArrayLine(Gene $line) : void { ?>
     <tr>
         <td>
             <label>
-                <input type="checkbox" class="filled-in chk-srch" dataset-id="<?= $line->getID() ?>">
+                <input type="checkbox" class="filled-in chk-srch" data-id="<?= $line->getID() ?>">
                 <span class="checkbox-search"></span>
             </label>
         </td>
