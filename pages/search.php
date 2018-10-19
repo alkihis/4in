@@ -78,7 +78,7 @@ function showSearchHome(array $data) : void {
                             <a href='/search/name'><i class="material-icons mat-title light-blue-text">assignment</i></a>
                         </h2>
                         <h5 class="center">
-                            <a href='/search/name' class='no-link-color'>Nom</a>
+                            <a href='/search/name' class='no-link-color'>Name</a>
                         </h5>
 
                         <p class="light text-justify">
