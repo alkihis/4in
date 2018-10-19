@@ -22,6 +22,7 @@ const PAGES_REF = [
     'search' => ['file' => 'pages/search.php', 'view' => 'searchView', 'controller' => 'searchControl'],
     'blast' => ['file' => 'pages/blast.php', 'view' => 'blastView', 'controller' => 'blastControl'],
     'help' => ['file' => 'pages/help.php', 'view' => 'helpView', 'controller' => 'helpControl'],
+    'gene' => ['file' => 'pages/gene.php', 'view' => 'geneView', 'controller' => 'geneControl'],
     '404' => ['file' => 'static/404.php', 'view' => 'notFoundView', 'controller' => 'notFoundControl'],
     '403' => ['file' => 'static/403.php', 'view' => 'forbiddenView', 'controller' => 'forbiddenControl'],
     '500' => ['file' => 'static/500.php', 'view' => 'serverErrorView', 'controller' => 'serverErrorControl'],
