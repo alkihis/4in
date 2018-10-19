@@ -41,9 +41,10 @@ function geneControl(array $args) : Controller {
     $gene_id = mysqli_real_escape_string($sql, $row['gene_id']);
 
     $q = mysqli_query($sql, "SELECT specie, gene_id
-        FROM geneassociations
-        WHERE id={$row['id']} 
-        AND gene_id!='$gene_id'");
+        FROM GeneAssociations
+        WHERE id='{$row['id']}'
+        AND gene_id != '$gene_id'
+    ");
 
     $array = [];
     while ($row = mysqli_fetch_assoc($q)){

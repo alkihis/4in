@@ -108,3 +108,26 @@ textarea.materialize-textarea:focus:not([readonly]) {
     margin-top: 15px;
     margin-bottom: 15px;
 }
+
+
+/* POPUP download */
+.popup-download {
+    position: fixed;
+    bottom: 0px;
+    transform: translateY(100px);
+    height: 100px;
+    width: 80%;
+    margin-left: 10%;
+    transition: .5s ease;
+    visibility: hidden;
+}
+
+.popup-download.open {
+    transform: unset;
+    visibility: visible;
+}
+
+.dl-count-popup {
+    margin-top: 6px;
+    margin-left: 15px;
+}

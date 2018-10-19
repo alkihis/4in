@@ -452,6 +452,26 @@ function generateSearchResultsArray(array $res) : void {
         </div>
     </div>
 
+    <div class='popup-download'>
+        <div class='card card-border'>
+            <div class='card-content'>
+                <a href='#!' class='btn-flat green-text left' onclick="checkAllPageBoxes(true)">Tout cocher</a>
+                <a href='#!' class='btn-flat blue-text left' onclick="checkAllPageBoxes(false)">Tout décocher</a>
+                <div href='#!' data-count="0" id='total_count_popup' class='grey-text dl-count-popup darken-4 left'>
+                    <span id='count_popup'>0</span> sélectionné<span id='count_popup_s'>s</span>
+                </div>
+                <a href='#!' class='btn-flat blue-text right' onclick="downloadCheckedSequences()"><i class='material-icons left'>file_download</i> Télécharger</a>
+                <div class='clearb'></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            initCheckboxes();
+        });
+    </script>
+
     <?php
 }
 
