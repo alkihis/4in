@@ -4,7 +4,7 @@
 
 function serverErrorControl(Throwable $e) : Controller {
     header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
-    return new Controller(['error' => $e], 'Erreur interne du serveur');
+    return new Controller(['error' => $e], 'Internal Server Error');
 }
 
 function serverErrorView(Controller $c) : void {

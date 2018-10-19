@@ -61,13 +61,13 @@ function loginView(Controller $c) : void {
                     <h4 class='header'>Login</h4>
                     <?php 
                     if (isset($data['try_connect'])) {
-                        echo '<h6 class="red-text">Identifiant ou mot de passe incorrect.</h6>';
+                        echo '<h6 class="red-text">Invalid ID or password.</h6>';
                     }
                     else if (isset($data['unlogged'])) {
-                        echo '<h6 class="green-text">Vous avez été déconnecté-e.</h6>';
+                        echo '<h6 class="green-text">You have successfully logged out.</h6>';
                     }
                     else if (isset($data['successful_connection'])) {
-                        echo '<h6 class="green-text">Vous vous êtes connecté-e avec succès.</h6>';
+                        echo '<h6 class="green-text">You have successfully logged in.</h6>';
                     }
                     ?>
                     <form method='post' action='/login'>
@@ -77,7 +77,7 @@ function loginView(Controller $c) : void {
                         </div>
                         <div class='input-field col s12'>
                             <input class='validate' type='password' name='password' id='password' required>
-                            <label for='password'>Passworde</label>
+                            <label for='password'>Password</label>
                         </div>
                         <button class='btn-flat blue-text right'>Login</button>
                         <div class='clearb'></div>

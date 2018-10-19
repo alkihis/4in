@@ -47,9 +47,8 @@ function homeView(Controller $c) : void { ?>
                         <h5 class="center">Database</h5>
 
                         <p class="light text-justify">
-                            Consult our entire database here. Download the data in the format of your choice, 
+                            Check out our entire database here. Download the data in the format of your choice, 
                             sort your results according to your needs and learn about the functionnal annotations available. 
-                            disponibles.
                         </p>
                     </div>
                 </div>

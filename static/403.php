@@ -4,7 +4,7 @@
 
 function forbiddenControl() : Controller {
     header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-    return new Controller([], 'Accès interdit');
+    return new Controller([], 'Forbidden');
 }
 
 function forbiddenView(Controller $c) : void {

@@ -4,7 +4,7 @@
 
 function serverImplementControl(Throwable $e) : Controller {
     header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
-    return new Controller(['error' => $e], 'Fonctionnalité non implémentée');
+    return new Controller(['error' => $e], 'Function not yet implemented');
 }
 
 function serverImplementView(Controller $c) : void {
