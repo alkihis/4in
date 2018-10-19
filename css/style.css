@@ -131,3 +131,9 @@ textarea.materialize-textarea:focus:not([readonly]) {
     margin-top: 6px;
     margin-left: 15px;
 }
+
+.divider-margin-2 {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background-color: grey;
+}
