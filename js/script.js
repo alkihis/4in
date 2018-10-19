@@ -27,7 +27,7 @@ function initCheckboxes() {
     var number_checked_s = document.getElementById('count_popup_s');
 
     $('.chk-srch').on('change', function(evt) {
-        var len = document.getElementsByClassName('chk-srch').length;
+        var len = $('.chk-srch:checked').length;
         number_checked.innerText = len;
 
         number_checked_s.innerText = (len > 1 ? 's' : '');
@@ -43,6 +43,8 @@ function initCheckboxes() {
 
 function checkAllPageBoxes(checked) {
     var elements = document.getElementsByClassName('chk-srch');
+    var number_checked = document.getElementById('count_popup');
+    var number_checked_s = document.getElementById('count_popup_s');
 
     if (checked) {
         for (var i = 0; i < elements.length; i++) {
@@ -53,5 +55,11 @@ function checkAllPageBoxes(checked) {
         for (var i = 0; i < elements.length; i++) {
             elements[i].checked = false;
         }
+
+        hidePopup();
     }
+
+    var len = $('.chk-srch:checked').length;
+    number_checked.innerText = len;
+    number_checked_s.innerText = (len > 1 ? 's' : '');
 }
