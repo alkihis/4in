@@ -113,4 +113,30 @@ function isUserLogged() : bool {
     return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'];
 }
 
+function getLinkForId(string $id, string $specie) : string {
+    if (!array_key_exists($specie, SPECIE_TO_NAME)) {
+        return "";
+    }
+
+    if ($specie === 'Soryzae') {
+        if (!isUserLogged()) {
+            return '';
+        }
+
+        return "http://bf2i200.insa-lyon.fr:3555/SITOR/NEW-IMAGE?type=GENE&object=" . $id;
+    }
+    
+    if ($specie === 'Msexta') {
+        if (!isUserLogged()) {
+            return '';
+        }
+        
+        $id = preg_replace("/Msex2\./", "Msex", $id);
+
+        return "http://bf2i200.insa-lyon.fr:3555/MANSE/NEW-IMAGE?type=GENE&object=" . $id;
+    }
+
+    return "http://arthropodacyc.cycadsys.org/". SPECIE_TO_NAME[$specie] ."/NEW-IMAGE?type=GENE&object=" . $id;
+}
+
 connectBD();

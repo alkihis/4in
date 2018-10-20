@@ -29,3 +29,16 @@ const PAGES_REF = [
     '500' => ['file' => 'static/500.php', 'view' => 'serverErrorView', 'controller' => 'serverErrorControl'],
     '501' => ['file' => 'static/501.php', 'view' => 'serverImplementView', 'controller' => 'serverImplementControl'],
 ];
+
+const SPECIE_TO_NAME = [
+    'Apisum' => 'ACYPI',
+    'Aaegypti' => 'AEDAE',
+    'Amellifera' => 'APIME',
+    'Agambiae' => 'ANOGA',
+    'Gmorsitans' => 'GLOMO',
+    'Msexta' => 'MANSE',
+    'Nvitripennis' => 'NASVI',
+    'Phumanus' => 'PEDHU',
+    'Soryzae' => 'SITOR',
+    'Sinvicta' => 'SOLIN'
+];

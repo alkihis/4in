@@ -467,18 +467,19 @@ function generateSearchResultsArray(array $res) : void {
                     
                     <div class='clearb'></div>
                 </div>
-                <table>
+                <table id='search_table'>
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Gene ID</th>
-                            <th>Name</th>
-                            <th>Role</th>
-                            <th>Pathway</th>
-                            <th>Fullname</th>
-                            <th>Family</th>
-                            <th>Subfamily</th>
-                            <th>Specie</th>
+                            <th class='pointer sortable'>Gene ID</th>
+                            <th class='pointer sortable'>Name</th>
+                            <th class='pointer sortable'>Role</th>
+                            <th class='pointer sortable'>Pathway</th>
+                            <th class='pointer sortable'>Fullname</th>
+                            <th class='pointer sortable'>Family</th>
+                            <th class='pointer sortable'>Subfamily</th>
+                            <th class='pointer sortable'>Specie</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -516,6 +517,8 @@ function generateSearchResultsArray(array $res) : void {
     <script>
         $(document).ready(function() {
             initCheckboxes();
+
+            sortTable('search_table');
         });
     </script>
 
@@ -539,6 +542,16 @@ function generateArrayLine(GeneObject $line) : void { ?>
         <td><?= $line->getFamily() ?></td>
         <td><?= $line->getSubFamily() ?></td>
         <td><?= $line->getSpecie() ?></td>
+        <td>
+            <?php 
+            if (getLinkForId($line->getID(), $line->getSpecie())) {
+                echo '<a href="' . getLinkForId($line->getID(), $line->getSpecie()) . 
+                    '" target="_blank" title="View in external database">
+                        <i class="material-icons link-external-search">launch</i>
+                    </a>';
+            }
+            ?>
+        </td>
     </tr>
 
     <?php

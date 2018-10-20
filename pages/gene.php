@@ -79,9 +79,19 @@ function geneControl(array $args) : Controller {
 function geneView(Controller $c) : void {
     // TODO
     $data = $c->getData(); 
+
+    $link = getLinkForId($data['gene']->getID(), $data['gene']->getSpecie());
+
     ?>
     <div class="container">
         <h2> <?= $data['gene']->getID(); ?> </h2>
+        <?php 
+        if ($link) {
+            echo "<h6><a href='$link' class='sub' target='_blank'>
+                <i class='material-icons left'>launch</i>View full informations in external database
+            </a></h6>";
+        }
+        ?>
         <div class="section">
              <div class="light text-justify flow-text">
                 <?php 

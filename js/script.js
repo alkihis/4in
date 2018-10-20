@@ -118,3 +118,36 @@ function gotoUrl(path, params, method) {
     document.body.appendChild(form);
     form.submit();
 }
+
+function sortTable(idTable) {
+    var table = $('#' + idTable);
+
+    $('#' + idTable + ' th.sortable')
+        .wrapInner('<span title="Sort"/>')
+        .each(function(){
+            var th = $(this),
+                thIndex = th.index(),
+                inverse = false;
+
+            th.click(function() {
+                table.find('td').filter(function(){
+
+                    return $(this).index() === thIndex;
+
+                }).sortElements(function(a, b){
+                    if( $.text([a]).toLowerCase() == $.text([b]).toLowerCase() )
+                        return 0;
+
+                    return $.text([a]).toLowerCase() > $.text([b]).toLowerCase() ?
+                        inverse ? -1 : 1
+                        : inverse ? 1 : -1;
+
+                }, function() {
+                    // parentNode is the element we want to move
+                    return this.parentNode; 
+                });
+                inverse = !inverse;
+            });
+
+        });
+}

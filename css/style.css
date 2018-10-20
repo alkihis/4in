@@ -155,3 +155,7 @@ textarea.materialize-textarea:focus:not([readonly]) {
     word-wrap: break-word;
     white-space: pre-line;
 }
+
+.link-external-search, .sub {
+    vertical-align: sub;
+}
