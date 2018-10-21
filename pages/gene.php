@@ -136,7 +136,7 @@ function geneView(Controller $c) : void {
                         echo ", ";
                     echo "<span class='specie underline-hover blue-text text-darken-3 pointer' data-genes='" . 
                         implode(',', $data['orthologues'][$specie]) . 
-                    "'>$specie</span>";
+                    "' onclick='loadOrthologuesModal(this)'>$specie</span>";
                 }
             }
 
@@ -155,9 +155,10 @@ function geneView(Controller $c) : void {
             }
             ?>
         </div>
+
+        <!-- Modal orthologues -->
+        <div id="modal-orthologues" class="modal">
+        </div>
     </div>  
-    
-    
-    
     <?php
 }

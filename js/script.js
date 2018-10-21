@@ -8,6 +8,8 @@ $(document).ready(function () {
     });
 
     $('select').formSelect();
+
+    $('.modal').modal();
 });
 
 function isPopupOpen() {
@@ -124,18 +126,18 @@ function sortTable(idTable) {
 
     $('#' + idTable + ' th.sortable')
         .wrapInner('<span title="Sort"/>')
-        .each(function(){
+        .each(function() {
             var th = $(this),
                 thIndex = th.index(),
                 inverse = false;
 
             th.click(function() {
-                table.find('td').filter(function(){
+                table.find('td').filter(function() {
 
                     return $(this).index() === thIndex;
 
-                }).sortElements(function(a, b){
-                    if( $.text([a]).toLowerCase() == $.text([b]).toLowerCase() )
+                }).sortElements(function(a, b) {
+                    if ($.text([a]).toLowerCase() == $.text([b]).toLowerCase())
                         return 0;
 
                     return $.text([a]).toLowerCase() > $.text([b]).toLowerCase() ?
@@ -150,4 +152,40 @@ function sortTable(idTable) {
             });
 
         });
+}
+
+function loadOrthologuesModal(element) {
+    var modal = document.getElementById('modal-orthologues');
+
+    var list_of_h = element.dataset.genes.split(',');
+    var str = '';
+
+    str = '<div class="modal-content"><h4>Homologous genes in ' + element.innerText + '</h4>';
+
+    if (list_of_h.length) {
+        str += "<h6>" + list_of_h.length + " homologous gene" + (list_of_h.length > 1 ? 's' : '') + "</h6>";
+
+        var first = true;
+
+        str += '<p>';
+        for (var i = 0; i < list_of_h.length; i++) {
+            if (first) {
+                first = false;
+            }
+            else {
+                str += ', ';
+            }
+            str += '<a href="/gene/' + list_of_h[i] + '" target="_blank">' + list_of_h[i] + '</a>';
+        }
+        str += '</p>';
+    }
+    else {
+        str += '<p>' + element.innerText + ' has no homologous of this gene. </p>';
+    }
+
+    str += '</div>';
+
+    modal.innerHTML = str + '<div class="modal-footer"><a href="#!" class="modal-close red-text btn-flat">Close</a></div>';
+
+    $(modal).modal('open');
 }
