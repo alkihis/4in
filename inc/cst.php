@@ -6,6 +6,8 @@ const MYSQL_BASE = 'projet';
 
 const SITE_NAME = 'NC3I';
 const DEBUG_MODE = true;
+
+// Protected genomes : hide species defined in PROTECTED_SPECIES
 const LIMIT_GENOMES = true;
 
 // Définition des pages disponibles sur le site web
@@ -44,6 +46,8 @@ const SPECIE_TO_NAME = [
     'Sinvicta' => 'SOLIN'
 ];
 
+// Note that value of specie is useless : Associative array is used like a set container here
+// Protected specie must be defined as key of the array
 const PROTECTED_SPECIES = [
     'Soryzae' => true,
     'Msexta' => true

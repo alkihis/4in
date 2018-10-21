@@ -5,9 +5,18 @@ function loginControl($args) : Controller {
 
     global $sql;
 
+    $returns['generate_form'] = true;
+    $returns['already_logged'] = false;
+
     if (isUserLogged()) {
-        unlogUser();
-        $returns['unlogged'] = true;
+        if (isset($_GET['logout']) && is_string($_GET['logout']) && $_GET['logout'] === '1') {
+            unlogUser();
+            $returns['unlogged'] = true;
+        }
+        else {
+            $returns['generate_form'] = false;
+            $returns['already_logged'] = true;
+        }
     }
     else if (isset($_POST['login'], $_POST['password'])) { // Si il y a un login et mot de passe défini
         $login = mysqli_real_escape_string($sql, $_POST['login']);
@@ -33,6 +42,7 @@ function loginControl($args) : Controller {
                 logUser($row); // Enregistre l'utilisateur dans la session
 
                 $returns['successful_connection'] = true;
+                $returns['generate_form'] = false;
             }
             else { // Mot de passe invalide
                 $returns['try_connect'] = true;
@@ -69,7 +79,11 @@ function loginView(Controller $c) : void {
                     else if (isset($data['successful_connection'])) {
                         echo '<h6 class="green-text">You have successfully logged in.</h6>';
                     }
-                    ?>
+                    else if ($data['already_logged']) {
+                        echo '<h5 class="red-text">You seem to be already logged.</h(>';
+                    }
+
+                    if ($data['generate_form']) { ?>
                     <form method='post' action='/login'>
                         <div class='input-field col s12'>
                             <input type='text' name='login' id='login' value='<?= $data["login"] ?? "" ?>' required>
@@ -82,6 +96,7 @@ function loginView(Controller $c) : void {
                         <button class='btn-flat blue-text right'>Login</button>
                         <div class='clearb'></div>
                     </form>
+                    <?php } ?>
                 </div>
             </div>
         </div>

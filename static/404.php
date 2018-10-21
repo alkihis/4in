@@ -9,15 +9,34 @@ function notFoundControl() : Controller {
 
 function notFoundView(Controller $c) : void {
     ?>
-    <div class='container'>
-        <div class='row section'>
-            <h1 class='header center red-text'>Page not found</h1>
-            <p class='flow-text center'>
-                You're trying to reach a non-existant page.<br><br>
-                <a href='/' class='underline-hover'>Accueil</a>
-            </p>
+    <div id='particle-holder'>
+        <div class='container'>
+            <div class='row section'>
+                <div style='margin-top: 90px;'></div>
+                <div class='tiny-container'>
+                    <h2 class='header lighter-text red-att-text'>404 <span class='tiny-text'>Page Not Found</span></h2>
+                    <div class='divider divider-white'></div>
+                    <p class='white-text text-justify'>
+                        You're trying to reach a non-existant page.<br><br>
+                        Please check the page URL or use search module to find specific informations.
+                    </p>
+                    <p class='flow-text center'>
+                        <br>
+                        <a href='/' class='underline-hover blue-att-text'>Home</a>
+                    </p>
+                    <div class='clearb' style='margin-bottom: 50px'></div>
+                </div>
+            </div>
         </div>
     </div>
 
+    <script src="/js/particles.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            particlesJS.load('particle-holder', '/assets/particlesjs-config.json');
+
+            $('main').addClass('with-particle');
+        });
+    </script>
     <?php
 }

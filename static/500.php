@@ -10,29 +10,43 @@ function serverErrorControl(Throwable $e) : Controller {
 function serverErrorView(Controller $c) : void {
     $e = $c->getData()['error'];
     ?>
-    <div class='container'>
-        <div class='row section'>
-            <h1 class='header center'>500</h1>
-            <h3 class='header center red-text'>Internal server error</h3></h3>
-            <p class='flow-text center'>
-                The provided data is incorrect, 
-                or the server encountered an unexpected issue. <br>
-                
-                Please try again later.
-                <br>
-            </p>
-            
-            <?php if (DEBUG_MODE) { ?>
-            <div class='server-error-text center' style="margin: 10px auto">
-                <pre><?= htmlspecialchars($e->getMessage()) ?></pre>
-            </div>
-            <?php } ?>
+    <div id='particle-holder'>
+        <div class='container'>
+            <div class='row section'>
+                <div style='margin-top: 90px;'></div>
+                <div class='tiny-container'>
+                    <h2 class='header lighter-text red-att-text'>500 <span class='tiny-text'>Internal Server Error</span></h2>
+                    <div class='divider divider-white'></div>
+                    <p class='white-text text-justify'>
+                        The provided data is incorrect, 
+                        or the server encountered an unexpected issue. <br>
+                        
+                        Please try again later.
+                    </p>
 
-            <p class='flow-text center'>
-                <a href='#!' onclick='window.history.back()'>Previous</a>
-            </p>
+                    <?php if (DEBUG_MODE) { ?>
+                    <div class='server-error-text center' style="margin: 10px auto">
+                        <pre><?= htmlspecialchars($e->getMessage()) ?></pre>
+                    </div>
+                    <?php } ?>
+
+                    <p class='flow-text center'>
+                        <a href='#!' class='blue-att-text underline-hover' onclick='window.history.back()'>Previous</a>
+                    </p>
+                    <div class='clearb' style='margin-bottom: 50px'></div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <script src="/js/particles.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            particlesJS.load('particle-holder', '/assets/particlesjs-config.json');
+
+            $('main').addClass('with-particle');
+        });
+    </script>
 
     <?php
 }

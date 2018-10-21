@@ -55,11 +55,12 @@ main {
 
 .server-error-text {
     border-radius: 8px;
-    border: 1px #b3b2b2 solid;
+    border: 1px #689eff solid;
     width: fit-content;
     margin: auto;
     padding: 10px 30px;
-    background-color: #f1f1f1;
+    background-color: rgba(20, 97, 175, 0.61);
+    color: white;
 }
 
 .card-border {
@@ -147,6 +148,10 @@ textarea.materialize-textarea:focus:not([readonly]) {
     background-color: grey;
 }
 
+.divider-white {
+    background-color: white;
+}
+
 .pointer {
     cursor: pointer;
 }
@@ -158,4 +163,63 @@ textarea.materialize-textarea:focus:not([readonly]) {
 
 .link-external-search, .sub {
     vertical-align: sub;
+}
+
+main.with-particle {
+    background-image: linear-gradient(to top, rgb(59, 163, 248),rgb(49, 134, 245), rgb(27, 125, 232), rgb(0, 153, 232));
+}
+
+#particle-holder canvas {
+    height: 70vh !important;
+}
+
+#particle-holder .container {
+    display: block;
+    user-select: none;
+    pointer-events: none;
+    position: absolute;
+    margin: auto;
+    width: 100%;
+    max-width: unset;
+}
+
+#particle-holder a, #particle-holder pre {
+    pointer-events: all;
+}
+
+#particle-holder pre {
+    user-select: all;
+}
+
+.lighter-text {
+    font-weight: lighter;
+}
+
+.red-att-text {
+    color: #ffb5b4;
+}
+
+.blue-att-text {
+    color: #d2e4ff;
+}
+
+.tiny-text {
+    font-size: 1rem;
+}
+
+.tiny-container {
+    margin: 0 auto;
+    width: 90%;
+}
+
+@media only screen and (min-width: 601px) {
+    .tiny-container {
+        width: 50%;
+    }
+}
+
+@media only screen and (min-width: 993px) {
+    .tiny-container {
+        width: 30%;
+    }
 }

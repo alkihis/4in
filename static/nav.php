@@ -9,7 +9,7 @@
             <li><a class='dropdown-trigger no-outline-focus' data-target='dropdown_search_menu' href="/search">
                 <i class='material-icons left'>search</i>Search
             </a></li>
-            <li><a href="/add_gene"><i class='material-icons left'>add</i>Add a gene</a></li>
+            <li><a href="/blast_search"><i class='material-icons left'>sort</i>BLAST</a></li>
         </ul>
     </div>
 </nav>
