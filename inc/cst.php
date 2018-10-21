@@ -6,6 +6,7 @@ const MYSQL_BASE = 'projet';
 
 const SITE_NAME = 'NC3I';
 const DEBUG_MODE = true;
+const LIMIT_GENOMES = true;
 
 // Définition des pages disponibles sur le site web
 // nom_page => [
@@ -41,4 +42,9 @@ const SPECIE_TO_NAME = [
     'Phumanus' => 'PEDHU',
     'Soryzae' => 'SITOR',
     'Sinvicta' => 'SOLIN'
+];
+
+const PROTECTED_SPECIES = [
+    'Soryzae' => true,
+    'Msexta' => true
 ];

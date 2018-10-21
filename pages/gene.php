@@ -45,6 +45,13 @@ function geneControl(array $args) : Controller {
     }
 
     $row = mysqli_fetch_assoc($q);
+
+    // Le gene est récupéré : il faut vérifier si on a les droits de lecture (certaines
+    // espèces ont des génomes non publiés) : Si l'utilisateur n'est pas connecté: affichage interdit
+    if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
+        throw new ForbiddenPageException();
+    }
+
     $gene = new GeneObject($row);
     $gene_id = mysqli_real_escape_string($sql, $row['gene_id']);
 
@@ -57,6 +64,12 @@ function geneControl(array $args) : Controller {
     $array = [];
     while ($row = mysqli_fetch_assoc($q)){
         $specie_en_cours = $row['specie'];
+
+        if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
+            // Si le génome est protégé, on l'insère pas dans le tableau
+            continue;
+        }
+
         $id_en_cours = $row['gene_id'];
         $array[$specie_en_cours][] = $id_en_cours;
     }

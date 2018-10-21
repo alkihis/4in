@@ -1,9 +1,31 @@
 <?php
 
+session_start();
 // Récupère tous les IDs
 global $sql;
 
-$q = mysqli_query($sql, "SELECT gene_id FROM GeneAssociations");
+$add = '';
+
+if (LIMIT_GENOMES && !isUserLogged()) {
+    $first = true;
+
+    foreach (getProtectedSpecies() as $specie) {
+        $specie = mysqli_real_escape_string($sql, $specie);
+
+        if ($first) {
+            $first = false;
+
+            $add = " WHERE ";
+        }
+        else {
+            $add .= ' AND ';
+        }
+
+        $add .= " specie != '$specie' ";
+    }
+}
+
+$q = mysqli_query($sql, "SELECT gene_id FROM GeneAssociations $add");
 
 $res = [];
 if ($q) {

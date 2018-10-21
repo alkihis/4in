@@ -139,4 +139,12 @@ function getLinkForId(string $id, string $specie) : string {
     return "http://arthropodacyc.cycadsys.org/". SPECIE_TO_NAME[$specie] ."/NEW-IMAGE?type=GENE&object=" . $id;
 }
 
+function isProtectedSpecie(string $specie) : bool {
+    return array_key_exists($specie, PROTECTED_SPECIES);
+}
+
+function getProtectedSpecies() : array {
+    return array_keys(PROTECTED_SPECIES);
+}
+
 connectBD();

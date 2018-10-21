@@ -174,15 +174,21 @@ function searchById() : array {
             throw new UnexpectedValueException("SQL request failed");
         }
 
+        $r['results'] = [];
+
         if (mysqli_num_rows($q)) { // Il y a un identifiant trouvé, on le récupère
             while ($row = mysqli_fetch_assoc($q)) {
                 // results empêche la génération du formulaire de recherche,
                 // et affiche les résultats à la page
+
+                // Filtre les gènes protégés
+                if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
+                    // Si le génome est protégé, on l'insère pas dans le tableau
+                    continue;
+                }
+
                 $r['results'][] = new GeneObject($row);
             }            
-        }
-        else {
-            $r['results'] = []; // Résultats vides
         }
     }
 
@@ -230,15 +236,20 @@ function searchByName() : array {
             throw new UnexpectedValueException("SQL request failed");
         }
 
+        $r['results'] = [];
+
         if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
             while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
+                // Filtre les gènes protégés
+                if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
+                    // Si le génome est protégé, on l'insère pas dans le tableau
+                    continue;
+                }
+
                 $r['results'][] = new GeneObject($row);
             } 
             // results empêche la génération du formulaire de recherche,
             // et affiche les résultats à la page
-        }
-        else {
-            $r['results'] = [];
         }
     }
 
@@ -301,15 +312,20 @@ function searchPathway() : array {
             throw new UnexpectedValueException("SQL request failed");
         }
 
+        $r['results'] = [];
+
         if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
-            while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
+            while($row = mysqli_fetch_assoc($q)) {
+                // Filtre les gènes protégés
+                if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
+                    // Si le génome est protégé, on l'insère pas dans le tableau
+                    continue;
+                }
+
                 $r['results'][] = new GeneObject($row);
             } 
             // results empêche la génération du formulaire de recherche,
             // et affiche les résultats à la page
-        }
-        else {
-            $r['results'] = [];
         }
     }
 
