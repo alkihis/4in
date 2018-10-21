@@ -196,7 +196,7 @@ function searchById() : array {
 }
 
 function showSearchById(array $data) : void {
-    generateSearchForm('id', $data['previous_search'] ?? []);
+    generateSearchForm('id', $data['form_data'] ?? []);
 
     if (isset($data['results'])) { // résultats : tableau de résultat à générer
         generateSearchResultsArray($data['results']);
@@ -257,7 +257,7 @@ function searchByName() : array {
 }
 
 function showSearchByName(array $data) : void {
-    generateSearchForm('name', $data['previous_search'] ?? []);
+    generateSearchForm('name', $data['form_data'] ?? []);
 
     if (isset($data['results'])) {
         generateSearchResultsArray($data['results']);
