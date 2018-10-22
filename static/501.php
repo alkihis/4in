@@ -4,7 +4,7 @@
 
 function serverImplementControl(Throwable $e) : Controller {
     header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
-    return new Controller(['error' => $e], 'Function not yet implemented');
+    return new Controller(['error' => $e], 'Function not implemented yet');
 }
 
 function serverImplementView(Controller $c) : void {
@@ -15,15 +15,15 @@ function serverImplementView(Controller $c) : void {
             <div class='row section'>
                 <div style='margin-top: 90px;'></div>
                 <div class='tiny-container'>
-                    <h2 class='header lighter-text red-att-text'>501 <span class='tiny-text'>Unavailable Function</span></h2>
+                    <h2 class='header lighter-text red-att-text'>501 <span class='tiny-text'>Not Implemented</span></h2>
                     <div class='divider divider-white'></div>
                     <p class='white-text text-justify'>
-                        This page or functionnality is not yet available on our website.<br>
+                        This page or functionnality is not available yet on our website.<br>
                         Please try again later.
                         <br>
                     </p>
 
-                    <?php if (DEBUG_MODE) { ?>
+                    <?php if (DEBUG_MODE && $e->getMessage()) { ?>
                     <div class='server-error-text center' style="margin: 10px auto">
                         <pre><?= htmlspecialchars($e->getMessage()) ?></pre>
                     </div>
