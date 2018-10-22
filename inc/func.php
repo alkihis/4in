@@ -147,4 +147,31 @@ function getProtectedSpecies() : array {
     return array_keys(PROTECTED_SPECIES);
 }
 
+function checkSaveLinkValidity(string $specie, string $gene_id) : bool {
+    global $sql;
+
+    if (array_key_exists($specie, SPECIE_TO_NAME) && !isProtectedSpecie($specie)) {
+        $c = curl_init();
+        $specie_code = SPECIE_TO_NAME[$specie];
+
+        curl_setopt($c, CURLOPT_URL, "http://bf2i200.insa-lyon.fr/$specie_code/NEW-IMAGE?type=GENE&object={$gene_id}");
+
+        curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+        $return = curl_exec($c);
+
+        $res = curl_getinfo($c);
+        $gene_id = mysqli_real_escape_string($sql, $gene_id);
+
+        if ($res['http_code'] === 404) {
+            mysqli_query($sql, "UPDATE GeneAssociations SET linkable=0 WHERE gene_id='$gene_id';");
+        }
+        else {
+            mysqli_query($sql, "UPDATE GeneAssociations SET linkable=1 WHERE gene_id='$gene_id';");
+            return true;
+        }
+    }
+
+    return false;
+}
+
 connectBD();
