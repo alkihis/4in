@@ -145,7 +145,7 @@ function showSearchHome(array $data) : void {
 function searchById() : array {
     $r = [];
 
-    if (isset($_GET['id']) && is_string($_GET['id']) && strlen($_GET['id']) > 0) {
+    if (isset($_GET['id']) && is_string($_GET['id']) && strlen($_GET['id']) > 1) {
         $r['form_data'] = [];
         $r['form_data']['id'] = htmlspecialchars($_GET['id'], ENT_QUOTES);
 
@@ -156,15 +156,7 @@ function searchById() : array {
         $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, 
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
              FROM Pathways p 
-             WHERE g.id = p.id) as pathways,
-            (CASE 
-                WHEN a.sequence_adn IS NOT NULL THEN 1
-                ELSE 0
-            END) as is_seq_adn,
-            (CASE 
-                WHEN a.sequence_pro IS NOT NULL THEN 1
-                ELSE 0
-            END) as is_seq_pro
+             WHERE g.id = p.id) as pathways 
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
         WHERE a.gene_id LIKE '$id%'
@@ -174,21 +166,15 @@ function searchById() : array {
             throw new UnexpectedValueException("SQL request failed");
         }
 
-        $r['results'] = [];
-
         if (mysqli_num_rows($q)) { // Il y a un identifiant trouvé, on le récupère
             while ($row = mysqli_fetch_assoc($q)) {
                 // results empêche la génération du formulaire de recherche,
                 // et affiche les résultats à la page
-
-                // Filtre les gènes protégés
-                if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
-                    // Si le génome est protégé, on l'insère pas dans le tableau
-                    continue;
-                }
-
                 $r['results'][] = new GeneObject($row);
             }            
+        }
+        else {
+            $r['results'] = []; // Résultats vides
         }
     }
 
@@ -196,7 +182,7 @@ function searchById() : array {
 }
 
 function showSearchById(array $data) : void {
-    generateSearchForm('id', $data['form_data'] ?? []);
+    generateSearchForm('id', $data['previous_search'] ?? []);
 
     if (isset($data['results'])) { // résultats : tableau de résultat à générer
         generateSearchResultsArray($data['results']);
@@ -218,15 +204,7 @@ function searchByName() : array {
         $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, 
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
              FROM Pathways p 
-             WHERE g.id = p.id) as pathways,
-            (CASE 
-                WHEN a.sequence_adn IS NOT NULL THEN 1
-                ELSE 0
-            END) as is_seq_adn,
-            (CASE 
-                WHEN a.sequence_pro IS NOT NULL THEN 1
-                ELSE 0
-            END) as is_seq_pro
+             WHERE g.id = p.id) as pathways 
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
         WHERE g.gene_name LIKE '$name%'
@@ -236,20 +214,15 @@ function searchByName() : array {
             throw new UnexpectedValueException("SQL request failed");
         }
 
-        $r['results'] = [];
-
         if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
             while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
-                // Filtre les gènes protégés
-                if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
-                    // Si le génome est protégé, on l'insère pas dans le tableau
-                    continue;
-                }
-
                 $r['results'][] = new GeneObject($row);
             } 
             // results empêche la génération du formulaire de recherche,
             // et affiche les résultats à la page
+        }
+        else {
+            $r['results'] = [];
         }
     }
 
@@ -257,7 +230,7 @@ function searchByName() : array {
 }
 
 function showSearchByName(array $data) : void {
-    generateSearchForm('name', $data['form_data'] ?? []);
+    generateSearchForm('name', $data['previous_search'] ?? []);
 
     if (isset($data['results'])) {
         generateSearchResultsArray($data['results']);
@@ -293,15 +266,7 @@ function searchPathway() : array {
         $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie,
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
             FROM Pathways p 
-            WHERE g.id = p.id) as pathways,
-            (CASE 
-                WHEN a.sequence_adn IS NOT NULL THEN 1
-                ELSE 0
-            END) as is_seq_adn,
-            (CASE 
-                WHEN a.sequence_pro IS NOT NULL THEN 1
-                ELSE 0
-            END) as is_seq_pro
+            WHERE g.id = p.id) as pathways 
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
         JOIN Pathways pa ON pa.id=g.id
@@ -312,20 +277,15 @@ function searchPathway() : array {
             throw new UnexpectedValueException("SQL request failed");
         }
 
-        $r['results'] = [];
-
         if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
-            while($row = mysqli_fetch_assoc($q)) {
-                // Filtre les gènes protégés
-                if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
-                    // Si le génome est protégé, on l'insère pas dans le tableau
-                    continue;
-                }
-
+            while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
                 $r['results'][] = new GeneObject($row);
             } 
             // results empêche la génération du formulaire de recherche,
             // et affiche les résultats à la page
+        }
+        else {
+            $r['results'] = [];
         }
     }
 
@@ -354,7 +314,7 @@ function searchAdvanced() : array {
 
         global $sql;
         // Recherche du nom dans la base de données
-        $global = mysqli_real_escape_string($sql, $_GET['global']);
+        $global = explode(" ", mysqli_real_escape_string($sql, $_GET['global']));
 
         $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, 
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
@@ -362,7 +322,7 @@ function searchAdvanced() : array {
              WHERE g.id = p.id) as pathways 
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
-        WHERE g.gene_name LIKE '$global%'
+        WHERE g.gene_name LIKE '$global[0]'
         GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie");
 
         if (!$q) {
@@ -543,37 +503,18 @@ function generateSearchResultsArray(array $res) : void {
                 <h4 class='red-text header'>No results</h4>
                 <?php } else { ?>
                 <h6><?= count($res) ?> result<?= count($res) > 1 ? 's' : '' ?></h6>
-
-                <div class='download-results col s12'>
-                    <div class='col s6'>
-                        <a href='#!' class='btn-flat btn-perso purple-text right' 
-                            onclick="downloadCheckedSequences('adn', true);">
-                            <i class='material-icons left'>file_download</i>FASTA sequences (ADN)
-                        </a>
-                    </div>
-
-                    <div class='col s6'>
-                        <a href='#!' class='btn-flat btn-perso blue-text left' 
-                            onclick="downloadCheckedSequences('pro', true);">
-                            <i class='material-icons left'>file_download</i>FASTA sequences (Protein)
-                        </a>
-                    </div>
-                    
-                    <div class='clearb'></div>
-                </div>
-                <table id='search_table'>
+                <table>
                     <thead>
                         <tr>
                             <th></th>
-                            <th class='pointer sortable'>Gene ID</th>
-                            <th class='pointer sortable'>Name</th>
-                            <th class='pointer sortable'>Role</th>
-                            <th class='pointer sortable'>Pathway</th>
-                            <th class='pointer sortable'>Fullname</th>
-                            <th class='pointer sortable'>Family</th>
-                            <th class='pointer sortable'>Subfamily</th>
-                            <th class='pointer sortable'>Specie</th>
-                            <th></th>
+                            <th>Gene ID</th>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Pathway</th>
+                            <th>Fullname</th>
+                            <th>Family</th>
+                            <th>Subfamily</th>
+                            <th>Specie</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -592,17 +533,12 @@ function generateSearchResultsArray(array $res) : void {
     <div class='popup-download'>
         <div class='card card-border'>
             <div class='card-content'>
-                <a href='#!' class='btn-flat btn-perso green-text left' onclick="checkAllPageBoxes(true)">Check all</a>
-                <a href='#!' class='btn-flat btn-perso red-text left' onclick="checkAllPageBoxes(false)">Uncheck all</a>
+                <a href='#!' class='btn-flat green-text left' onclick="checkAllPageBoxes(true)">Check all</a>
+                <a href='#!' class='btn-flat blue-text left' onclick="checkAllPageBoxes(false)">Uncheck all</a>
                 <div href='#!' data-count="0" id='total_count_popup' class='grey-text dl-count-popup darken-4 left'>
-                    <span id='count_popup'>0</span> selected
+                    <span id='count_popup'>0</span> Selected<span id='count_popup_s'>s</span>
                 </div>
-                <a href='#!' class='btn-flat btn-perso blue-text right' onclick="downloadCheckedSequences('pro')">
-                    <i class='material-icons left'>file_download</i>Protein
-                </a>
-                <a href='#!' class='btn-flat btn-perso purple-text right' onclick="downloadCheckedSequences('adn')">
-                    <i class='material-icons left'>file_download</i>ADN
-                </a>
+                <a href='#!' class='btn-flat blue-text right' onclick="downloadCheckedSequences()"><i class='material-icons left'>file_download</i> Download </a>
                 <div class='clearb'></div>
             </div>
         </div>
@@ -611,24 +547,21 @@ function generateSearchResultsArray(array $res) : void {
     <script>
         $(document).ready(function() {
             initCheckboxes();
-
-            sortTable('search_table');
         });
     </script>
 
     <?php
 }
 
-function generateArrayLine(GeneObject $line) : void { ?>
+function generateArrayLine(Gene $line) : void { ?>
     <tr>
-        <td>    
+        <td>
             <label>
-                <input type="checkbox" class="filled-in 
-                    <?= ($line->isSequenceADN() || $line->isSequenceProt() ? 'chk-srch"' : '" disabled') ?> data-id="<?= $line->getID() ?>">
+                <input type="checkbox" class="filled-in chk-srch" dataset-id="<?= $line->getID() ?>">
                 <span class="checkbox-search"></span>
             </label>
         </td>
-        <td><a href='/gene/<?= $line->getID() ?>' target='_blank'><?= $line->getID() ?></a></td>
+        <td><?= $line->getID() ?></td>
         <td><?= $line->getName() ?></td>
         <td><?= $line->getFunction() ?></td>
         <td><?= implode(', ', $line->getPathways()) ?></td>
@@ -636,16 +569,6 @@ function generateArrayLine(GeneObject $line) : void { ?>
         <td><?= $line->getFamily() ?></td>
         <td><?= $line->getSubFamily() ?></td>
         <td><?= $line->getSpecie() ?></td>
-        <td>
-            <?php 
-            if (getLinkForId($line->getID(), $line->getSpecie())) {
-                echo '<a href="' . getLinkForId($line->getID(), $line->getSpecie()) . 
-                    '" target="_blank" title="View in external database">
-                        <i class="material-icons link-external-search">launch</i>
-                    </a>';
-            }
-            ?>
-        </td>
     </tr>
 
     <?php
