@@ -48,7 +48,8 @@ function homeView(Controller $c) : void { ?>
 
                         <p class="light text-justify">
                             Check out our entire database here. Download any sequence in the format of your choice, 
-                            sort your results according to your requirements and learn about the functionnal annotations available. 
+                            sort your results according to your requirements and learn about the functionnal annotations available
+                            through links to the Bf2i's database. 
                         </p>
                     </div>
                 </div>
@@ -62,7 +63,7 @@ function homeView(Controller $c) : void { ?>
 
                         <p class="light text-justify">
                             Align your own sequences using BLAST's algorithm on our database's sequences.
-                            You can chose wether to align nucleotides or amino acids sequences.
+                            You can choose whether to align nucleotides or amino acids sequences.
                         </p>
                     </div>
                 </div>
