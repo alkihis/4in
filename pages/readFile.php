@@ -85,12 +85,14 @@ function explodeFile(string $filename, bool $trim_first_line = false) : void {
             // Si un pathway est défini, on le split en fonction de /, et on insère autant de pathways que défini dans Pathways,
             // ceux-ci étant reliés au Gene par son ID
             if (!empty($pathway)) {
-                $paths = explode('/', $pathway);
+                insertPathway($id_insert, $pathway);
+
+                // $paths = explode('/', $pathway);
                 
-                foreach ($paths as $p) {
-                    if (!empty(trim($p)))
-                        insertPathway($id_insert, trim($p));
-                }
+                // foreach ($paths as $p) {
+                //     if (!empty(trim($p)))
+                        
+                // }
             }
 
             // Les espèces présentes, dans le bon ordre
@@ -119,8 +121,8 @@ function explodeFile(string $filename, bool $trim_first_line = false) : void {
 
                         // On insère le gène dans les associations
                         mysqli_query($sql, "INSERT INTO GeneAssociations
-                        (id, gene_id, sequence_id, specie, addi)
-                        VALUES ($id_insert, '$id', NULL, '{$assocs_species[$i - 6]}', '$full_line')"); 
+                        (id, gene_id, sequence_adn, sequence_pro, specie, addi)
+                        VALUES ($id_insert, '$id', NULL, NULL, '{$assocs_species[$i - 6]}', '$full_line')"); 
                     }
                 }
             }
@@ -232,7 +234,7 @@ function readFileControl($args) : Controller {
     // Dans le contrôleur, on exploite le GET ou le POST
     if (isset($_GET['refresh']) && $_GET['refresh'] === 't') {
         emptyTables();
-        explodeFile('tab.tsv');
+        explodeFile('new_tab.tsv', true);
     }
 
     $compact = true;

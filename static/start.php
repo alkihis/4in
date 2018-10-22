@@ -23,7 +23,7 @@ function homeView(Controller $c) : void { ?>
             <!--   Icon Section   -->
             <div class="row">
                 <p class='flow-text text-justify head-main-title'>
-                    Developped in order to ease access to the data harvested from different species,
+                    Developed in order to ease access to the data harvested from different species,
                     this database is centered around the genetic study of the "rice charançon", also called Sitophilus oryzae.
                 </p>
                 <div class="col s12 m4">

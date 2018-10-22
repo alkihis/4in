@@ -1,5 +1,7 @@
 <?php
 
+ini_set('display_errors', 'on');
+
 define('MAIN_DIR', $_SERVER['DOCUMENT_ROOT'] . '/');
 
 require MAIN_DIR . 'inc/cst.php';

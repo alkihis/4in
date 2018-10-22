@@ -8,6 +8,8 @@ $(document).ready(function () {
     });
 
     $('select').formSelect();
+
+    $('.modal').modal();
 });
 
 function isPopupOpen() {
@@ -24,13 +26,10 @@ function hidePopup() {
 
 function initCheckboxes() {
     var number_checked = document.getElementById('count_popup');
-    var number_checked_s = document.getElementById('count_popup_s');
 
     $('.chk-srch').on('change', function(evt) {
         var len = $('.chk-srch:checked').length;
         number_checked.innerText = len;
-
-        number_checked_s.innerText = (len > 1 ? 's' : '');
 
         if (this.checked) {
             showPopup();
@@ -44,7 +43,6 @@ function initCheckboxes() {
 function checkAllPageBoxes(checked) {
     var elements = document.getElementsByClassName('chk-srch');
     var number_checked = document.getElementById('count_popup');
-    var number_checked_s = document.getElementById('count_popup_s');
 
     if (checked) {
         for (var i = 0; i < elements.length; i++) {
@@ -61,5 +59,133 @@ function checkAllPageBoxes(checked) {
 
     var len = $('.chk-srch:checked').length;
     number_checked.innerText = len;
-    number_checked_s.innerText = (len > 1 ? 's' : '');
+}
+
+function downloadCheckedSequences(mode, download_all = false) {
+    var e = $('.chk-srch' + (download_all ? '' : ':checked'));
+
+    var ids = '';
+    var first = true;
+
+    e.each(function() {
+        if (first) {
+            first = false;
+        }
+        else {
+            ids += ',';
+        }
+
+        ids += this.dataset.id;
+    });
+
+    gotoUrl('/api/seq/get_sequences_fasta.php', {ids: ids, mode: mode}, 'post');
+}
+
+function gotoUrl(path, params, method) {
+    //Null check
+    method = method || "post"; // Set method to post by default if not specified.
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+    form.setAttribute("target", '_blank');
+
+    //Fill the hidden form
+    if (typeof params === 'string') {
+        var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", 'data');
+        hiddenField.setAttribute("value", params);
+        form.appendChild(hiddenField);
+    }
+    else {
+        for (var key in params) {
+            if (params.hasOwnProperty(key)) {
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", key);
+                if(typeof params[key] === 'object'){
+                    hiddenField.setAttribute("value", JSON.stringify(params[key]));
+                }
+                else{
+                    hiddenField.setAttribute("value", params[key]);
+                }
+                form.appendChild(hiddenField);
+            }
+        }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function sortTable(idTable) {
+    var table = $('#' + idTable);
+
+    $('#' + idTable + ' th.sortable')
+        .wrapInner('<span title="Sort"/>')
+        .each(function() {
+            var th = $(this),
+                thIndex = th.index(),
+                inverse = false;
+
+            th.click(function() {
+                table.find('td').filter(function() {
+
+                    return $(this).index() === thIndex;
+
+                }).sortElements(function(a, b) {
+                    if ($.text([a]).toLowerCase() == $.text([b]).toLowerCase())
+                        return 0;
+
+                    return $.text([a]).toLowerCase() > $.text([b]).toLowerCase() ?
+                        inverse ? -1 : 1
+                        : inverse ? 1 : -1;
+
+                }, function() {
+                    // parentNode is the element we want to move
+                    return this.parentNode; 
+                });
+                inverse = !inverse;
+            });
+
+        });
+}
+
+function loadOrthologuesModal(element) {
+    var modal = document.getElementById('modal-orthologues');
+
+    var list_of_h = element.dataset.genes.split(',');
+    var str = '';
+
+    str = '<div class="modal-content"><h4>Homologous genes in ' + element.innerText + '</h4>';
+
+    if (list_of_h.length) {
+        str += "<h6>" + list_of_h.length + " homologous gene" + (list_of_h.length > 1 ? 's' : '') + "</h6>";
+
+        var first = true;
+
+        str += '<p>';
+        for (var i = 0; i < list_of_h.length; i++) {
+            if (first) {
+                first = false;
+            }
+            else {
+                str += ', ';
+            }
+            str += '<a href="/gene/' + list_of_h[i] + '" target="_blank">' + list_of_h[i] + '</a>';
+        }
+        str += '</p>';
+    }
+    else {
+        str += '<p>' + element.innerText + ' has no homologous of this gene. </p>';
+    }
+
+    str += '</div>';
+
+    modal.innerHTML = str + '<div class="modal-footer"><a href="#!" class="modal-close red-text btn-flat">Close</a></div>';
+
+    $(modal).modal('open');
 }

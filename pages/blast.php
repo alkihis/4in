@@ -55,13 +55,29 @@ function blastControl(array $args) : Controller {
             $_POST['query'] = $_REQUEST['query'];
     }
 
+    $mode = 'adn_base';
+    $blast_type = 'blastn';
+    $mode_short = 'adn';
+
+    if (isset($args[0]) && $args[0] === 'prot') {
+        $mode = 'pro_base';
+        $blast_type = 'blastp';
+        $mode_short = 'pro';
+    }
+
+    if (isUserLogged() || !LIMIT_GENOMES) { 
+        // Si l'utilisateur a les droits, ou si les génomes ne sont pas limités
+        // il utilise la BDD complète
+        $mode .= '_full';
+    }
+
     if (isset($_POST['query']) && is_string($_POST['query'])) {
         $_POST['query'] = trim($_POST['query']);
 
         // $valid contiendra true si la chaîne est valide,
         // -1 si aucune ligne ne contient de séquence,
         // position_de_ligne de la ligne invalide sinon
-        $valid = isValidFasta($_POST['query'], 'pro');
+        $valid = isValidFasta($_POST['query'], $mode_short);
 
         if ($valid === true) {
             $query_file = $_POST['query'];
@@ -76,11 +92,10 @@ function blastControl(array $args) : Controller {
 
     `echo "{$query_file}" > $temp_file`;
     `chmod a+a $temp_file`;
-    # echo `ls -l $temp_file`;
 
     chdir($_SERVER['DOCUMENT_ROOT'] . '/ncbi/bin');
 
-    $html = `./blastp -query "$temp_file" -db testdb -html 2>&1`;
+    $html = `./$blast_type -query "$temp_file" -db base/$mode -html 2>&1`;
 
     chdir($_SERVER['DOCUMENT_ROOT']);
 
@@ -88,6 +103,12 @@ function blastControl(array $args) : Controller {
 
     // Traitement de l'HTML généré
     $html = preg_replace("/a> *(.+)\nlength=/iu", "a> <a href='/gene/$1' target='_blank'>$1</a>\nlength=", $html);
+
+    $mat = [];
+    preg_match("/(<pre>.+<\/pre>)/is", $html, $mat);
+
+    $html = $mat[1];
+
     $re['html'] = $html;
 
     return new Controller($re, 'BLAST');
@@ -95,19 +116,6 @@ function blastControl(array $args) : Controller {
 
 function blastView(Controller $c) : void {
     $data = $c->getData();
-
-    // global $sql;
-
-    // $q = mysqli_query($sql, "SELECT DISTINCT gene_id FROM GeneAssociations;");
-
-    // echo '<pre>';
-
-    // while ($row = mysqli_fetch_assoc($q)) {
-    //     echo $row['gene_id'] . "\n";
-    // }
-
-    // echo "</pre>";
-    // return;
 
     ?>
     <div class='container'>
