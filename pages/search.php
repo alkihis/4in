@@ -303,16 +303,18 @@ function showSearchByPathway(array $data) : void {
 ////// AVANCEE //////
 function searchAdvanced() : array {
     //throw new NotImplementedException("Advanced search not yet implemented.");
+
     //Requete random pour pouvoir charger la page
+    
     $r = [];
 
-    if (isset($_GET['name']) && is_string($_GET['name'])) {
+    if (isset($_GET['global']) && is_string($_GET['global'])) {
         $r['form_data'] = [];
-        $r['form_data']['name'] = htmlspecialchars($_GET['name'], ENT_QUOTES);
+        $r['form_data']['global'] = htmlspecialchars($_GET['global'], ENT_QUOTES);
 
         global $sql;
         // Recherche du nom dans la base de données
-        $name = mysqli_real_escape_string($sql, $_GET['name']);
+        $global = mysqli_real_escape_string($sql, $_GET['global']);
 
         $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, 
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
@@ -320,7 +322,7 @@ function searchAdvanced() : array {
              WHERE g.id = p.id) as pathways 
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
-        WHERE g.gene_name LIKE '$name%'
+        WHERE g.gene_name LIKE '$global%'
         GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie");
 
         if (!$q) {
@@ -445,9 +447,9 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                 else if ($mode === 'global') { ?>
                     <div class='input-field col s12 margin-bottom'>
                         <i class="material-icons prefix">assignment</i>
-                        <input type='text' autocomplete='off' name="name" id="gene_name" 
-                            value='<?= $form_data['name'] ?? '' ?>'>
-                        <label for='gene_name'>Key words</label>
+                        <input type='text' autocomplete='off' name="global" id="global_" 
+                            value='<?= $form_data['global'] ?? '' ?>'>
+                        <label for='global_'>Key words</label>
                     </div>
                     <div class="margin-bottom margin-left">
                         Select research fields
@@ -474,26 +476,6 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                             <span>Functions</span>
                         </label>
                     </div>
-
-                    <script>
-                        $(document).ready(function() {
-                            // Récupération du tableau de noms
-                            $.get(
-                                "/api/search/names.json", 
-                                { } 
-                            ).then(function (json) {
-                                var g = document.getElementById('gene_name');
-                                $(g).autocomplete({
-                                    data: json,
-                                    limit: 6,
-                                    minLength: 0,
-                                    onAutocomplete: function() {
-                                        document.getElementById('submit_form').submit();
-                                    }
-                                });
-                            });
-                        });
-                    </script>
                 <?php } ?>
 
                 <?php if (!isset($form_data['no_search_btn']) || !$form_data['no_search_btn']) { ?>
