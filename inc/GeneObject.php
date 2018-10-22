@@ -21,6 +21,8 @@ class GeneObject {
     protected $family;
     protected $sub_family;
 
+    protected $has_link;
+
     public function __construct(array $row) {
         $this->id = $row['gene_id'];
         $this->specie = $row['specie'];
@@ -37,6 +39,8 @@ class GeneObject {
         $this->full_pro = $row['sequence_pro'] ?? null;
 
         $this->pathways = explode(',', $row['pathways']);
+
+        $this->has_link = $row['linkable'] === '0' ? false : true;
     }
 
     // Implémentations des méthodes de l'interface
@@ -81,6 +85,10 @@ class GeneObject {
     }
     public function getSeqProt() : ?string {
         return $this->full_pro;
+    }
+
+    public function hasLink() : bool {
+        return $this->has_link;
     }
 }
 
