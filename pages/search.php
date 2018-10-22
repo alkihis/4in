@@ -342,11 +342,56 @@ function showSearchByPathway(array $data) : void {
 
 ////// AVANCEE //////
 function searchAdvanced() : array {
-    throw new NotImplementedException("Advanced search not yet implemented.");
+    //throw new NotImplementedException("Advanced search not yet implemented.");
+
+    //Requete random pour pouvoir charger la page
+    
+    $r = [];
+
+    if (isset($_GET['global']) && is_string($_GET['global'])) {
+        $r['form_data'] = [];
+        $r['form_data']['global'] = htmlspecialchars($_GET['global'], ENT_QUOTES);
+
+        global $sql;
+        // Recherche du nom dans la base de données
+        $global = mysqli_real_escape_string($sql, $_GET['global']);
+
+        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, 
+            (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
+             FROM Pathways p 
+             WHERE g.id = p.id) as pathways 
+        FROM GeneAssociations a 
+        JOIN Gene g ON a.id=g.id
+        WHERE g.gene_name LIKE '$global%'
+        GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie");
+
+        if (!$q) {
+            throw new UnexpectedValueException("SQL request failed");
+        }
+
+        if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
+            while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
+                $r['results'][] = new GeneObject($row);
+            } 
+            // results empêche la génération du formulaire de recherche,
+            // et affiche les résultats à la page
+        }
+        else {
+            $r['results'] = [];
+        }
+    }
+
+    return $r;
 }
+
 
 function showGlobalSearch(array $data) : void {
     // TODO
+    generateSearchForm('global', $data['previous_search'] ?? []);
+
+    if (isset($data['results'])) {
+        generateSearchResultsArray($data['results']);
+    }
 }
 
 ////// FONCTIONS GENERALES //////
@@ -437,6 +482,39 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                             <?php } ?>
                         </select>
                         <label>Metabolic pathway</label>
+                    </div>
+                <?php }
+                else if ($mode === 'global') { ?>
+                    <div class='input-field col s12 margin-bottom'>
+                        <i class="material-icons prefix">assignment</i>
+                        <input type='text' autocomplete='off' name="global" id="global_" 
+                            value='<?= $form_data['global'] ?? '' ?>'>
+                        <label for='global_'>Key words</label>
+                    </div>
+                    <div class="margin-bottom margin-left">
+                        Select research fields
+                    </div>
+                    <div>
+                        <label class="margin-left">
+                            <input type="checkbox" class="filled-in" checked="checked" />
+                            <span>Names</span>
+                        </label>
+                        <label class="margin-left">
+                            <input type="checkbox" class="filled-in" checked="checked" />
+                            <span>IDs</span>
+                        </label>
+                        <label class="margin-left">
+                            <input type="checkbox" class="filled-in" checked="checked" />
+                            <span>Pathways</span>
+                        </label>
+                        <label class="margin-left">
+                            <input type="checkbox" class="filled-in" checked="checked" />
+                            <span>Species</span>
+                        </label>
+                        <label class="margin-left">
+                            <input type="checkbox" class="filled-in" checked="checked" />
+                            <span>Functions</span>
+                        </label>
                     </div>
                 <?php } ?>
 

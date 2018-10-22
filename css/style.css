@@ -148,6 +148,14 @@ textarea.materialize-textarea:focus:not([readonly]) {
     background-color: grey;
 }
 
+.margin-left {
+    margin-left: 40px;
+}
+
+.margin-bottom {
+    margin-bottom: 25px;
+}
+
 .divider-white {
     background-color: white;
 }
@@ -222,4 +230,5 @@ main.with-particle {
     .tiny-container {
         width: 30%;
     }
+>>>>>>> develop
 }
