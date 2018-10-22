@@ -23,7 +23,7 @@ function geneControl(array $args) : Controller {
     // Recherche de l'identifiant dans la base de données
     $id = mysqli_real_escape_string($sql, $args[0]);
 
-    $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.sequence_adn, a.sequence_pro,
+    $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.sequence_adn, a.sequence_pro, a.linkable,
         (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
          FROM Pathways p 
          WHERE g.id = p.id) as pathways,
@@ -52,6 +52,21 @@ function geneControl(array $args) : Controller {
         throw new ForbiddenPageException();
     }
 
+    $link = getLinkForId($row['gene_id'], $row['specie']);
+
+    if ($link && !isProtectedSpecie($row['specie'])) {
+        if ($row['linkable'] === null) {
+            $is_ok = checkSaveLinkValidity($row['specie'], $row['gene_id']);
+
+            if (!$is_ok) {
+                $link = null;
+            }
+        }
+        else if ($row['linkable'] === "0") {
+            $link = null;
+        }
+    }
+
     $gene = new GeneObject($row);
     $gene_id = mysqli_real_escape_string($sql, $row['gene_id']);
 
@@ -74,7 +89,7 @@ function geneControl(array $args) : Controller {
         $array[$specie_en_cours][] = $id_en_cours;
     }
 
-    $arr = ['gene' => $gene, 'orthologues' => $array];
+    $arr = ['gene' => $gene, 'orthologues' => $array, 'link' => $link];
 
     return new Controller($arr, $id);
 }
@@ -93,7 +108,7 @@ function geneView(Controller $c) : void {
     // TODO
     $data = $c->getData(); 
 
-    $link = getLinkForId($data['gene']->getID(), $data['gene']->getSpecie());
+    $link = $data['link'];
 
     ?>
     <div class="container">

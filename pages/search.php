@@ -319,7 +319,15 @@ function searchAdvanced() : array {
         $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, 
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
              FROM Pathways p 
-             WHERE g.id = p.id) as pathways 
+             WHERE g.id = p.id) as pathways,
+        (CASE 
+            WHEN a.sequence_adn IS NOT NULL THEN 1
+            ELSE 0
+        END) as is_seq_adn,
+        (CASE 
+            WHEN a.sequence_pro IS NOT NULL THEN 1
+            ELSE 0
+        END) as is_seq_pro
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
         WHERE g.gene_name LIKE '$global[0]'
@@ -347,7 +355,7 @@ function searchAdvanced() : array {
 
 function showGlobalSearch(array $data) : void {
     // TODO
-    generateSearchForm('global', $data['previous_search'] ?? []);
+    generateSearchForm('global', $data['form_data'] ?? []);
 
     if (isset($data['results'])) {
         generateSearchResultsArray($data['results']);
