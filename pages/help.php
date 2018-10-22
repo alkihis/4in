@@ -138,7 +138,8 @@ function showHelpDB(array $data) : void {
                 </h3>
             </div>
             <p class="flow-text">
-                The database is home to over 8000 genes implicated in the innate immunity system of 14 species of insects.
+                The database is home to over 6000 genes implicated in the innate immunity system of 14 species of insects.
+                The data for Sitophilus oryzae is not yet available to the public, but will be displayed if you are authentified.
             </p>
         </div>
     </div>

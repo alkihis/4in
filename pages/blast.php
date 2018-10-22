@@ -121,16 +121,16 @@ function blastView(Controller $c) : void {
     <div class='container'>
         <?php 
         if (isset($data['error']['query'])) {
-            echo "<h4 class='red-text'>Votre fichier est malformaté.</h4><h6>Utilisation du jeu de test.</h6>
+            echo "<h4 class='red-text'>Your file is not formated correctly.</h4><h6>Using testing dataset.</h6>
             <div class='divider divider-margin'></div>";
             echo '<h6 class="red-text">';
 
             if ($data['error']['query'] === -1) {
-                echo "Aucune ligne ne contient de séquence.";
+                echo "Empty sequence or file.";
             }
             else {
                 $data['error']['query']++; // Lines are 0+ formatted, switch to 1+ format
-                echo "Ligne {$data['error']['query']} invalide.";
+                echo "Line {$data['error']['query']} is invalid.";
             }
 
             echo '</h6>';

@@ -23,8 +23,8 @@ function homeView(Controller $c) : void { ?>
             <!--   Icon Section   -->
             <div class="row">
                 <p class='flow-text text-justify head-main-title'>
-                    Developed in order to ease access to the data harvested from different species,
-                    this database is centered around the genetic study of the "rice charançon", also called Sitophilus oryzae.
+                    Developed in order to facilitate access to the data harvested from different species of insects,
+                    this database is centered around the genetic study of the rice weevil, also called Sitophilus oryzae.
                 </p>
                 <div class="col s12 m4">
                     <div class="icon-block">
@@ -34,7 +34,7 @@ function homeView(Controller $c) : void { ?>
                         <h5 class="center">Search</h5>
 
                         <p class="light text-justify">
-                            You can search our insect's immunity genes by ID, pathway, species and name here.
+                            You can search immunity genes by ID, pathway, species and name here, across all of our database's insects.
                         </p>
                     </div>
                 </div>
@@ -47,8 +47,8 @@ function homeView(Controller $c) : void { ?>
                         <h5 class="center">Database</h5>
 
                         <p class="light text-justify">
-                            Check out our entire database here. Download the data in the format of your choice, 
-                            sort your results according to your needs and learn about the functionnal annotations available. 
+                            Check out our entire database here. Download any sequence in the format of your choice, 
+                            sort your results according to your requirements and learn about the functionnal annotations available. 
                         </p>
                     </div>
                 </div>
@@ -62,6 +62,7 @@ function homeView(Controller $c) : void { ?>
 
                         <p class="light text-justify">
                             Align your own sequences using BLAST's algorithm on our database's sequences.
+                            You can chose wether to align nucleotides or amino acids sequences.
                         </p>
                     </div>
                 </div>
