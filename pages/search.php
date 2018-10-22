@@ -145,7 +145,7 @@ function showSearchHome(array $data) : void {
 function searchById() : array {
     $r = [];
 
-    if (isset($_GET['id']) && is_string($_GET['id']) && strlen($_GET['id']) > 1) {
+    if (isset($_GET['id']) && is_string($_GET['id']) && strlen($_GET['id']) > 0) {
         $r['form_data'] = [];
         $r['form_data']['id'] = htmlspecialchars($_GET['id'], ENT_QUOTES);
 

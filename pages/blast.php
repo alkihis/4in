@@ -65,6 +65,12 @@ function blastControl(array $args) : Controller {
         $mode_short = 'pro';
     }
 
+    if (isUserLogged() || !LIMIT_GENOMES) { 
+        // Si l'utilisateur a les droits, ou si les génomes ne sont pas limités
+        // il utilise la BDD complète
+        $mode .= '_full';
+    }
+
     if (isset($_POST['query']) && is_string($_POST['query'])) {
         $_POST['query'] = trim($_POST['query']);
 
@@ -86,11 +92,10 @@ function blastControl(array $args) : Controller {
 
     `echo "{$query_file}" > $temp_file`;
     `chmod a+a $temp_file`;
-    # echo `ls -l $temp_file`;
 
     chdir($_SERVER['DOCUMENT_ROOT'] . '/ncbi/bin');
 
-    $html = `./$blast_type -query "$temp_file" -db $mode -html 2>&1`;
+    $html = `./$blast_type -query "$temp_file" -db base/$mode -html 2>&1`;
 
     chdir($_SERVER['DOCUMENT_ROOT']);
 
