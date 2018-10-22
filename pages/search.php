@@ -500,7 +500,7 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                         <label for='global_'>Key words</label>
                     </div>
                     <div class="margin-bottom margin-left">
-                        Select research fields
+                        Select search fields
                     </div>
                     <div>
                         <label class="margin-left">
@@ -556,7 +556,7 @@ function generateSearchResultsArray(array $res) : void {
                     <div class='col s6'>
                         <a href='#!' class='btn-flat btn-perso purple-text right' 
                             onclick="downloadCheckedSequences('adn', true);">
-                            <i class='material-icons left'>file_download</i>FASTA sequences (ADN)
+                            <i class='material-icons left'>file_download</i>FASTA sequences (DNA)
                         </a>
                     </div>
 
@@ -609,7 +609,7 @@ function generateSearchResultsArray(array $res) : void {
                     <i class='material-icons left'>file_download</i>Protein
                 </a>
                 <a href='#!' class='btn-flat btn-perso purple-text right' onclick="downloadCheckedSequences('adn')">
-                    <i class='material-icons left'>file_download</i>ADN
+                    <i class='material-icons left'>file_download</i>DNA
                 </a>
                 <div class='clearb'></div>
             </div>
