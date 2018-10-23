@@ -102,13 +102,13 @@ function adminView(Controller $c) : void {
                 homePageView($d);
                 break;
             case 'build_blast':
-                homePageView($d);
+                buildBlastView($d);
                 break;
             case 'import_genome':
-                homePageView($d);
+                importGenomeView($d);
                 break;
             case 'import_blast':
-                homePageView($d);
+                importBlastView($d);
                 break;
             case 'alias_import':
                 aliasImportView($d);
@@ -218,14 +218,21 @@ function showFastaFiles(array $files, bool $with_delete_input) : void {
                         <i class="material-icons circle">insert_drive_file</i>
                         <span class="title"><?= $f['name'] ?></span>
                         <p>
-                            <?= $f['size'] ?> Mo
+                            <?= $f['size'] ?> Mo<br>
+                            Imported <?= date('Y-m-d', $f['date']) ?>
                         </p>
                         <?php if ($with_delete_input) { ?>
-                            <a href="#!" class="secondary-content"><i class="material-icons">delete_forever</i></a>
+                            <form method="post" action="#">
+                                <input type="hidden" name="delete" value="<?= htmlspecialchars($f['name'], ENT_QUOTES) ?>">
+                                <input type="hidden" name="mode" value="adn">
+                                <a href="#!" onclick="this.parentElement.submit()" class="secondary-content"><i class="material-icons red-text">delete_forever</i></a>
+                            </form>
                         <?php } ?>
                     </li>
                 <?php } ?>
             </ul>
+
+            <div class='divider divider-margin'></div>
 
             <h5>Proteic FASTA files</h5>
             <ul class="collection">
@@ -234,10 +241,15 @@ function showFastaFiles(array $files, bool $with_delete_input) : void {
                         <i class="material-icons circle">insert_drive_file</i>
                         <span class="title"><?= $f['name'] ?></span>
                         <p>
-                            <?= $f['size'] ?> Mo
+                            <?= $f['size'] ?> Mo<br>
+                            Imported <?= date('Y-m-d', $f['date']) ?>
                         </p>
                         <?php if ($with_delete_input) { ?>
-                            <a href="#!" class="secondary-content"><i class="material-icons">delete_forever</i></a>
+                            <form method="post" action="#">
+                                <input type="hidden" name="delete" value="<?= htmlspecialchars($f['name'], ENT_QUOTES) ?>">
+                                <input type="hidden" name="mode" value="pro">
+                                <a href="#!" onclick="this.parentElement.submit()" class="secondary-content"><i class="material-icons red-text">delete_forever</i></a>
+                            </form>
                         <?php } ?>
                     </li>
                 <?php } ?>

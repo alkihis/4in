@@ -285,3 +285,11 @@ textarea.materialize-textarea:focus:not([readonly])+label {
     padding-top: 10px; 
     margin-top: 25px;
 }
+
+[type="radio"]:checked+span:after, [type="radio"].with-gap:checked+span:after {
+    background-color: #346bd3;
+}
+
+[type="radio"]:checked+span:after, [type="radio"].with-gap:checked+span:before, [type="radio"].with-gap:checked+span:after {
+    border: 2px solid #346bd3;
+}

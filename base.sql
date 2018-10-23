@@ -29,6 +29,8 @@ CREATE TABLE GeneAssociations (
     FOREIGN KEY (id) REFERENCES Gene(id) ON DELETE CASCADE
 );
 
+CREATE INDEX `alias_index` ON `GeneAssociations` (`alias`);
+
 CREATE TABLE Users (
     id_user INT NOT NULL AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL,

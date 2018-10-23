@@ -246,6 +246,6 @@ function readBuildIndex(string $filename) : void {
         $id_classic = mysqli_real_escape_string($sql, trim($line[0]));
         $id_alias = mysqli_real_escape_string($sql, trim($line[1]));
 
-        mysqli_query($sql, "UPDATE GeneAssociations SET alias='$id_alias' WHERE gene_id='$id_classic';");
+        mysqli_query($sql, "UPDATE GeneAssociations SET alias='$id_alias' WHERE gene_id LIKE '$id_classic%';");
     }
 }
