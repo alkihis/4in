@@ -21,7 +21,7 @@ function buildBlastController() : array {
     // Traitement si l'utilisateur a demandé de construire la base de données
     else if (isset($_POST['construct'])) {
         readAllFastaFiles();
-        
+
         clearBlastDatabase();
         makeAllBlastDB();
 
@@ -47,7 +47,7 @@ function buildBlastView(array $data) : void { ?>
         <div class="col s12">
             <div class="card-panel light-blue darken-1 card-border white-text panel-settings">
                 <p>
-                    Import first sequences files using "Import sequences files" utility. After this operation,
+                    Import first sequences files using "Import sequence files" utility. After this operation,
                     you can build BLAST database and register sequences to the website SQL Base by clicking
                     "build BLAST".<br>
                     It will <span class='underline'>NOT</span> delete uploaded sequences files.
