@@ -153,7 +153,7 @@ function searchById() : array {
         // Recherche de l'identifiant dans la base de données
         $id = mysqli_real_escape_string($sql, $_GET['id']);
 
-        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, 
+        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.linkable,
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
              FROM Pathways p 
              WHERE g.id = p.id) as pathways 
@@ -201,7 +201,7 @@ function searchByName() : array {
         // Recherche du nom dans la base de données
         $name = mysqli_real_escape_string($sql, $_GET['name']);
 
-        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, 
+        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.linkable,
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
              FROM Pathways p 
              WHERE g.id = p.id) as pathways 
@@ -263,7 +263,7 @@ function searchPathway() : array {
         // Normalement, le pathway est UNIQUEMENT un md5, on cherche donc avec la fonction sql MD5
         $pathway = mysqli_real_escape_string($sql, $_GET['pathway']);
 
-        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie,
+        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.linkable,
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
             FROM Pathways p 
             WHERE g.id = p.id) as pathways 
@@ -316,7 +316,7 @@ function searchAdvanced() : array {
         // Recherche du nom dans la base de données
         $global = explode(" ", mysqli_real_escape_string($sql, $_GET['global']));
 
-        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, 
+        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.linkable,
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
              FROM Pathways p 
              WHERE g.id = p.id) as pathways,
@@ -509,7 +509,7 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                         <label for='global_'>Key words</label>
                     </div>
                     <div class="margin-bottom margin-left">
-                        Select research fields
+                        Select search fields
                     </div>
                     <div>
                         <label class="margin-left">
