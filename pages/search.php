@@ -339,7 +339,7 @@ function searchAdvanced() : array {
         
         $q=$q . "\n" . "GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie";
 
-
+        //echo $q;
 
 
         if (!$q) {
@@ -366,31 +366,41 @@ function makeAdvancedQuery(string $word, string $query): string {
     $word = mysqli_real_escape_string($sql, $word);
 
     if (isset($_GET['Names'])) {
-        if ($query != ''): {
-            $query=$query . 'OR ';
+        if ($query != '') {
+            $query=$query . "OR g.gene_name LIKE '$word'";;
         }
-        $query=$query . "g.gene_name LIKE '$word'";
+        else {
+            $query=$query . "OUI g.gene_name LIKE '$word'";
+            echo $query;
+        }
     }
     if (isset($_POST['IDs'])) {
-        if ($query != ''): {
+        if ($query != '') {
             $query=$query . 'OR ';
         }
-        $query=$query . "g.gene_id LIKE '$word'";
+        else {
+            $query=$query . "g.gene_id LIKE '$word'";
+        }
     }
     if (isset($_POST['Species'])) {
-        if ($query != ''): {
+        if ($query != '') {
             $query=$query . 'OR ';
         }
-        $query=$query . "g.specie LIKE '$word'";
+        else {
+            $query=$query . "g.specie LIKE '$word'";
+        }
     }
     if (isset($_POST['Functions'])) {
-        if ($query != ''): {
+        if ($query != '') {
             $query=$query . 'OR ';
         }
-        $query=$query . "g. LIKE '$word'";
+        else {
+            $query=$query . "g. LIKE '$word'";
+        }
     }
     return $query;
 }
+
 
 function showGlobalSearch(array $data) : void {
     // TODO
