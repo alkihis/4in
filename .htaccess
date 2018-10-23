@@ -8,3 +8,6 @@
 # Remplace toutes les lignes du haut sans faire de rewrite
 DirectoryIndex /index.php
 FallbackResource /index.php
+
+php_value upload_max_filesize 150M
+php_value post_max_size 152M
