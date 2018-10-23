@@ -153,7 +153,7 @@ function searchById() : array {
         // Recherche de l'identifiant dans la base de données
         $id = mysqli_real_escape_string($sql, $_GET['id']);
 
-        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.linkable,
+        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.linkable, a.alias,
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
              FROM Pathways p 
              WHERE g.id = p.id) as pathways,
@@ -215,7 +215,7 @@ function searchByName() : array {
         // Recherche du nom dans la base de données
         $name = mysqli_real_escape_string($sql, $_GET['name']);
 
-        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.linkable,
+        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.linkable, a.alias,
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
              FROM Pathways p 
              WHERE g.id = p.id) as pathways,
@@ -290,7 +290,7 @@ function searchPathway() : array {
         // Normalement, le pathway est UNIQUEMENT un md5, on cherche donc avec la fonction sql MD5
         $pathway = mysqli_real_escape_string($sql, $_GET['pathway']);
 
-        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.linkable,
+        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.linkable, a.alias,
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
             FROM Pathways p 
             WHERE g.id = p.id) as pathways,
@@ -356,7 +356,7 @@ function searchAdvanced() : array {
         // Recherche du nom dans la base de données
         $global = mysqli_real_escape_string($sql, $_GET['global']);
 
-        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.linkable,
+        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.linkable, a.alias,
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
              FROM Pathways p 
              WHERE g.id = p.id) as pathways,
@@ -646,8 +646,8 @@ function generateArrayLine(GeneObject $line) : void { ?>
         <td><?= $line->getSpecie() ?></td>
         <td>
             <?php 
-            if (getLinkForId($line->getID(), $line->getSpecie()) && $line->hasLink()) {
-                echo '<a href="' . getLinkForId($line->getID(), $line->getSpecie()) . 
+            if (getLinkForId($line->getID(), $line->getSpecie(), $line->getAlias()) && $line->hasLink()) {
+                echo '<a href="' . getLinkForId($line->getID(), $line->getSpecie(), $line->getAlias()) . 
                     '" target="_blank" title="View in external database">
                         <i class="material-icons link-external-search">launch</i>
                     </a>';

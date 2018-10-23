@@ -23,7 +23,7 @@ function geneControl(array $args) : Controller {
     // Recherche de l'identifiant dans la base de données
     $id = mysqli_real_escape_string($sql, $args[0]);
 
-    $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.sequence_adn, a.sequence_pro, a.linkable,
+    $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.sequence_adn, a.sequence_pro, a.linkable, a.alias,
         (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
          FROM Pathways p 
          WHERE g.id = p.id) as pathways,
@@ -52,7 +52,7 @@ function geneControl(array $args) : Controller {
         throw new ForbiddenPageException();
     }
 
-    $link = getLinkForId($row['gene_id'], $row['specie']);
+    $link = getLinkForId($row['gene_id'], $row['specie'], $row['alias']);
 
     if ($link && !isProtectedSpecie($row['specie'])) {
         if ($row['linkable'] === null) {

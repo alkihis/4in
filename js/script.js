@@ -189,3 +189,47 @@ function loadOrthologuesModal(element) {
 
     $(modal).modal('open');
 }
+
+function escapeHtml(text) {
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function addSpecie(spec) {
+    spec = spec.trim();
+
+    if (spec.match(/'"<>&/) || spec === "") {
+        M.toast({html: 'Entered specie name is invalid', displayLength: 6000});
+        return;
+    }
+
+    var input = document.getElementById('new_specie');
+    var checkboxes = document.getElementsByClassName('chk-spe');
+    var species_actual = {};
+
+    for (var i = 0; i < checkboxes.length; i++) {
+        species_actual[checkboxes[i].value] = checkboxes[i].checked;
+    }
+    species_actual[spec] = true;
+
+    var checkboxes_container = document.getElementById('multiple_species');
+
+    var str = '';
+    for (var key in species_actual) {
+        str += "<p>\
+            <label>\
+                <input type='checkbox' class='chk-spe' name='species[]' \
+                    "+ (species_actual[key] ? 'checked' : '') +" value='"+ key +"'>\
+                <span>"+ key +"</span>\
+            </label>\
+            <br>\
+        </p>";
+    }
+
+    checkboxes_container.innerHTML = str;
+    input.value = "";
+}

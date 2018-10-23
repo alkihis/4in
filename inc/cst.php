@@ -44,12 +44,25 @@ const SPECIE_TO_NAME = [
     'Nvitripennis' => 'NASVI',
     'Phumanus' => 'PEDHU',
     'Soryzae' => 'SITOR',
-    'Sinvicta' => 'SOLIN'
+    'Sinvicta' => 'SOLIN',
+    'Bmori' => 'BOMMO',
+    'Cfloridanus' => 'CAMFL',
+    'Dponderosae' => 'DENPO',
+    'Dmelanogaster' => 'DROME',
+    'Pxylostella' => 'PLUXY',
+    'Tcastaneum' => 'TRICA'
 ];
 
+// NEW NOTE: Protected species are now loaded through a independant PHP file.
 // Note that value of specie is useless : Associative array is used like a set container here
 // Protected specie must be defined as key of the array
-const PROTECTED_SPECIES = [
-    'Soryzae' => true,
-    'Msexta' => true
-];
+require $_SERVER['DOCUMENT_ROOT'] . '/assets/protected-species.php';
+
+// TO RENEW PROTECTED SPECIES
+/* 
+    file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/assets/protected-species.php', 
+    "<?php\n\nconst PROTECTED_SPECIES = [
+        'specie' => true,
+        'specie2' => true
+    ];");
+*/ 
