@@ -330,17 +330,8 @@ function searchAdvanced() : array {
         END) as is_seq_pro
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
-        WHERE ");
-
-        $query='';
-        foreach ($global as $word) {
-            $q=$q . makeAdvancedQuery($word, $query);
-        }
-        
-        $q=$q . "\n" . "GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie";
-
-
-
+        WHERE g.gene_name LIKE '$global[0]'
+        GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie");
 
         if (!$q) {
             throw new UnexpectedValueException("SQL request failed");
@@ -361,36 +352,6 @@ function searchAdvanced() : array {
     return $r;
 }
 
-function makeAdvancedQuery(string $word, string $query): string {
-    global $sql;
-    $word = mysqli_real_escape_string($sql, $word);
-
-    if (isset($_GET['Names'])) {
-        if ($query != ''): {
-            $query=$query . 'OR ';
-        }
-        $query=$query . "g.gene_name LIKE '$word'";
-    }
-    if (isset($_POST['IDs'])) {
-        if ($query != ''): {
-            $query=$query . 'OR ';
-        }
-        $query=$query . "g.gene_id LIKE '$word'";
-    }
-    if (isset($_POST['Species'])) {
-        if ($query != ''): {
-            $query=$query . 'OR ';
-        }
-        $query=$query . "g.specie LIKE '$word'";
-    }
-    if (isset($_POST['Functions'])) {
-        if ($query != ''): {
-            $query=$query . 'OR ';
-        }
-        $query=$query . "g. LIKE '$word'";
-    }
-    return $query;
-}
 
 function showGlobalSearch(array $data) : void {
     // TODO
@@ -503,23 +464,23 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                     </div>
                     <div>
                         <label class="margin-left">
-                            <input type="checkbox" class="filled-in" checked name="Names" />
+                            <input type="checkbox" class="filled-in" checked="checked" />
                             <span>Names</span>
                         </label>
                         <label class="margin-left">
-                            <input type="checkbox" class="filled-in" checked name="IDs" />
+                            <input type="checkbox" class="filled-in" checked="checked" />
                             <span>IDs</span>
                         </label>
                         <label class="margin-left">
-                            <input type="checkbox" class="filled-in" checked name="Pathways" />
+                            <input type="checkbox" class="filled-in" checked="checked" />
                             <span>Pathways</span>
                         </label>
                         <label class="margin-left">
-                            <input type="checkbox" class="filled-in" checked name="Species" />
+                            <input type="checkbox" class="filled-in" checked="checked" />
                             <span>Species</span>
                         </label>
                         <label class="margin-left">
-                            <input type="checkbox" class="filled-in" checked name="Functions" />
+                            <input type="checkbox" class="filled-in" checked="checked" />
                             <span>Functions</span>
                         </label>
                     </div>
@@ -600,7 +561,7 @@ function generateSearchResultsArray(array $res) : void {
     <?php
 }
 
-function generateArrayLine(GeneObject $line) : void { ?>
+function generateArrayLine(Gene $line) : void { ?>
     <tr>
         <td>
             <label>
