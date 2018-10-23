@@ -370,8 +370,112 @@ function searchAdvanced() : array {
         END) as is_seq_pro
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
-        WHERE g.gene_name LIKE '$global%'
+        WHERE g.gene_name LIKE '$global%'      
         GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie");
+
+
+/*  Ce que Aymeric avait prévu mais qui a disparu dans l'enfer des commits echoué du 23/10
+function searchAdvanced() : array {
+    //throw new NotImplementedException("Advanced search not yet implemented.");
+
+    //Requete random pour pouvoir charger la page
+    
+    $r = [];
+
+    if (isset($_GET['global']) && is_string($_GET['global'])) {
+        $r['form_data'] = [];
+        $r['form_data']['global'] = htmlspecialchars($_GET['global'], ENT_QUOTES);
+
+        global $sql;
+        // Recherche du nom dans la base de données
+        $global = explode(" ", mysqli_real_escape_string($sql, $_GET['global']));
+
+        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, 
+            (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
+             FROM Pathways p 
+             WHERE g.id = p.id) as pathways,
+        (CASE 
+            WHEN a.sequence_adn IS NOT NULL THEN 1
+            ELSE 0
+        END) as is_seq_adn,
+        (CASE 
+            WHEN a.sequence_pro IS NOT NULL THEN 1
+            ELSE 0
+        END) as is_seq_pro
+        FROM GeneAssociations a 
+        JOIN Gene g ON a.id=g.id
+        WHERE ");
+
+        $query='';
+        foreach ($global as $word) {
+            $q=$q . makeAdvancedQuery($word, $query);
+        }
+        
+        $q=$q . "\n" . "GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie";
+
+        //echo $q;
+
+
+        if (!$q) {
+            throw new UnexpectedValueException("SQL request failed");
+        }
+
+        if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
+            while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
+                $r['results'][] = new GeneObject($row);
+            } 
+            // results empêche la génération du formulaire de recherche,
+            // et affiche les résultats à la page
+        }
+        else {
+            $r['results'] = [];
+        }
+    }
+
+    return $r;
+}
+
+function makeAdvancedQuery(string $word, string $query): string {
+    global $sql;
+    $word = mysqli_real_escape_string($sql, $word);
+
+    if (isset($_GET['Names'])) {
+        if ($query != '') {
+            $query=$query . "OR g.gene_name LIKE '$word'";;
+        }
+        else {
+            $query=$query . "OUI g.gene_name LIKE '$word'";
+            echo $query;
+        }
+    }
+    if (isset($_POST['IDs'])) {
+        if ($query != '') {
+            $query=$query . 'OR ';
+        }
+        else {
+            $query=$query . "g.gene_id LIKE '$word'";
+        }
+    }
+    if (isset($_POST['Species'])) {
+        if ($query != '') {
+            $query=$query . 'OR ';
+        }
+        else {
+            $query=$query . "g.specie LIKE '$word'";
+        }
+    }
+    if (isset($_POST['Functions'])) {
+        if ($query != '') {
+            $query=$query . 'OR ';
+        }
+        else {
+            $query=$query . "g.WHATEVER_FUNCTION_IS_CALLED LIKE '$word'";
+        }
+    }
+    return $query;
+}
+
+*/
 
         if (!$q) {
             throw new UnexpectedValueException("SQL request failed");
@@ -504,23 +608,23 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                     </div>
                     <div>
                         <label class="margin-left">
-                            <input type="checkbox" class="filled-in" checked="checked" />
+                            <input type="checkbox" class="filled-in" checked name="Names" />
                             <span>Names</span>
                         </label>
                         <label class="margin-left">
-                            <input type="checkbox" class="filled-in" checked="checked" />
+                            <input type="checkbox" class="filled-in" checked name="IDs" />
                             <span>IDs</span>
                         </label>
                         <label class="margin-left">
-                            <input type="checkbox" class="filled-in" checked="checked" />
+                            <input type="checkbox" class="filled-in" checked name="Pathways" />
                             <span>Pathways</span>
                         </label>
                         <label class="margin-left">
-                            <input type="checkbox" class="filled-in" checked="checked" />
+                            <input type="checkbox" class="filled-in" checked name="Species" />
                             <span>Species</span>
                         </label>
                         <label class="margin-left">
-                            <input type="checkbox" class="filled-in" checked="checked" />
+                            <input type="checkbox" class="filled-in" checked name="Functions" />
                             <span>Functions</span>
                         </label>
                     </div>
