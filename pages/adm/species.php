@@ -6,11 +6,18 @@ function speciesController() : array {
     global $sql;
 
     // Récupération des espèces existantes
+
+    // TROP CONSOMMATEUR : désactivé
+    /* 
     $q = mysqli_query($sql, "SELECT DISTINCT specie FROM GeneAssociations");
 
     while ($row = mysqli_fetch_assoc($q)) {
         $data['all_species'][] = $row['specie'];
     }
+    */
+
+    // Toutes les espèces sont normalement dans SPECIE_TO_NAME (en clé)
+    $data['all_species'] = array_keys(SPECIE_TO_NAME);
 
     $data['species'] = getProtectedSpecies();
 
