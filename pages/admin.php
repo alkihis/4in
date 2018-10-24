@@ -7,6 +7,7 @@ require 'pages/adm/import.php';
 require 'pages/adm/species.php';
 require 'pages/adm/alias.php';
 require 'pages/adm/fasta_converter.php';
+require 'pages/adm/fasta_checker.php';
 
 function adminControl(array $args) : Controller {
     if (!isUserLogged()) {
@@ -70,6 +71,9 @@ function adminControl(array $args) : Controller {
     else if ($args[0] === 'converter') {
         $page = converterController();
     }
+    else if ($args[0] === 'checker') {
+        $page = checkerController();
+    }
     else {
         throw new PageNotFoundException();
     }
@@ -103,7 +107,7 @@ function adminView(Controller $c) : void {
                 homePageView($d);
                 break;
             case 'build_genome':
-                homePageView($d);
+                buildGenomeView($d);
                 break;
             case 'build_blast':
                 buildBlastView($d);
@@ -132,9 +136,18 @@ function adminView(Controller $c) : void {
             case 'converter':
                 converterView($d);
                 break;
+            case 'checker':
+                checkerView($d);
+                break;
         }
         ?>
     </div>
+
+    <div class="row no-margin-bottom">
+        <div class="modal" id="modal-admin"></div>
+    </div>
+
+    <script src="/js/admin.js"></script>
 
     <!-- Sidenav -->
     <ul id="slide-out-admin" class="sidenav sidenav-fixed">
@@ -191,6 +204,9 @@ function adminView(Controller $c) : void {
         <li><a class="subheader">Tools</a></li>
         <li <?= ($d['active_page'] === 'converter' ? 'class="active"' : '') ?>>
             <a class="waves-effect" href="/admin/converter"><i class="material-icons">redo</i>FASTA converter</a>
+        </li>
+        <li <?= ($d['active_page'] === 'checker' ? 'class="active"' : '') ?>>
+            <a class="waves-effect" href="/admin/checker"><i class="material-icons">check</i>FASTA checker</a>
         </li>
     </ul>
 

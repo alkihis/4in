@@ -298,3 +298,11 @@ textarea.materialize-textarea:focus:not([readonly])+label {
     border-right: 2px solid #346bd3;
     border-bottom: 2px solid #346bd3;
 }
+
+.progress .determinate {
+    background-color: #1a4ba5;
+}
+
+.progress {
+    background-color: #90ade2;
+}

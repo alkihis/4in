@@ -12,7 +12,7 @@ function converterView(array $data) : void { ?>
                 <p>
                     In order to use FASTA file to update sequences informations, the gene ID in the fasta 
                     sequence comment MUST be the first element of the comment line (after the &gt;), and be
-                    separed from other elements by a non-writable character (space, tabulation, form-feed...).<br>
+                    separated from other elements by a non-writable character (space, tabulation, form-feed...).<br>
                     If file is not correctly formatted, you can use this FASTA converter.<br>
                     Provide the theorical gene ID position (used in this database) in a array that represents
                     the comment line, splitted by defined separator.<br>

@@ -1,7 +1,120 @@
 <?php
 
+function emptyTables() : void {
+    global $sql;
+
+    mysqli_query($sql, "DELETE FROM Gene;");
+    mysqli_query($sql, "DELETE FROM GeneAssociations;");
+    mysqli_query($sql, "DELETE FROM Pathways;");
+    mysqli_query($sql, "ALTER TABLE Gene AUTO_INCREMENT=1;");
+    mysqli_query($sql, "ALTER TABLE Pathways AUTO_INCREMENT=1;");
+}
+
 function buildGenomeController() : array {
-    throw new NotImplementedException();
+    global $sql;
+    $data = ['active_page' => 'build_genome'];
+
+    $files = glob($_SERVER['DOCUMENT_ROOT'] . '/assets/db/*.tsv');
+
+    // Traitement si l'utilisateur a demandé de supprimer les bases BLAST
+    if (isset($_POST['erase'])) {
+        emptyTables();
+
+        $data['erased'] = true;
+    }
+
+    // Traitement si l'utilisateur a demandé de construire la base de données
+    else if (isset($_POST['construct']) && 
+        file_exists($_SERVER['DOCUMENT_ROOT'] . '/assets/db/' . $_POST['construct']) && 
+        !is_dir($_SERVER['DOCUMENT_ROOT'] . '/assets/db/' . $_POST['construct'])) {
+
+        $file_selected = $_SERVER['DOCUMENT_ROOT'] . '/assets/db/' . $_POST['construct'];
+
+        emptyTables();
+        explodeFile($file_selected, false);
+
+        $data['construction'] = true;
+    }
+
+    $data['files'] = [];
+
+    foreach ($files as $f) {
+        $data['files'][] = ['name' => basename($f), 'size' => round(filesize($f) / 1024, 2), 'date' => filemtime($f)];
+    }
+
+    return $data;
+}
+
+function buildGenomeView(array $data) : void { ?>
+    <div class="row no-margin-bottom">
+        <div class="col s12">
+            <div class="card-panel light-blue darken-1 card-border white-text panel-settings">
+                <p>
+                    Import first database file using "Import genome file" utility. After this operation,
+                    you can build genome database by choosing file to use to construct and clicking
+                    "build database".<br>
+                    It will <span class='underline'>NOT</span> delete uploaded database files.
+                </p>
+            </div>
+
+            <?php if (isset($data['construction'])) {
+                echo '<h5 class="green-text">Database is successfully created with selected file.</h5>
+                <h6 class="red-text">It is recommanded to do mapping then
+                build BLAST database after this operation.</h6>';
+            } 
+            if (isset($data['erased'])) {
+                echo '<h5 class="red-text">Database has been wiped.</h5>';
+            }
+            ?>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class="col s12">
+            <div class="card card-border">
+                <div class="card-content">
+                    <form method="post" action="#">
+                        <div class="input-field col s12">
+                            <select name="construct">
+                                <?php 
+                                foreach ($data['files'] as $f) {
+                                    $name = htmlspecialchars($f['name'], ENT_QUOTES);
+
+                                    echo "<option value='$name'>$name</option>";
+                                }
+                                ?>
+                            </select>
+                            <label>File to use</label>
+                        </div>
+
+                        <button name="go" type="submit" class="btn-flat btn-perso green-text darken-1 right">
+                            Build database
+                        </button>
+
+                        
+                    </form>
+
+                    <form method="post" action="#">
+                        <input type="hidden" name="erase" value="true">
+                        <button name="go" type="submit" 
+                            onclick="return confirm('Are you sure you want to wipe the genome database ?')" 
+                            class="btn-flat red-text btn-perso darken-1 left">
+                            Clear genome database
+                        </button>
+                    </form>
+                    <div class="clearb"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row no-margin-bottom">
+        <div class="col s12">
+            <h5>Currently uploaded database files</h5>
+        </div>
+    </div>
+
+    <?php showMappingFiles($data['files'], false);
 }
 
 function buildBlastController() : array {
@@ -13,6 +126,8 @@ function buildBlastController() : array {
 
     // Traitement si l'utilisateur a demandé de supprimer les bases BLAST
     if (isset($_POST['erase'])) {
+        // mysqli_query($sql, "UPDATE GeneAssociations SET sequence_adn=NULL;");
+        // mysqli_query($sql, "UPDATE GeneAssociations SET sequence_pro=NULL;");
         clearBlastDatabase();
 
         $data['erased'] = true;
@@ -75,12 +190,25 @@ function buildBlastView(array $data) : void { ?>
             </form>
         </div>
         <div class="col s6">
-            <form method="post" action="#">
-                <input type="hidden" name="construct" value="true">
-                <button name="go" type="submit" class="btn btn-personal green darken-1 center-block">
-                    Build BLAST and sequence databases
-                </button>
-            </form>
+            <button id="construct_btn" class="btn btn-personal green darken-1 center-block">
+                Build BLAST and sequence databases
+            </button>
+
+            <script>
+                $(document).ready(function () {
+                    var modal = document.getElementById('modal-admin');
+                    $(modal).modal();
+
+                    $.get('/api/tools/get_all_fasta_files.php', {}, function(data) {
+
+                        $('#construct_btn').on('click', function () {
+                            $(modal).modal('open');
+
+                            launchFastaBuild(JSON.parse(data));
+                        });
+                    });
+                });
+            </script>
         </div>
     </div>
 
@@ -109,157 +237,4 @@ function readAllFastaFiles($delete = false) : void {
     foreach($pro as $a) {
         loadFasta($a, 'pro');
     }
-}
-
-function clearBlastDatabase() : void {
-    // Toutes les séquences ont été chargées, on construit la base BLAST
-    // Effacement des anciennes
-    $base = glob('ncbi/bin/base/adn_base.*');
-    foreach ($base as $file) {
-        unlink($file);
-    }
-
-    $base = glob($_SERVER['DOCUMENT_ROOT'] . '/ncbi/bin/base/pro_base.*');
-    foreach ($base as $file) {
-        unlink($file);
-    }
-}
-
-function makeAllBlastDB() : void {
-    // Construction des 4 bases :
-    // ADN sans autorisation et complète (génomes protégés), de même protéine
-    makeBlastDB('adn', true);
-    makeBlastDB('adn', false);
-    makeBlastDB('pro', true);
-    makeBlastDB('pro', false);
-}
-
-function addLine($mode, $sequence, $current_id) : void {
-    global $sql;
-
-    // On traite la séquence en cours
-    $q = mysqli_query($sql, "UPDATE GeneAssociations 
-        SET $mode='$sequence' 
-        WHERE gene_id LIKE '$current_id%'
-        OR alias='$current_id';");
-}
-
-/**
- * loadFasta
- * 
- * Parse un fichier fasta, et l'enregistre dans la base de données
- * @param string $filename : Chemin du fichier .fasta à parser
- * @return void
- */
-function loadFasta(string $filename, $mode = 'adn') : void { 
-    global $sql; // importe la connexion SQL chargée avec l'appel à connectBD()
-
-    $mode = ($mode === 'adn' ? 'sequence_adn' : 'sequence_pro');
-
-    $h = fopen($filename, 'r'); // ouvre le fichier $filename en lecture, et stocke le pointeur-sur-fichier dans $h
-
-    if (!$h) {
-        throw new RuntimeException('Unable to open file');
-    }
-
-    $sequence = "";
-    $current_id = "";
-
-    while (!feof($h)) { // Si $h est valide et tant que le fichier n'est pas fini (feof signifie file-end-of-file)
-        $line = fgets($h); // récupère une ligne du fichier
-
-        if ($line[0] === '>') { // Commentaire, on récupère l'ID concerné
-            if ($sequence !== '' && $current_id !== '') {
-                addLine($mode, $sequence, $current_id);
-            }
-
-            $e = substr($line, 1);
-            $current_id = mysqli_real_escape_string($sql, trim(preg_split("/\s/", trim($e))[0]));
-
-            // ----------
-            // TO DISABLE
-            // ----------
-
-            if (strpos($current_id, "|") !== false) { // Si il contient des pipes, on récupère différemment
-                $id_avec_tiret_de_merde = explode("|", trim($current_id))[2];
-                $id_sans_tiret_de_merde = explode("-", trim($id_avec_tiret_de_merde))[0];
-
-                $current_id = mysqli_real_escape_string($sql, trim($id_sans_tiret_de_merde));
-            }
-            else if (strpos($current_id, 'BGIBMG') !== false) {
-                $id_sans_tiret_de_merde = explode("-", trim($current_id))[0];
-
-                $current_id = mysqli_real_escape_string($sql, trim($id_sans_tiret_de_merde));
-            }
-
-            // ----------
-            // TO DISABLE
-            // ----------
-
-            $sequence = '';
-        }
-        else {
-            $sequence .= trim($line);
-        }
-    }
-
-    if ($sequence !== '' && $current_id !== '') {
-        addLine($mode, $sequence, $current_id);
-    }
-
-    fclose($h);
-}
-
-function getAllFastaSequences(string $mode = 'adn', bool $full) : string {
-    global $sql;
-
-    $m = ($mode === 'adn' ? 'sequence_adn' : 'sequence_pro');
-
-    $q = mysqli_query($sql, "SELECT $m, gene_id, specie FROM GeneAssociations WHERE $m IS NOT NULL;");
-
-    $s = '';
-    while ($row = mysqli_fetch_assoc($q)) {
-        if (!$full && isProtectedSpecie($row['specie'])) {
-            continue;
-        }
-
-        $s .= ">{$row['gene_id']}\n{$row[$m]}\n";
-    }
-
-    return $s;
-}
-
-function makeBlastDB(string $mode = 'adn', bool $full = true) {
-    chdir($_SERVER['DOCUMENT_ROOT'] . '/ncbi/bin');
-
-    $suffix = ($full ? '_full' : '');
-
-    $temp_file = `mktemp`;
-    $temp_file = trim($temp_file);
-
-    `chmod a+a $temp_file`;
-
-    if ($mode === 'adn') {
-        $str_seq = getAllFastaSequences('adn', $full);
-
-        // Écrit le contenu dans le fichier
-        file_put_contents($temp_file, $str_seq);
-
-        `./makeblastdb -dbtype nucl -in "$temp_file" -out base/adn_base$suffix 2>&1`;
-    }
-    else if ($mode === 'pro') {
-        $str_seq = getAllFastaSequences('pro', $full);
-
-        // Écrit le contenu dans le fichier
-        file_put_contents($temp_file, $str_seq);
-
-        `./makeblastdb -dbtype prot -in "$temp_file" -out base/pro_base$suffix 2>&1`;
-    }
-    else {
-        chdir($_SERVER['DOCUMENT_ROOT']);
-        throw new UnexpectedValueException('Unrecognized mode');
-    }
-
-    chdir($_SERVER['DOCUMENT_ROOT']);
-    `rm -f $temp_file`;
 }
