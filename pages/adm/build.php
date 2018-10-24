@@ -24,7 +24,7 @@ function buildGenomeController() : array {
     }
 
     // Traitement si l'utilisateur a demandé de construire la base de données
-    else if (isset($_POST['construct']) && 
+    /* else if (isset($_POST['construct']) && 
         file_exists($_SERVER['DOCUMENT_ROOT'] . '/assets/db/' . $_POST['construct']) && 
         !is_dir($_SERVER['DOCUMENT_ROOT'] . '/assets/db/' . $_POST['construct'])) {
 
@@ -34,7 +34,7 @@ function buildGenomeController() : array {
         explodeFile($file_selected, false);
 
         $data['construction'] = true;
-    }
+    } */
 
     $data['files'] = [];
 
@@ -73,26 +73,35 @@ function buildGenomeView(array $data) : void { ?>
         <div class="col s12">
             <div class="card card-border">
                 <div class="card-content">
-                    <form method="post" action="#">
-                        <div class="input-field col s12">
-                            <select name="construct">
-                                <?php 
-                                foreach ($data['files'] as $f) {
-                                    $name = htmlspecialchars($f['name'], ENT_QUOTES);
+                    <div class="input-field col s12">
+                        <select id="construct">
+                            <?php 
+                            foreach ($data['files'] as $f) {
+                                $name = htmlspecialchars($f['name'], ENT_QUOTES);
 
-                                    echo "<option value='$name'>$name</option>";
-                                }
-                                ?>
-                            </select>
-                            <label>File to use</label>
-                        </div>
+                                echo "<option value='$name'>$name</option>";
+                            }
+                            ?>
+                        </select>
+                        <label>File to use</label>
+                    </div>
 
-                        <button name="go" type="submit" class="btn-flat btn-perso green-text darken-1 right">
-                            Build database
-                        </button>
+                    <button id="go_db" class="btn-flat btn-perso green-text darken-1 right">
+                        Build database
+                    </button>
 
-                        
-                    </form>
+                    <script>
+                        $(document).ready(function() {
+                            var modal = document.getElementById('modal-admin');
+                            $(modal).modal();
+
+                            $('#go_db').on('click', function() {
+                                $(modal).modal('open');
+                                launchDatabaseBuild(document.getElementById('construct').value);
+                            });
+                        });
+                    </script>
+
 
                     <form method="post" action="#">
                         <input type="hidden" name="erase" value="true">
@@ -134,14 +143,14 @@ function buildBlastController() : array {
     }
 
     // Traitement si l'utilisateur a demandé de construire la base de données
-    else if (isset($_POST['construct'])) {
+    /* else if (isset($_POST['construct'])) {
         readAllFastaFiles();
 
         clearBlastDatabase();
         makeAllBlastDB();
 
         $data['construction'] = true;
-    }
+    } */
 
     $data['files'] = [];
     $data['files']['adn'] = [];

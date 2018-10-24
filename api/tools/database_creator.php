@@ -140,7 +140,7 @@ if (isUserLogged()) {
     if (isset($_POST['file']) && is_string($_POST['file'])) {
         $file = $_POST['file'];
 
-        $empty = (isset($_POST['empty']) && $_POST['empty'] === true);
+        $empty = (isset($_POST['empty']) && $_POST['empty'] === 'true');
 
         $path = $_SERVER['DOCUMENT_ROOT'] . '/assets/db/' . $file;
 
