@@ -8,13 +8,10 @@
  * @param string $pathway
  * @return void
  */
-function insertPathway(int $id_gene, string $pathway) : void {
-    global $sql;
-    mysqli_query($sql, "INSERT INTO Pathways 
-        (id, pathway)
-        VALUES
-        ($id_gene, '$pathway');
-    ");
+function insertPathway(int $id_gene, string $pathway, $stmt_request) : void {
+    /* bind parameters for markers */
+    $stmt_request->bind_param("is", $id_gene, $pathway);
+    $stmt_request->execute();
 }
 
 /**
@@ -26,6 +23,20 @@ function insertPathway(int $id_gene, string $pathway) : void {
  */
 function explodeFile(string $filename, bool $trim_first_line = false) : void { 
     global $sql; // importe la connexion SQL chargée avec l'appel à connectBD()
+
+    $stmt_gene = mysqli_prepare($sql, "INSERT INTO Gene 
+        (func, gene_name, fullname, family, subfamily)
+        VALUES
+        (?, ?, ?, ?, ?)");
+
+    $stmt_assoc = mysqli_prepare($sql, "INSERT INTO GeneAssociations
+        (id, gene_id, sequence_adn, sequence_pro, specie, addi)
+        VALUES (?, ?, NULL, NULL, ?, ?)");
+
+    $stmt_pathway = mysqli_prepare($sql, "INSERT INTO Pathways 
+        (id, pathway)
+        VALUES
+        (?, ?);");
 
     $h = fopen($filename, 'r'); // ouvre le fichier $filename en lecture, et stocke le pointeur-sur-fichier dans $h
 
@@ -53,67 +64,59 @@ function explodeFile(string $filename, bool $trim_first_line = false) : void {
         $arr = explode("\t", $line); // sépare la ligne en fonction d'une tabulation et la met dans un tableau
 
         // Importe fonction, pathway... dans des variables, avec les ' échappés, et les espaces terminaux trimmés
-        $func = trim(mysqli_real_escape_string($sql, $arr[1]));
-        $pathway = trim(mysqli_real_escape_string($sql, $arr[2]));
-        $name = trim(mysqli_real_escape_string($sql, $arr[0]));
-        $fullname = trim(mysqli_real_escape_string($sql, $arr[3]));
-        $family = trim(mysqli_real_escape_string($sql, $arr[4]));
-        $sub = trim(mysqli_real_escape_string($sql, $arr[5]));
+        $func = trim($arr[1]);
+        $pathway = trim($arr[2]);
+        $name = trim($arr[0]);
+        $fullname = trim($arr[3]);
+        $family = trim($arr[4]);
+        $sub = trim($arr[5]);
 
         // Insère ces données dans le Gene
-        $q = mysqli_query($sql, "INSERT INTO Gene 
-            (func, gene_name, fullname, family, subfamily)
-            VALUES
-            ('$func', '$name', '$fullname', '$family', '$sub');
-        ");
+        /* bind parameters for markers */
+        $stmt_gene->bind_param("sssss", $func, $name, $fullname, $family, $sub);
 
-        // Si l'insertion a réussi
-        if ($q) {
-            // Récupération de l'ID numérique d'insertion (clé primaire de Gene)
-            $id_insert = mysqli_insert_id($sql);
+        /* execute query */
+        $stmt_gene->execute();
 
-            // Si un pathway est défini, on le split en fonction de /, et on insère autant de pathways que défini dans Pathways,
-            // ceux-ci étant reliés au Gene par son ID
-            if (!empty($pathway)) {
-                insertPathway($id_insert, $pathway);
+        // Récupération de l'ID numérique d'insertion (clé primaire de Gene)
+        $id_insert = $stmt_gene->insert_id;
 
-                // $paths = explode('/', $pathway);
-                
-                // foreach ($paths as $p) {
-                //     if (!empty(trim($p)))
-                        
-                // }
-            }
+        // Si un pathway est défini, on le split en fonction de /, et on insère autant de pathways que défini dans Pathways,
+        // ceux-ci étant reliés au Gene par son ID
+        if (!empty($pathway)) {
+            insertPathway($id_insert, $pathway, $stmt_pathway);
+        }
 
-            // Les espèces présentes, dans le bon ordre
-            $assocs_species = ['Soryzae', 'Apisum', 'Agambiae', 'Amellifera', 
-                'Bmori', 'Cfloridanus', 'Dmelanogaster', 'Gmorsitans',
-                'Msexta', 'Nvitripennis', 'Phumanus', 'Pxylostela',
-                'Tcastaneum', 'Sinvicta', 'Dponderosae', 'Aaegypti'
-            ];
+        // Les espèces présentes, dans le bon ordre
+        $assocs_species = ['Soryzae', 'Apisum', 'Agambiae', 'Amellifera', 
+            'Bmori', 'Cfloridanus', 'Dmelanogaster', 'Gmorsitans',
+            'Msexta', 'Nvitripennis', 'Phumanus', 'Pxylostela',
+            'Tcastaneum', 'Sinvicta', 'Dponderosae', 'Aaegypti'
+        ];
 
-            // Pour les lignes 6 à 21 du tableau
-            for ($i = 6; $i < 22; $i++) {
-                $m = [];
-                // Enregistre les matches de l'expression régulière ci-dessous dans $m
-                preg_match_all("/\((.+?)\),?/m", $arr[$i], $m);
+        // Pour les lignes 6 à 21 du tableau
+        for ($i = 6; $i < 22; $i++) {
+            $m = [];
+            // Enregistre les matches de l'expression régulière ci-dessous dans $m
+            preg_match_all("/\((.+?)\),?/m", $arr[$i], $m);
 
-                // Si il y a eu des matches ($m[1] représente tous les matches fait pour la PREMIÈRE parenthèse capturante,
-                // $m[0] représente le match entier)
-                if (isset($m[1])) {
-                    // Pour chaque match dans la parenthèse
-                    foreach($m[1] as $key => $match) { 
-                        // On extrait la "ligne" entière qui est dans $m[0] (full-match) [$key] (et on l'escape)
-                        $full_line = mysqli_real_escape_string($sql, $m[0][$key]);
-                        // Pour récupérer l'ID, c'est la première valeur de la "parenthèse" séparée par des ,
-                        // On récupère donc le premier élément du split
-                        $id = explode(',', $match)[0];
+            // Si il y a eu des matches ($m[1] représente tous les matches fait pour la PREMIÈRE parenthèse capturante,
+            // $m[0] représente le match entier)
+            if (isset($m[1])) {
+                // Pour chaque match dans la parenthèse
+                foreach($m[1] as $key => $match) { 
+                    // On extrait la "ligne" entière qui est dans $m[0] (full-match) [$key] (et on l'escape)
+                    $full_line = mysqli_real_escape_string($sql, $m[0][$key]);
+                    // Pour récupérer l'ID, c'est la première valeur de la "parenthèse" séparée par des ,
+                    // On récupère donc le premier élément du split
+                    $id = explode(',', $match)[0];
 
-                        // On insère le gène dans les associations
-                        mysqli_query($sql, "INSERT INTO GeneAssociations
-                        (id, gene_id, sequence_adn, sequence_pro, specie, addi)
-                        VALUES ($id_insert, '$id', NULL, NULL, '{$assocs_species[$i - 6]}', '$full_line')"); 
-                    }
+                    // On insère le gène dans les associations
+                    /* bind parameters for markers */
+                    $stmt_assoc->bind_param("isss", $id_insert, $id, $assocs_species[$i - 6], $full_line);
+
+                    /* execute query */
+                    $stmt_assoc->execute();
                 }
             }
         }
