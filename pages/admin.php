@@ -89,6 +89,31 @@ function adminView(Controller $c) : void {
     $d = $c->getData();
 
     ?>
+    <!-- Modal for confirmation -->
+    <div class="row no-margin-bottom">
+        <!-- Modal Structure -->
+        <div id="modal_build" class="modal bottom-sheet">
+            <div class="modal-content">
+                <h4 id="build_header">Are you sure you want to build database from selected file ?</h4>
+                <p id="build_text">
+                    Building will clear current database, then try to import selected file.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="waves-effect red-text btn-flat modal-close">
+                    Cancel
+                </a>
+                <a href="#!" class="waves-effect green-text btn-flat modal-close" id="setter_builder">
+                    Build
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row no-margin-bottom">
+        <div class="modal" id="modal-admin"></div>
+    </div>
+
     <div class="container">
         <div class="row no-margin-bottom">
             <div class="col s12">
@@ -141,10 +166,6 @@ function adminView(Controller $c) : void {
                 break;
         }
         ?>
-    </div>
-
-    <div class="row no-margin-bottom">
-        <div class="modal" id="modal-admin"></div>
     </div>
 
     <script src="/js/admin.js"></script>
@@ -224,6 +245,7 @@ function adminView(Controller $c) : void {
     <script>
         $(document).ready(function () {
             $('.sidenav').sidenav();
+            $('.modal').modal();
         });
     </script>
     <?php
@@ -246,49 +268,55 @@ function showFastaFiles(array $files, bool $with_delete_input) : void {
     ?>
     <div class="row">
         <div class="col s12">
-            <h5>DNA FASTA files</h5>
-            <ul class="collection">
-                <?php foreach($files['adn'] as $f) { ?>
-                    <li class="collection-item avatar">
-                        <i class="material-icons circle">insert_drive_file</i>
-                        <span class="title"><?= $f['name'] ?></span>
-                        <p>
-                            <?= $f['size'] ?> Mo<br>
-                            Imported <?= date('Y-m-d', $f['date']) ?>
-                        </p>
-                        <?php if ($with_delete_input) { ?>
-                            <form method="post" action="#">
-                                <input type="hidden" name="delete" value="<?= htmlspecialchars($f['name'], ENT_QUOTES) ?>">
-                                <input type="hidden" name="mode" value="adn">
-                                <a href="#!" onclick="this.parentElement.submit()" class="secondary-content"><i class="material-icons red-text">delete_forever</i></a>
-                            </form>
-                        <?php } ?>
-                    </li>
-                <?php } ?>
-            </ul>
+            <?php if (count($files['adn']) !== 0) { ?>
+                <h5>DNA FASTA files</h5>
+                <ul class="collection">
+                    <?php foreach($files['adn'] as $f) { ?>
+                        <li class="collection-item avatar">
+                            <i class="material-icons circle">insert_drive_file</i>
+                            <span class="title"><?= $f['name'] ?></span>
+                            <p>
+                                <?= $f['size'] ?> Mo<br>
+                                Imported <?= date('Y-m-d', $f['date']) ?>
+                            </p>
+                            <?php if ($with_delete_input) { ?>
+                                <form method="post" action="#">
+                                    <input type="hidden" name="delete" value="<?= htmlspecialchars($f['name'], ENT_QUOTES) ?>">
+                                    <input type="hidden" name="mode" value="adn">
+                                    <a href="#!" onclick="this.parentElement.submit()" class="secondary-content"><i class="material-icons red-text">delete_forever</i></a>
+                                </form>
+                            <?php } ?>
+                        </li>
+                    <?php } ?>
+                </ul>
+            <?php } ?>
 
-            <div class='divider divider-margin'></div>
+            <?php if (count($files['adn']) !== 0 && count($files['pro']) !== 0) { ?>
+                <div class='divider divider-margin'></div>
+            <?php } ?>
 
-            <h5>Proteic FASTA files</h5>
-            <ul class="collection">
-                <?php foreach($files['pro'] as $f) { ?>
-                    <li class="collection-item avatar">
-                        <i class="material-icons circle">insert_drive_file</i>
-                        <span class="title"><?= $f['name'] ?></span>
-                        <p>
-                            <?= $f['size'] ?> Mo<br>
-                            Imported <?= date('Y-m-d', $f['date']) ?>
-                        </p>
-                        <?php if ($with_delete_input) { ?>
-                            <form method="post" action="#">
-                                <input type="hidden" name="delete" value="<?= htmlspecialchars($f['name'], ENT_QUOTES) ?>">
-                                <input type="hidden" name="mode" value="pro">
-                                <a href="#!" onclick="this.parentElement.submit()" class="secondary-content"><i class="material-icons red-text">delete_forever</i></a>
-                            </form>
-                        <?php } ?>
-                    </li>
-                <?php } ?>
-            </ul>
+            <?php if (count($files['pro']) !== 0) { ?>
+                <h5>Proteic FASTA files</h5>
+                <ul class="collection">
+                    <?php foreach($files['pro'] as $f) { ?>
+                        <li class="collection-item avatar">
+                            <i class="material-icons circle">insert_drive_file</i>
+                            <span class="title"><?= $f['name'] ?></span>
+                            <p>
+                                <?= $f['size'] ?> Mo<br>
+                                Imported <?= date('Y-m-d', $f['date']) ?>
+                            </p>
+                            <?php if ($with_delete_input) { ?>
+                                <form method="post" action="#">
+                                    <input type="hidden" name="delete" value="<?= htmlspecialchars($f['name'], ENT_QUOTES) ?>">
+                                    <input type="hidden" name="mode" value="pro">
+                                    <a href="#!" onclick="this.parentElement.submit()" class="secondary-content"><i class="material-icons red-text">delete_forever</i></a>
+                                </form>
+                            <?php } ?>
+                        </li>
+                    <?php } ?>
+                </ul>
+            <?php } ?>
         </div>
     </div>
 

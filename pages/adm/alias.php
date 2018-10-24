@@ -75,13 +75,13 @@ function buildAliasController() : array {
     }
 
     // Traitement si l'utilisateur a demandé de construire le mapping
-    else if (isset($_POST['construct'])) {
+    /* else if (isset($_POST['construct'])) {
         foreach ($files as $f) {
             readBuildIndex($f);
         }
 
         $data['construction'] = true;
-    }
+    } */
 
     return $data;
 }
@@ -133,7 +133,9 @@ function aliasImportView(array $data) : void { ?>
 
             <div class="divider divider-margin"></div>
 
-            <h5>Currently loaded mapping files</h5>
+            <?php if (count($data['files']) !== 0) { ?>
+                <h5>Currently loaded mapping files</h5>
+            <?php } ?>
 
             <?php
             if (isset($data['file_not_found'])) {
@@ -173,7 +175,9 @@ function aliasBuildView(array $data) : void { ?>
                 echo '<h5 class="red-text">Mapping informations has been wiped from the database.</h5>';
             } ?>
 
-            <h5>Currently loaded mapping files</h5>
+            <?php if (count($data['files']) !== 0) { ?>
+                <h5>Currently loaded mapping files</h5>
+            <?php } ?>
 
             <?php 
             if (isset($data['file_not_found'])) {
@@ -206,14 +210,30 @@ function aliasBuildView(array $data) : void { ?>
                 </button>
             </form>
         </div>
-        <div class="col s6">
-            <form method="post" action="#">
-                <input type="hidden" name="construct" value="true">
-                <button name="go" type="submit" class="btn btn-personal green darken-1 center-block">
-                    Build mapping database
-                </button>
-            </form>
-        </div>
+
+        <?php if (count($data['files']) !== 0) { ?>
+            <div class="col s6">
+                <a href="#modal_build" id="go_db" class="modal-trigger btn btn-personal green darken-1 center-block">
+                    Build alias mapping
+                </a>
+
+                <!-- set modal build parameter -->
+                <script>
+                    document.getElementById('build_header').innerText = 'Build mapping in database from uploaded files ?';
+                    document.getElementById('build_text').innerText = 'Building will read all mapping\
+                    files and register aliases in website database.';
+
+                    $(document).ready(function () {
+                        $.get('/api/tools/get_all_mapping_files.php', {}, function(data) {
+                            document.getElementById('setter_builder').onclick = function () {
+                                launchMapBuild(JSON.parse(data));
+                            };
+                        });
+                    });
+                </script>
+            </div>
+        <?php } ?>
+
     </div>
 
     <?php

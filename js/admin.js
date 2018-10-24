@@ -49,13 +49,17 @@ async function launchFastaBuild(files) {
     var current = 1;
 
     var modal = document.getElementById('modal-admin');
+    $(modal).modal('open');
 
     modal.innerHTML = `<div class="modal-content">
-        <h4>Loading sequences</h4>
+        <h4>Importing sequences</h4>
         <p>
-            Importing file <span id="file_number">1</span> of ${total}
+            Reading file <span id="file_number">1</span> of ${total}
         </p>
-        ${preloader_bar}
+        <div>${preloader_bar}</div>
+        <div class="row no-margin-bottom">
+            <p>This may take a while.</p>
+        </div>
     </div>
     <div class="modal-footer">
         
@@ -92,6 +96,9 @@ async function launchMakeBlast(success, total) {
     
     modal.innerHTML = `<div class="modal-content">
         <h4>Making BLAST database</h4>
+        <p>
+            This may take a while.
+        </p>
         <div class="center-align" style="margin-top: 30px;">
             ${preloader_circle}
         </div>
@@ -100,18 +107,21 @@ async function launchMakeBlast(success, total) {
         
     </div>`;
 
+    var ok = true;
+
     await request({
         url: '/api/tools/blast_creator.php',
         method: 'POST',
         body: 'make=true'
-    }).catch(function (e) { });
+    }).catch(function (e) { ok = false; });
 
     // Affiche un message signalant la fin
     modal.innerHTML = `<div class="modal-content">
         <h4>Import complete</h4>
         <p>
             <span id="file_number">${success}</span> files has been successfully imported (${(total - success)} failed).<br>
-            BLAST database has been successfully builded.
+            ${ok ? "BLAST database has been successfully builded" : 
+                "<span class='red-text'>An error occurred while creating BLAST database.</span>"}.
         </p>
     </div>
     <div class="modal-footer">
@@ -121,11 +131,13 @@ async function launchMakeBlast(success, total) {
 
 async function launchDatabaseBuild(file) {
     var modal = document.getElementById('modal-admin');
+    $(modal).modal('open');
 
     modal.innerHTML = `<div class="modal-content">
         <h4>Loading sequences</h4>
         <p>
-            Importing database file, please wait.
+            Importing database file, please wait.<br>
+            This may take a while.
         </p>
         <div class="center-align" style="margin-top: 30px;">
             ${preloader_circle}
@@ -148,6 +160,61 @@ async function launchDatabaseBuild(file) {
         <h4>Import complete</h4>
         <p>
             Database has been successfully builded.
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-close red-text btn-flat">Close</a>
+    </div>`;
+}
+
+async function launchMapBuild(files) {
+    var total = files.length;
+    var success = 0;
+    var current = 1;
+
+    var modal = document.getElementById('modal-admin');
+    $(modal).modal('open');
+
+    modal.innerHTML = `<div class="modal-content">
+        <h4>Registering aliases</h4>
+        <p>
+            Reading file <span id="file_number">1</span> of ${total}
+        </p>
+        <div>${preloader_bar}</div>
+        <div class="row no-margin-bottom">
+            <p>This may take a while.</p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        
+    </div>`;
+
+    var bar = document.getElementById('progress-bar');
+    var num = document.getElementById('file_number');
+
+    for (var f of files) {
+        await request({
+            url: '/api/tools/do_mapping.php',
+            method: 'POST',
+            body: 'file=' +  encodeURIComponent(f)
+        }).then(function (e) {
+            success++;
+        }).catch(function (e) {
+
+        }).finally(function (e) {
+            current++;
+            // Actualiser la barre...
+            bar.style.width = String(Math.round((current / total) * 100)) + '%';
+
+            num.innerText = current;
+        });
+    }
+
+    // Affiche un message signalant la fin
+    modal.innerHTML = `<div class="modal-content">
+        <h4>Import complete</h4>
+        <p>
+            <span id="file_number">${success}</span> files has been successfully imported (${(total - success)} failed).
         </p>
     </div>
     <div class="modal-footer">
