@@ -22,6 +22,7 @@ class GeneObject {
     protected $sub_family;
 
     protected $has_link;
+    protected $alias;
 
     public function __construct(array $row) {
         $this->id = $row['gene_id'];
@@ -41,6 +42,8 @@ class GeneObject {
         $this->pathways = explode(',', $row['pathways']);
 
         $this->has_link = $row['linkable'] === '0' ? false : true;
+
+        $this->alias = $row['alias'] ?? null;
     }
 
     // Implémentations des méthodes de l'interface
@@ -89,6 +92,10 @@ class GeneObject {
 
     public function hasLink() : bool {
         return $this->has_link;
+    }
+
+    public function getAlias() : ?string {
+        return $this->alias;
     }
 }
 

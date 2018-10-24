@@ -33,8 +33,9 @@ function getRoute() : Controller {
         // Équivaut à $page_arguments[2:] en Python
         $page_arguments = array_slice($page_arguments, 2);
 
-        if (!array_key_exists($page_name, PAGES_REF)) {
+        if (!array_key_exists($page_name, PAGES_REF) || preg_match("/^[0-9]+$/", $page_name)) {
             // Si la page demandée n'existe pas
+            // ou si la page demandée est une page d'erreur
             $page_name = '404';
         }
     }
@@ -113,9 +114,13 @@ function isUserLogged() : bool {
     return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'];
 }
 
-function getLinkForId(string $id, string $specie) : string {
+function getLinkForId(string $id, string $specie, ?string $alias = null) : string {
     if (!array_key_exists($specie, SPECIE_TO_NAME)) {
         return "";
+    }
+
+    if ($alias) {
+        $id = $alias;
     }
 
     if ($specie === 'Soryzae') {
@@ -145,6 +150,27 @@ function isProtectedSpecie(string $specie) : bool {
 
 function getProtectedSpecies() : array {
     return array_keys(PROTECTED_SPECIES);
+}
+
+function renewProtectedSpecies(array $species) : void {
+    $str = "<?php\n\nconst PROTECTED_SPECIES = [";
+
+    $first = true;
+
+    foreach ($species as $s) {
+        if ($first) {
+            $first = false;
+        }
+        else {
+            $str .= ",";
+        }
+        
+        $str .= "'$s' => true";
+    }
+
+    $str .= "];\n";
+
+    file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/assets/protected-species.php', $str);
 }
 
 function checkSaveLinkValidity(string $specie, string $gene_id) : bool {
