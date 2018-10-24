@@ -83,8 +83,13 @@ if (isUserLogged()) {
     session_write_close();
 
     if (isset($_POST['make'])) {
-        set_time_limit(30 * 10);
-        makeAllBlastDB();
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { // Pas possible sur Windows
+            header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
+        } 
+        else {
+            set_time_limit(30 * 10);
+            makeAllBlastDB();
+        }
     }
 }
 else {

@@ -73,39 +73,36 @@ function buildGenomeView(array $data) : void { ?>
         <div class="col s12">
             <div class="card card-border">
                 <div class="card-content">
-                    <div class="input-field col s12">
-                        <select id="construct">
-                            <?php 
-                            foreach ($data['files'] as $f) {
-                                $name = htmlspecialchars($f['name'], ENT_QUOTES);
+                    <?php if (count($data['files']) !== 0) { ?>
+                        <div class="input-field col s12">
+                            <select id="construct">
+                                <?php 
+                                foreach ($data['files'] as $f) {
+                                    $name = htmlspecialchars($f['name'], ENT_QUOTES);
 
-                                echo "<option value='$name'>$name</option>";
-                            }
-                            ?>
-                        </select>
-                        <label>File to use</label>
-                    </div>
+                                    echo "<option value='$name'>$name</option>";
+                                }
+                                ?>
+                            </select>
+                            <label>File to use</label>
+                        </div>
 
-                    <button id="go_db" class="btn-flat btn-perso green-text darken-1 right">
-                        Build database
-                    </button>
+                        <a href="#modal_build" id="go_db" class="btn-flat modal-trigger btn-perso green-text darken-1 right">
+                            Build database
+                        </a>
 
-                    <script>
-                        $(document).ready(function() {
-                            var modal = document.getElementById('modal-admin');
-                            $(modal).modal();
-
-                            $('#go_db').on('click', function() {
-                                $(modal).modal('open');
+                        <!-- set modal build parameter -->
+                        <script>
+                            var btn = document.getElementById('setter_builder');
+                            btn.onclick = function () {
                                 launchDatabaseBuild(document.getElementById('construct').value);
-                            });
-                        });
-                    </script>
-
+                            };
+                        </script>
+                    <?php } ?>
 
                     <form method="post" action="#">
                         <input type="hidden" name="erase" value="true">
-                        <button name="go" type="submit" 
+                        <button name="go" type="submit"
                             onclick="return confirm('Are you sure you want to wipe the genome database ?')" 
                             class="btn-flat red-text btn-perso darken-1 left">
                             Clear genome database
@@ -117,13 +114,15 @@ function buildGenomeView(array $data) : void { ?>
         </div>
     </div>
 
-    <div class="row no-margin-bottom">
-        <div class="col s12">
-            <h5>Currently uploaded database files</h5>
+    <?php if (count($data['files']) !== 0) { ?>
+        <div class="row no-margin-bottom">
+            <div class="col s12">
+                <h5>Currently uploaded database files</h5>
+            </div>
         </div>
-    </div>
 
-    <?php showMappingFiles($data['files'], false);
+        <?php showMappingFiles($data['files'], false);
+    }
 }
 
 function buildBlastController() : array {
@@ -198,27 +197,31 @@ function buildBlastView(array $data) : void { ?>
                 </button>
             </form>
         </div>
-        <div class="col s6">
-            <button id="construct_btn" class="btn btn-personal green darken-1 center-block">
-                Build BLAST and sequence databases
-            </button>
 
-            <script>
-                $(document).ready(function () {
-                    var modal = document.getElementById('modal-admin');
-                    $(modal).modal();
+        <?php if (count($data['files']['adn']) !== 0 || count($data['files']['pro']) !== 0) { ?>
+            <div class="col s6">
+                <a href="#modal_build" id="go_db" class="modal-trigger btn btn-personal green darken-1 center-block">
+                    Build BLAST and sequence databases
+                </a>
 
-                    $.get('/api/tools/get_all_fasta_files.php', {}, function(data) {
+                <!-- set modal build parameter -->
+                <script>
+                    document.getElementById('build_header').innerText = 'Build BLAST database from uploaded sequences ?';
+                    document.getElementById('build_text').innerText = 'Building will wipe current BLAST database, \
+                        try to import all the uploaded FASTA files in the website database,\
+                        then construct BLAST DB from website SQL DB.';
 
-                        $('#construct_btn').on('click', function () {
-                            $(modal).modal('open');
-
-                            launchFastaBuild(JSON.parse(data));
+                    $(document).ready(function () {
+                        $.get('/api/tools/get_all_fasta_files.php', {}, function(data) {
+                            document.getElementById('setter_builder').onclick = function () {
+                                launchFastaBuild(JSON.parse(data));
+                            };
                         });
                     });
-                });
-            </script>
-        </div>
+                </script>
+            </div>
+        <?php } ?>
+
     </div>
 
     <?php showFastaFiles($data['files'], false); ?>

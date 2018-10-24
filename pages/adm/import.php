@@ -176,10 +176,11 @@ function importGenomeView(array $data) : void { ?>
             </div>
 
             <div class="divider divider-margin"></div>
+            
+            <?php if (count($data['files']) !== 0) { ?>
+                <h5>Currently uploaded database files</h5>
+            <?php }
 
-            <h5>Currently uploaded database files</h5>
-
-            <?php
             if (isset($data['file_not_found'])) {
                 echo '<h6 class="red-text">File not found</h6>';
             }
