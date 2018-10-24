@@ -376,9 +376,11 @@ function searchAdvanced() : array {
         WHERE $query
         GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie";
 
-        echo $finalquery;
+        //var_dump($finalquery);
 
         $q = mysqli_query($sql, $finalquery);
+
+        echo mysqli_error($sql);
 
         if (!$q) {
             throw new UnexpectedValueException("SQL request failed");
@@ -386,6 +388,7 @@ function searchAdvanced() : array {
 
         if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
             while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
+                $row['linkable'] = '1';
                 $r['results'][] = new GeneObject($row);
             } 
             // results empêche la génération du formulaire de recherche,
@@ -405,26 +408,26 @@ function makeAdvancedQuery(string $word, string $query): string {
 
     if (isset($_GET['Names'])) {
         if ($query != '') {
-            $query=$query . " OR g.gene_name LIKE '$word'";
+            $query=$query . " OR g.gene_name LIKE '$word%'";
         }
         else {
-            $query=$query . "g.gene_name LIKE '$word'";
+            $query=$query . "g.gene_name LIKE '$word%'";
         }
     }
     if (isset($_GET['IDs'])) {
         if ($query != '') {
-            $query=$query . " OR g.gene_id LIKE '$word'";
+            $query=$query . " OR a.gene_id LIKE '$word%'";
         }
         else {
-            $query=$query . "g.gene_id LIKE '$word'";
+            $query=$query . "a.gene_id LIKE '$word%'";
         }
     }
     if (isset($_GET['Species'])) {
         if ($query != '') {
-            $query=$query . " OR g.specie LIKE '$word'";
+            $query=$query . " OR a.specie LIKE '$word%'";
         }
         else {
-            $query=$query . "g.specie LIKE '$word'";
+            $query=$query . "a.specie LIKE '$word%'";
         }
     }
     if (isset($_GET['Functions'])) {
@@ -556,10 +559,6 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                         <label class="margin-left">
                             <input type="checkbox" class="filled-in" checked name="IDs" />
                             <span>IDs</span>
-                        </label>
-                        <label class="margin-left">
-                            <input type="checkbox" class="filled-in" checked name="Pathways" />
-                            <span>Pathways</span>
                         </label>
                         <label class="margin-left">
                             <input type="checkbox" class="filled-in" checked name="Species" />
