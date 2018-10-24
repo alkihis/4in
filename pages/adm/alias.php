@@ -48,6 +48,7 @@ function importAliasController() : array {
         }
     }
 
+    $data['files'] = [];
     foreach ($files as $f) {
         $data['files'][] = ['name' => basename($f), 'size' => round(filesize($f) / 1024, 2), 'date' => filemtime($f)];
     }
@@ -61,6 +62,7 @@ function buildAliasController() : array {
 
     $files = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/map/*');
 
+    $data['files'] = [];
     foreach ($files as $f) {
         $data['files'][] = ['name' => basename($f), 'size' => round(filesize($f) / 1024, 2), 'date' => filemtime($f)];
     }

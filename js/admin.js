@@ -118,3 +118,39 @@ async function launchMakeBlast(success, total) {
         <a href="#!" class="modal-close red-text btn-flat">Close</a>
     </div>`;
 }
+
+async function launchDatabaseBuild(file) {
+    var modal = document.getElementById('modal-admin');
+
+    modal.innerHTML = `<div class="modal-content">
+        <h4>Loading sequences</h4>
+        <p>
+            Importing database file, please wait.
+        </p>
+        <div class="center-align" style="margin-top: 30px;">
+            ${preloader_circle}
+        </div>
+    </div>
+    <div class="modal-footer">
+        
+    </div>`;
+
+    await request({
+        url: '/api/tools/database_creator.php',
+        method: 'POST',
+        body: 'file=' +  encodeURIComponent(file) + '&empty=true'
+    }).catch(function (e) {
+
+    });
+
+    // Affiche un message signalant la fin
+    modal.innerHTML = `<div class="modal-content">
+        <h4>Import complete</h4>
+        <p>
+            Database has been successfully builded.
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-close red-text btn-flat">Close</a>
+    </div>`;
+}
