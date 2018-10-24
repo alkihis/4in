@@ -25,6 +25,11 @@ window.request = obj => {
     });
 };
 
+$(document).ready(function () {
+    $('.sidenav').sidenav();
+    $('.modal:not(.not-dismissible)').modal();
+});
+
 var preloader_bar = `<div class="progress">
     <div class="determinate" id="progress-bar" style="width: 0%"></div>
 </div>`;
@@ -49,7 +54,13 @@ async function launchFastaBuild(files) {
     var current = 1;
 
     var modal = document.getElementById('modal-admin');
-    $(modal).modal('open');
+
+    // Obligatoire pour conserver les attributs
+    $(modal).modal({
+        dismissible: false
+    });
+    var inst = M.Modal.getInstance(modal);
+    inst.open();
 
     modal.innerHTML = `<div class="modal-content">
         <h4>Importing sequences</h4>
@@ -131,7 +142,13 @@ async function launchMakeBlast(success, total) {
 
 async function launchDatabaseBuild(file) {
     var modal = document.getElementById('modal-admin');
-    $(modal).modal('open');
+
+    // Obligatoire pour conserver les attributs
+    $(modal).modal({
+        dismissible: false
+    });
+    var inst = M.Modal.getInstance(modal);
+    inst.open();
 
     modal.innerHTML = `<div class="modal-content">
         <h4>Loading sequences</h4>
@@ -173,7 +190,13 @@ async function launchMapBuild(files) {
     var current = 1;
 
     var modal = document.getElementById('modal-admin');
-    $(modal).modal('open');
+
+    // Obligatoire pour conserver les attributs
+    $(modal).modal({
+        dismissible: false
+    });
+    var inst = M.Modal.getInstance(modal);
+    inst.open();
 
     modal.innerHTML = `<div class="modal-content">
         <h4>Registering aliases</h4>

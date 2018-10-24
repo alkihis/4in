@@ -94,7 +94,7 @@ function adminView(Controller $c) : void {
         <!-- Modal Structure -->
         <div id="modal_build" class="modal bottom-sheet">
             <div class="modal-content">
-                <h4 id="build_header">Are you sure you want to build database from selected file ?</h4>
+                <h4 id="build_header">Build database from selected file ?</h4>
                 <p id="build_text">
                     Building will clear current database, then try to import selected file.
                 </p>
@@ -110,8 +110,36 @@ function adminView(Controller $c) : void {
         </div>
     </div>
 
+    <!-- Modal for clear -->
     <div class="row no-margin-bottom">
-        <div class="modal" id="modal-admin"></div>
+        <!-- Modal Structure -->
+        <div id="modal_wipe" class="modal bottom-sheet">
+            <div class="modal-content">
+                <h4 id="wipe_header">Wipe genome database ?</h4>
+                <p id="wipe_text">
+                    All data in database will be lost and you will need to import a tabulated file again to
+                    restore informations.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <form method="post" action="#">
+                    <div id="wipe_additionnal"></div>
+                    <a href="#!" class="waves-effect blue-text btn-flat modal-close">
+                        Cancel
+                    </a>
+                
+                    <input type="hidden" name="erase" value="true">
+                    <a href="#!" onclick="this.parentElement.submit()" 
+                        class="waves-effect red-text btn-flat modal-close" id="setter_wiper">
+                        Wipe
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row no-margin-bottom">
+        <div class="modal not-dismissible" id="modal-admin"></div>
     </div>
 
     <div class="container">
@@ -241,13 +269,6 @@ function adminView(Controller $c) : void {
             }
         }
     </style>
-
-    <script>
-        $(document).ready(function () {
-            $('.sidenav').sidenav();
-            $('.modal').modal();
-        });
-    </script>
     <?php
 }
 

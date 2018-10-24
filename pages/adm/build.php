@@ -100,14 +100,9 @@ function buildGenomeView(array $data) : void { ?>
                         </script>
                     <?php } ?>
 
-                    <form method="post" action="#">
-                        <input type="hidden" name="erase" value="true">
-                        <button name="go" type="submit"
-                            onclick="return confirm('Are you sure you want to wipe the genome database ?')" 
-                            class="btn-flat red-text btn-perso darken-1 left">
-                            Clear genome database
-                        </button>
-                    </form>
+                    <a href="#modal_wipe" class="btn-flat red-text btn-perso darken-1 left modal-trigger">
+                        Clear genome database
+                    </a>
                     <div class="clearb"></div>
                 </div>
             </div>
@@ -134,9 +129,11 @@ function buildBlastController() : array {
 
     // Traitement si l'utilisateur a demandé de supprimer les bases BLAST
     if (isset($_POST['erase'])) {
-        // mysqli_query($sql, "UPDATE GeneAssociations SET sequence_adn=NULL;");
-        // mysqli_query($sql, "UPDATE GeneAssociations SET sequence_pro=NULL;");
         clearBlastDatabase();
+
+        if (isset($_POST['wipe_seq']) && $_POST['wipe_seq'] === 'true') {
+            mysqli_query($sql, "UPDATE GeneAssociations SET sequence_adn=NULL, sequence_pro=NULL;");
+        }
 
         $data['erased'] = true;
     }
@@ -190,12 +187,9 @@ function buildBlastView(array $data) : void { ?>
 
     <div class="row">
         <div class="col s6">
-            <form method="post" action="#">
-                <input type="hidden" name="erase" value="true">
-                <button name="go" type="submit" class="btn btn-personal red darken-1 center-block">
-                    Clear BLAST databases
-                </button>
-            </form>
+            <a href="#modal_wipe" class="btn btn-personal red darken-1 center-block modal-trigger">
+                Clear BLAST databases
+            </a>
         </div>
 
         <?php if (count($data['files']['adn']) !== 0 || count($data['files']['pro']) !== 0) { ?>
@@ -206,6 +200,19 @@ function buildBlastView(array $data) : void { ?>
 
                 <!-- set modal build parameter -->
                 <script>
+                    document.getElementById('wipe_header').innerText = 'Wipe BLAST database / sequences ?';
+                    document.getElementById('wipe_text').innerText = 'After BLAST database wipe, you can\'t \
+                        use BLAST until you load sequences again. If you wipe sequences, all data will be lost and \
+                        FASTA files must be parsed again.';
+                    document.getElementById('wipe_additionnal').innerHTML = `
+                        <div class="left" style="margin-top: 15px; margin-left: 15px">
+                            <label>
+                                <input type="checkbox" name="wipe_seq" value="true">
+                                <span>Also wipe sequences from website database</span>
+                            </label>
+                        </div>
+                    `;
+
                     document.getElementById('build_header').innerText = 'Build BLAST database from uploaded sequences ?';
                     document.getElementById('build_text').innerText = 'Building will wipe current BLAST database, \
                         try to import all the uploaded FASTA files in the website database,\
@@ -248,5 +255,19 @@ function readAllFastaFiles($delete = false) : void {
     }
     foreach($pro as $a) {
         loadFasta($a, 'pro');
+    }
+}
+
+function clearBlastDatabase() : void {
+    // Toutes les séquences ont été chargées, on construit la base BLAST
+    // Effacement des anciennes
+    $base = glob($_SERVER['DOCUMENT_ROOT'] . '/ncbi/bin/base/adn_base*');
+    foreach ($base as $file) {
+        unlink($file);
+    }
+
+    $base = glob($_SERVER['DOCUMENT_ROOT'] . '/ncbi/bin/base/pro_base*');
+    foreach ($base as $file) {
+        unlink($file);
     }
 }
