@@ -3,6 +3,8 @@
 // Active l'affichage des erreurs sur le site web quand PHP en rencontre une
 ini_set('display_errors', 'on');
 
+set_time_limit(0);
+
 // Initialise la session (permet d'être connecté)
 session_start();
 
