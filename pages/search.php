@@ -352,14 +352,17 @@ function searchAdvanced() : array {
 
         global $sql;
         // Recherche du nom dans la base de données
-        $global = explode(" ", mysqli_real_escape_string($sql, $_GET['global']));
+        $global = explode(" ", $_GET['global']);
 
         $query='';
         foreach ($global as $word) {
+            if ($word === "") 
+                continue;
+
             $query=makeAdvancedQuery($word, $query);
         }
 
-        $finalquery = "SELECT g.*, a.gene_id, a.specie, 
+        $finalquery = "SELECT g.*, a.gene_id, a.specie, a.linkable, a.alias, 
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
              FROM Pathways p 
              WHERE g.id = p.id) as pathways,
@@ -388,7 +391,10 @@ function searchAdvanced() : array {
 
         if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
             while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
-                $row['linkable'] = '1';
+                if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
+                    continue;
+                }
+
                 $r['results'][] = new GeneObject($row);
             } 
             // results empêche la génération du formulaire de recherche,
