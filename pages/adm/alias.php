@@ -203,12 +203,9 @@ function aliasBuildView(array $data) : void { ?>
 
     <div class="row">
         <div class="col s6">
-            <form method="post" action="#">
-                <input type="hidden" name="erase" value="true">
-                <button name="go" type="submit" class="btn btn-personal red darken-1 center-block">
-                    Erase all gene mapping
-                </button>
-            </form>
+            <a href="#modal_wipe" class="btn btn-personal red darken-1 center-block modal-trigger">
+                Erase all gene mapping
+            </a>
         </div>
 
         <?php if (count($data['files']) !== 0) { ?>
@@ -219,6 +216,10 @@ function aliasBuildView(array $data) : void { ?>
 
                 <!-- set modal build parameter -->
                 <script>
+                    document.getElementById('wipe_header').innerText = 'Wipe gene aliases from database ?';
+                    document.getElementById('wipe_text').innerText = 'After wipe, you need to map aliases again using \
+                        this tool to register gene aliases. All current defined aliases will be lost.';
+
                     document.getElementById('build_header').innerText = 'Build mapping in database from uploaded files ?';
                     document.getElementById('build_text').innerText = 'Building will read all mapping\
                     files and register aliases in website database.';

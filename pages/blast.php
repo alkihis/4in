@@ -107,7 +107,13 @@ function blastControl(array $args) : Controller {
     $mat = [];
     preg_match("/(<pre>.+<\/pre>)/is", $html, $mat);
 
-    $html = $mat[1];
+    if (isset($mat[1])) {
+        $html = $mat[1];
+    }
+    else {
+        // TODO : LOG ERROR
+        throw new RuntimeException('BLAST is not available');
+    }
 
     $re['html'] = $html;
 

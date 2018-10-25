@@ -54,20 +54,6 @@ function makeBlastDB(string $mode = 'adn', bool $full = true) {
     `rm -f $temp_file`;
 }
 
-function clearBlastDatabase() : void {
-    // Toutes les séquences ont été chargées, on construit la base BLAST
-    // Effacement des anciennes
-    $base = glob($_SERVER['DOCUMENT_ROOT'] . '/ncbi/bin/base/adn_base.*');
-    foreach ($base as $file) {
-        unlink($file);
-    }
-
-    $base = glob($_SERVER['DOCUMENT_ROOT'] . '/ncbi/bin/base/pro_base.*');
-    foreach ($base as $file) {
-        unlink($file);
-    }
-}
-
 function makeAllBlastDB() : void {
     // Construction des 4 bases :
     // ADN sans autorisation et complète (génomes protégés), de même protéine
