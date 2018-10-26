@@ -456,6 +456,16 @@ function makeAdvancedQuery(string $word, string $query): string {
     return $query;
 }
 
+function getSpecies() : array {
+    global $sql;
+    /*
+    $sp = mysqli_query($sql, "SELECT a.specie FROM GeneAssociations a");
+    $row = mysqli_fetch_assoc($sp);
+    $r['results'][] = new GeneObject($row);
+    */
+    $r = new GeneObject($specie);
+    return $r;
+}
 
 function showGlobalSearch(array $data) : void {
     // TODO
@@ -560,8 +570,15 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                     <?php if (isset($form_data['no_checkbox'])) {
                         echo '<h6 class="red-text">You have selected any checkbox.</h6>';
                     } ?>
-
                     <div class='input-field col s12' style="margin-bottom: 20px;">
+                        <span><h4>Select species</h4></span>
+                        <?php $sp = getSpecies();
+                        foreach ($sp as $s) {
+                            echo $s;
+                        }
+                        ?>
+                    </div>
+                    <div class='input-field col s12' style="margin-bottom: 20px; margin-top: 50px;">
                         <i class="material-icons prefix">assignment</i>
                         <input type='text' autocomplete='off' name="global" id="global_" 
                             value='<?= $form_data['global'] ?? '' ?>'>
