@@ -346,7 +346,7 @@ function searchAdvanced() : array {
     
     $r = [];
 
-    if (isset($_GET['global']) && is_string($_GET['global'])) {
+    if (isset($_GET['global']) && is_string($_GET['global']) && $_GET['global']) {
         $r['form_data'] = [];
         $r['form_data']['global'] = htmlspecialchars($_GET['global'], ENT_QUOTES);
 
@@ -362,47 +362,55 @@ function searchAdvanced() : array {
             $query=makeAdvancedQuery($word, $query);
         }
 
-        $finalquery = "SELECT g.*, a.gene_id, a.specie, a.linkable, a.alias, 
-            (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
-             FROM Pathways p 
-             WHERE g.id = p.id) as pathways,
-        (CASE 
-            WHEN a.sequence_adn IS NOT NULL THEN 1
-            ELSE 0
-        END) as is_seq_adn,
-        (CASE 
-            WHEN a.sequence_pro IS NOT NULL THEN 1
-            ELSE 0
-        END) as is_seq_pro
-        FROM GeneAssociations a 
-        JOIN Gene g ON a.id=g.id
-        WHERE $query
-        GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie";
+        if ($query) {
+            $finalquery = "SELECT g.*, a.gene_id, a.specie, a.linkable, a.alias, 
+                (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
+                FROM Pathways p 
+                WHERE g.id = p.id) as pathways,
+            (CASE 
+                WHEN a.sequence_adn IS NOT NULL THEN 1
+                ELSE 0
+            END) as is_seq_adn,
+            (CASE 
+                WHEN a.sequence_pro IS NOT NULL THEN 1
+                ELSE 0
+            END) as is_seq_pro
+            FROM GeneAssociations a 
+            JOIN Gene g ON a.id=g.id
+            WHERE $query
+            GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie";
 
-        //var_dump($finalquery);
+            //var_dump($finalquery);
 
-        $q = mysqli_query($sql, $finalquery);
+            $q = mysqli_query($sql, $finalquery);
 
-        echo mysqli_error($sql);
+            echo mysqli_error($sql);
 
-        if (!$q) {
-            throw new UnexpectedValueException("SQL request failed");
-        }
+            if (!$q) {
+                throw new UnexpectedValueException("SQL request failed");
+            }
 
-        if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
-            while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
-                if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
-                    continue;
-                }
+            if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
+                while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
+                    if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
+                        continue;
+                    }
 
-                $r['results'][] = new GeneObject($row);
-            } 
-            // results empêche la génération du formulaire de recherche,
-            // et affiche les résultats à la page
+                    $r['results'][] = new GeneObject($row);
+                } 
+                // results empêche la génération du formulaire de recherche,
+                // et affiche les résultats à la page
+            }
+            else {
+                $r['results'] = [];
+            }
         }
         else {
-            $r['results'] = [];
+            $r['form_data']['no_checkbox'] = true;
         }
+    }
+    else {
+        $_GET['species'] = $_GET['names'] = $_GET['ids'] = $_GET['functions'] = true;
     }
 
     return $r;
@@ -411,8 +419,9 @@ function searchAdvanced() : array {
 function makeAdvancedQuery(string $word, string $query): string {
     global $sql;
     $word = mysqli_real_escape_string($sql, $word);
+    $word = addcslashes($word, '%_');
 
-    if (isset($_GET['Names'])) {
+    if (isset($_GET['names'])) {
         if ($query != '') {
             $query=$query . " OR g.gene_name LIKE '$word%'";
         }
@@ -420,7 +429,7 @@ function makeAdvancedQuery(string $word, string $query): string {
             $query=$query . "g.gene_name LIKE '$word%'";
         }
     }
-    if (isset($_GET['IDs'])) {
+    if (isset($_GET['ids'])) {
         if ($query != '') {
             $query=$query . " OR a.gene_id LIKE '$word%'";
         }
@@ -428,7 +437,7 @@ function makeAdvancedQuery(string $word, string $query): string {
             $query=$query . "a.gene_id LIKE '$word%'";
         }
     }
-    if (isset($_GET['Species'])) {
+    if (isset($_GET['species'])) {
         if ($query != '') {
             $query=$query . " OR a.specie LIKE '$word%'";
         }
@@ -436,12 +445,12 @@ function makeAdvancedQuery(string $word, string $query): string {
             $query=$query . "a.specie LIKE '$word%'";
         }
     }
-    if (isset($_GET['Functions'])) {
+    if (isset($_GET['functions'])) {
         if ($query != '') {
-            $query=$query . " OR g.func LIKE '$word'";
+            $query=$query . " OR g.func LIKE '$word%'";
         }
         else {
-            $query=$query . "g.func LIKE '$word'";
+            $query=$query . "g.func LIKE '$word%'";
         }
     }
     return $query;
@@ -548,30 +557,34 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                     </div>
                 <?php }
                 else if ($mode === 'global') { ?>
-                    <div class='input-field col s12 margin-bottom'>
+                    <?php if (isset($form_data['no_checkbox'])) {
+                        echo '<h6 class="red-text">You have selected any checkbox.</h6>';
+                    } ?>
+
+                    <div class='input-field col s12' style="margin-bottom: 20px;">
                         <i class="material-icons prefix">assignment</i>
                         <input type='text' autocomplete='off' name="global" id="global_" 
                             value='<?= $form_data['global'] ?? '' ?>'>
                         <label for='global_'>Key words</label>
                     </div>
-                    <div class="margin-bottom margin-left">
-                        Select search fields
+                    <div class="margin-adv-search-left" style="margin-bottom: 15px;">
+                        Search in
                     </div>
                     <div>
-                        <label class="margin-left">
-                            <input type="checkbox" class="filled-in" checked name="Names" />
+                        <label class="margin-adv-search-left">
+                            <input type="checkbox" class="filled-in" <?= (isset($_GET['names']) ? 'checked' : '') ?> name="names" />
                             <span>Names</span>
                         </label>
-                        <label class="margin-left">
-                            <input type="checkbox" class="filled-in" checked name="IDs" />
+                        <label class="margin-adv-search-left">
+                            <input type="checkbox" class="filled-in" <?= (isset($_GET['ids']) ? 'checked' : '') ?> name="ids" />
                             <span>IDs</span>
                         </label>
-                        <label class="margin-left">
-                            <input type="checkbox" class="filled-in" checked name="Species" />
+                        <label class="margin-adv-search-left">
+                            <input type="checkbox" class="filled-in" <?= (isset($_GET['species']) ? 'checked' : '') ?> name="species" />
                             <span>Species</span>
                         </label>
-                        <label class="margin-left">
-                            <input type="checkbox" class="filled-in" checked name="Functions" />
+                        <label class="margin-adv-search-left">
+                            <input type="checkbox" class="filled-in" <?= (isset($_GET['functions']) ? 'checked' : '') ?> name="functions" />
                             <span>Functions</span>
                         </label>
                     </div>
