@@ -458,7 +458,6 @@ function makeAdvancedQuery(string $word, string $query): string {
 
 
 function showGlobalSearch(array $data) : void {
-    // TODO
     generateSearchForm('global', $data['form_data'] ?? []);
 
     if (isset($data['results'])) {
