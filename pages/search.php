@@ -354,12 +354,30 @@ function searchAdvanced() : array {
         // Recherche du nom dans la base de données
         $global = explode(" ", $_GET['global']);
 
-        $query='';
-        foreach ($global as $word) {
-            if ($word === "") 
-                continue;
+        $query1='';
+        $sp=getSpecies();
+        foreach ($sp as $line) {
+            $s=$line->getSpecie();
+            if (isset($_GET[$s])) {
+                if ($query1 != '') {
+                    $query1.= " OR a.specie LIKE '$s'";
+                }
+                else {
+                    $query1.=" a.specie LIKE '$s'";
+                }
+            }
+        }
 
-            $query=makeAdvancedQuery($word, $query);
+        $query2='';
+
+        foreach ($global as $word) {
+            if ($word === "")
+                continue;
+            $query2=makeAdvancedQuery($word, $query2);
+        }
+
+        if ($query1 != '') {
+            $query="(" . $query1 . ")" . " AND " . "(" . $query2 . ")";
         }
 
         if ($query) {
@@ -381,10 +399,8 @@ function searchAdvanced() : array {
             GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie";
 
             //var_dump($finalquery);
-
+            var_dump($finalquery);
             $q = mysqli_query($sql, $finalquery);
-
-            echo mysqli_error($sql);
 
             if (!$q) {
                 throw new UnexpectedValueException("SQL request failed");
@@ -416,55 +432,59 @@ function searchAdvanced() : array {
     return $r;
 }
 
-function makeAdvancedQuery(string $word, string $query): string {
+function makeAdvancedQuery(string $word, string $query2): string {
     global $sql;
     $word = mysqli_real_escape_string($sql, $word);
     $word = addcslashes($word, '%_');
 
     if (isset($_GET['names'])) {
-        if ($query != '') {
-            $query=$query . " OR g.gene_name LIKE '$word%'";
+        if ($query2 != '') {
+            $query2.=" OR g.gene_name LIKE '$word%'";
         }
         else {
-            $query=$query . "g.gene_name LIKE '$word%'";
+            $query2.=" g.gene_name LIKE '$word%'";
         }
     }
     if (isset($_GET['ids'])) {
-        if ($query != '') {
-            $query=$query . " OR a.gene_id LIKE '$word%'";
+        if ($query2 != '') {
+            $query2.=" OR a.gene_id LIKE '$word%'";
         }
         else {
-            $query=$query . "a.gene_id LIKE '$word%'";
+            $query2=" a.gene_id LIKE '$word%'";
         }
     }
     if (isset($_GET['species'])) {
-        if ($query != '') {
-            $query=$query . " OR a.specie LIKE '$word%'";
+        if ($query2 != '') {
+            $query2.=" OR a.specie LIKE '$word%'";
         }
         else {
-            $query=$query . "a.specie LIKE '$word%'";
+            $query2.=" a.specie LIKE '$word%'";
         }
     }
     if (isset($_GET['functions'])) {
-        if ($query != '') {
-            $query=$query . " OR g.func LIKE '$word%'";
+        if ($query2 != '') {
+            $query2.=" OR g.func LIKE '$word%'";
         }
         else {
-            $query=$query . "g.func LIKE '$word%'";
+            $query2.=" g.func LIKE '$word%'";
         }
     }
-    return $query;
+    return $query2;
 }
 
 function getSpecies() : array {
     global $sql;
-    /*
-    $sp = mysqli_query($sql, "SELECT a.specie FROM GeneAssociations a");
-    $row = mysqli_fetch_assoc($sp);
-    $r['results'][] = new GeneObject($row);
-    */
-    $r = new GeneObject($specie);
-    return $r;
+    $sp = mysqli_query($sql, "SELECT DISTINCT a.specie FROM GeneAssociations a");
+    if (mysqli_num_rows($sp)) {
+        while($row = mysqli_fetch_assoc($sp)) {
+            if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
+                        // Si le génome est protégé, on l'insère pas dans le tableau
+                        continue;
+                    }
+            $r['results'][] = new GeneObject($row);
+        }
+    }
+    return $r['results'];
 }
 
 function showGlobalSearch(array $data) : void {
@@ -573,10 +593,27 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                     <div class='input-field col s12' style="margin-bottom: 20px;">
                         <span><h4>Select species</h4></span>
                         <?php $sp = getSpecies();
-                        foreach ($sp as $s) {
-                            echo $s;
+                        $margLeft=0;
+                        $margTop=70;
+                        foreach ($sp as $line) {
+                            $s=$line->getSpecie();
+                            ?>
+                            <label style="margin-left: <?php echo $margLeft ?>px; margin-top: <?php echo $margTop ?>px;">
+                                <input type="checkbox" class="filled-in"  <?= (isset($_GET[$s]) ? 'checked' : '') ?> name= <?php echo $s ?> />
+                                <span><?php echo $s; ?></span>
+                            </label>
+                            <?php 
+                            $margLeft+=170;
+                            if ($margLeft>1020) {
+                                $margLeft=0;
+                                $margTop+=40;
+                            }   
                         }
                         ?>
+                        <label style="margin-left: <?php echo $margLeft ?>px; margin-top: <?php echo $margTop ?>px;">
+                            <input type="checkbox" class="filled-in"  <?= (isset($_GET['allspecies']) ? 'checked' : '') ?> name="allspecies" />
+                            <span>All species</span>
+                        </label>
                     </div>
                     <div class='input-field col s12' style="margin-bottom: 20px; margin-top: 50px;">
                         <i class="material-icons prefix">assignment</i>
