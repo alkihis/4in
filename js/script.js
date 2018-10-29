@@ -297,3 +297,32 @@ function initRadioBlast() {
         refreshBlastForm(this.value);
     });
 }
+
+function initNumberForm() {
+    var deb = document.getElementById('subset-low');
+    var fin = document.getElementById('subset-up');
+
+    $('input[type=number]').on('change', function() {
+        deb.classList.remove('valid', 'invalid');
+        fin.classList.remove('valid', 'invalid');
+        
+        if (deb.value !== '') {
+            if (deb.value < 0) {
+                deb.classList.add('invalid');
+            } 
+            else { 
+                deb.classList.add('valid');
+            }
+
+            if (fin.value !== '') {
+                if (fin.value < 0 || Number(deb.value) >= fin.value) {
+                    fin.classList.add('invalid');
+                } 
+                else { 
+                    fin.classList.add('valid');
+                }
+            }
+        }
+            
+    });
+}

@@ -77,11 +77,11 @@ function searchBlastView(Controller $c) : void { ?>
                                 </div>
                                 
                                 <div class="input-field col s6">
-                                    <input id="subset-low" type="number" name="subsetl" class="validate">
+                                    <input id="subset-low" type="number" name="subsetl">
                                     <label for="subset-low">From</label>
                                 </div>
                                 <div class="input-field col s6">
-                                    <input id="subset-up" type="number" name="subseth" class="validate">
+                                    <input id="subset-up" type="number" name="subseth">
                                     <label for="subset-up">To</label>
                                 </div>
                                 <div class="clearb"></div>
@@ -266,7 +266,7 @@ function searchBlastView(Controller $c) : void { ?>
     </div>
 
     <script>
-        $(function() { $('.collapsible').collapsible(); initRadioBlast(); });
+        $(function() { $('.collapsible').collapsible(); initRadioBlast(); initNumberForm(); });
     </script>
     <?php
 }
