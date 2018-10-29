@@ -24,6 +24,7 @@ const PAGES_REF = [
     'login' => ['file' => 'pages/login.php', 'view' => 'loginView', 'controller' => 'loginControl'],
     'search' => ['file' => 'pages/search.php', 'view' => 'searchView', 'controller' => 'searchControl'],
     'blast' => ['file' => 'pages/blast.php', 'view' => 'blastView', 'controller' => 'blastControl'],
+    'blast_search' => ['file' => 'pages/blast_search.php', 'view' => 'searchBlastView', 'controller' => 'searchBlastControl'],
     'help' => ['file' => 'pages/help.php', 'view' => 'helpView', 'controller' => 'helpControl'],
     'gene' => ['file' => 'pages/gene.php', 'view' => 'geneView', 'controller' => 'geneControl'],
     'admin' => ['file' => 'pages/admin.php', 'view' => 'adminView', 'controller' => 'adminControl'],

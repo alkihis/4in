@@ -275,13 +275,23 @@ function adminView(Controller $c) : void {
 function homePageView(array $data) : void { ?>
     <div class="row">
         <div class="col s12">
-            <h2 class="header">Home</h2>
+            <div class="card-panel light-blue darken-1 card-border white-text panel-settings">
+                <p>
+                    Administration console let you manage database, FASTA and mapping files stored in this server.<br>
+                    This interface can edit protected species, change administrator password, check the validity of a FASTA
+                    file with present data in the database or modify a FASTA file using a simple convertor.<br><br>
+
+                    For the first configuration of this website, you must import first base TSV file using "Import genome file"
+                    utility.<br>
+                    After, you're free to import mapping files and sequences in FASTA format, and add it to the built database
+                    with "Build alias mapping" or "Build BLAST database" modules.
+                </p>
+            </div>
             <p class="flow-text">
-                Please choose a category in the side-navigation menu.
+                Please choose a module in the side-navigation menu.
             </p>
         </div>
     </div>
-
     <?php
 }
 

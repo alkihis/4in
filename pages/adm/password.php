@@ -61,7 +61,7 @@ function passwordView(array $data) : void { ?>
                         echo "<h5 class='red-text'>Password can't be empty</h5>";
                     }
                     else if (isset($data['form']['invalid_old'])) {
-                        echo "<h5 class='red-text'>Old password is incorrect</h5>";
+                        echo "<h5 class='red-text'>Old password is invalid</h5>";
                     }
                     ?>
 

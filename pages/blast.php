@@ -48,12 +48,7 @@ function blastControl(array $args) : Controller {
     $re = [];
 
     // BASE DIRECTORY IS $_SERVER[’DOCUMENT_ROOT']
-    $query_file = ">test\nEDHKNSDWLIVVIMTHGDDDVLHAKDGQFNVDRLWENFIGDSCPSLLGKPKLFFIQACR";
-
-    if (DEBUG_MODE) {
-        if (isset($_REQUEST['query']))
-            $_POST['query'] = $_REQUEST['query'];
-    }
+    $query_file = "";
 
     $mode = 'adn_base';
     $blast_type = 'blastn';
@@ -87,35 +82,42 @@ function blastControl(array $args) : Controller {
         }
     }
 
-    $temp_file = `mktemp`;
-    $temp_file = trim($temp_file);
-
-    `echo "{$query_file}" > $temp_file`;
-    `chmod a+a $temp_file`;
-
-    chdir($_SERVER['DOCUMENT_ROOT'] . '/ncbi/bin');
-
-    $html = `./$blast_type -query "$temp_file" -db base/$mode -html 2>&1`;
-
-    chdir($_SERVER['DOCUMENT_ROOT']);
-
-    `rm -f $temp_file`;
-
-    // Traitement de l'HTML généré
-    $html = preg_replace("/a> *(.+)\nlength=/iu", "a> <a href='/gene/$1' target='_blank'>$1</a>\nlength=", $html);
-
-    $mat = [];
-    preg_match("/(<pre>.+<\/pre>)/is", $html, $mat);
-
-    if (isset($mat[1])) {
-        $html = $mat[1];
+    if ($query_file) {
+        $temp_file = `mktemp`;
+        $temp_file = trim($temp_file);
+    
+        `echo "{$query_file}" > $temp_file`;
+        `chmod a+a $temp_file`;
+    
+        chdir($_SERVER['DOCUMENT_ROOT'] . '/ncbi/bin');
+    
+        $html = `./$blast_type -query "$temp_file" -db base/$mode -html 2>&1`;
+    
+        chdir($_SERVER['DOCUMENT_ROOT']);
+    
+        `rm -f $temp_file`;
+    
+        // Traitement de l'HTML généré
+        $html = preg_replace("/a> *(.+)\nlength=/iu", "a> <a href='/gene/$1' target='_blank'>$1</a>\nlength=", $html);
+    
+        $mat = [];
+        preg_match("/(<pre>.+<\/pre>)/is", $html, $mat);
+    
+        if (isset($mat[1])) {
+            $html = $mat[1];
+        }
+        else {
+            // TODO : LOG ERROR
+            throw new RuntimeException('BLAST is not available');
+        }
+    
+        $re['html'] = $html;
+    
     }
     else {
-        // TODO : LOG ERROR
-        throw new RuntimeException('BLAST is not available');
+        $re['html'] = '';
+        $re['error']['empty'] = true;
     }
-
-    $re['html'] = $html;
 
     return new Controller($re, 'BLAST');
 }
@@ -127,7 +129,7 @@ function blastView(Controller $c) : void {
     <div class='container'>
         <?php 
         if (isset($data['error']['query'])) {
-            echo "<h4 class='red-text'>Your file is not formated correctly.</h4><h6>Using testing dataset.</h6>
+            echo "<h4 class='red-text'>Your file is not formated correctly.</h4>
             <div class='divider divider-margin'></div>";
             echo '<h6 class="red-text">';
 
@@ -140,6 +142,9 @@ function blastView(Controller $c) : void {
             }
 
             echo '</h6>';
+        }
+        else if (isset($data['error']['empty'])) {
+            echo "<h4 class='red-text'>Query is empty.</h4>";
         }
         ?>
         <?= $data['html'] ?>
