@@ -10,6 +10,10 @@ $(document).ready(function () {
     $('select').formSelect();
 
     $('.modal').modal();
+
+    if (!localStorage.getItem('fasta_line_breaks')) {
+        localStorage.setItem('fasta_line_breaks', "0");
+    }
 });
 
 function isPopupOpen() {
@@ -78,7 +82,9 @@ function downloadCheckedSequences(mode, download_all = false) {
         ids += this.dataset.id;
     });
 
-    gotoUrl('/api/seq/get_sequences_fasta.php', {ids: ids, mode: mode}, 'post');
+    let line_breaks = Number(localStorage.getItem('fasta_line_breaks'));
+
+    gotoUrl('/api/seq/get_sequences_fasta.php', {ids: ids, mode: mode, chars_by_line: line_breaks}, 'post');
 }
 
 function gotoUrl(path, params, method) {
@@ -232,4 +238,62 @@ function addSpecie(spec) {
 
     checkboxes_container.innerHTML = str;
     input.value = "";
+}
+
+function refreshSelect(element) {
+    var instance = M.FormSelect.getInstance(element);
+    var values = instance.getSelectedValues();
+    var change = false;
+
+    // element.value ne renvoie que le premier élément.... > passage par l'outil materialize
+    if (values.indexOf('all') !== -1) {
+        var all_o = document.querySelector('.all_option[data-mode='+ element.dataset.mode +']');
+
+        if (all_o.dataset.onlyOne) { // Si all_option était le seul à être coché
+            values.splice(values.indexOf('all'), 1);
+
+            element.value = values;
+            all_o.dataset.onlyOne = "";
+        }
+        else { // Il y avait d'autres options cochées, on les enlève
+            element.value = ['all'];
+            all_o.dataset.onlyOne = "true";
+        }
+
+        change = true;
+    }
+
+    if (change) {
+        M.FormSelect.init(element);
+    }
+}
+
+function refreshBlastForm(mode) {
+    $b = $('.blast-select');
+    $b.formSelect('destroy');
+    $b.prop('disabled', false);
+
+    if (mode === "n") {
+        $('.blast-select.not-for-n').prop('disabled', true);
+    }
+    else if (mode === "p") {
+        $('.blast-select.not-for-p').prop('disabled', true);
+    }
+    else if (mode === "x") {
+        $('.blast-select.not-for-x').prop('disabled', true);
+    }
+    else if (mode === "tn") {
+        $('.blast-select.not-for-tn').prop('disabled', true);
+    }
+    else if (mode === "tx") {
+        $('.blast-select.not-for-tx').prop('disabled', true);
+    }
+
+    $b.formSelect();
+}
+
+function initRadioBlast() {
+    $('.radio-blast').on('click', function() {
+        refreshBlastForm(this.value);
+    });
 }

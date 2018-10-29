@@ -8,6 +8,11 @@ if (isset($_POST['ids']) && is_string($_POST['ids']) && $_POST['mode'] && is_str
     $mode = 'sequence_adn';
     $seq = 'na';
 
+    $line_breaks = (int)($_POST['chars_by_line'] ?? 0);
+    if ($line_breaks < 0) {
+        $line_breaks = 0;
+    }
+
     switch($_POST['mode']) {
         case 'adn':
             break;
@@ -34,7 +39,12 @@ if (isset($_POST['ids']) && is_string($_POST['ids']) && $_POST['mode'] && is_str
                 continue;
             }
 
-            $final_fasta .= ">$id\n{$row[$mode]}\n";
+            if (!$line_breaks) { // Si on a demandé un certain nombre de caractères par ligne
+                $final_fasta .= ">$id\n{$row[$mode]}\n";
+            }
+            else {
+                $final_fasta .= ">$id\n" . chunk_split($row[$mode], $line_breaks, "\n");
+            }   
         }
     }
 

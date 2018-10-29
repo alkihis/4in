@@ -6,12 +6,13 @@ function resetLinkController() : array {
     if (isset($_POST['reset'])) {
         global $sql;
 
-        $q = mysqli_query($sql, "UPDATE GeneAssocations SET linkable=NULL;");
+        $q = mysqli_query($sql, "UPDATE GeneAssociations SET linkable=NULL;");
 
         if ($q) {
             $data['reset'] = true;
         }
         else {
+            echo mysqli_error($sql);
             $data['error'] = true;
         }
     }
