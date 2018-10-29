@@ -6,7 +6,7 @@ class Controller {
     protected $view = null; // Callback function to call on invoke()
 
 
-    public function __construct(array $data, ?string $title) {
+    public function __construct(array $data = [], ?string $title = null) {
         $this->data = $data;
         if ($title) {
             $this->page_title = $title;

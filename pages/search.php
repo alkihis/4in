@@ -342,81 +342,170 @@ function showSearchByPathway(array $data) : void {
 
 ////// AVANCEE //////
 function searchAdvanced() : array {
-    //throw new NotImplementedException("Advanced search not yet implemented.");
-    
     $r = [];
 
-    if (isset($_GET['global']) && is_string($_GET['global']) && $_GET['global']) {
-        $r['form_data'] = [];
+    global $sql;
+    // Récupération des pathways disponibles
+    $path = mysqli_query($sql, "SELECT DISTINCT pathway FROM Pathways;");
+
+    $r['form_data']['pathways'] = [];
+    while ($row = mysqli_fetch_assoc($path)) {
+        $r['form_data']['pathways'][] = $row['pathway'];
+    }
+
+    // Récuparation des espèces
+    $r['form_data']['species'] = array_keys(SPECIE_TO_NAME);
+    if (LIMIT_GENOMES && !isUserLogged()) { 
+        // Si les espèces sont protégées et que l'utilisateur n'est pas connecté, on limite les espèces
+        $r['form_data']['species'] = array_diff($r['form_data']['species'], getProtectedSpecies());
+    }
+
+    // ____ FORMULAIRE ____
+    if (isset($_GET['global']) && is_string($_GET['global'])) {
         $r['form_data']['global'] = htmlspecialchars($_GET['global'], ENT_QUOTES);
 
-        global $sql;
+        // ___ PATHWAYS ____
+        $selected_pathways = [];
+        $r['form_data']['selected_p'] = [];
+        if (isset($_GET['pathways']) && is_array($_GET['pathways'])) {
+            foreach ($_GET['pathways'] as $p) {
+                if ($p !== 'all') // Enregistre uniquement si c'est un pathway spécial
+                    $selected_pathways[] = mysqli_real_escape_string($sql, $p);
+                
+                $r['form_data']['selected_p'][$p] = true;
+            }
+        }
+
+        // ___ SPECIES ____
+        $selected_species = [];
+
+        $r['form_data']['selected_s'] = [];
+        if (isset($_GET['species']) && is_array($_GET['species'])) {
+            foreach ($_GET['species'] as $p) {
+                if ($p !== 'all') // Enregistre uniquement si c'est un pathway spécial
+                    $selected_species[] = mysqli_real_escape_string($sql, $p);
+                
+                $r['form_data']['selected_s'][$p] = true;
+            }
+        }
+
+        // ___ KEYWORDS ____
         // Recherche du nom dans la base de données
-        $global = explode(" ", $_GET['global']);
+        $global = preg_split("/\s+/", $_GET['global']);
 
         $query='';
         foreach ($global as $word) {
-            if ($word === "") 
+            $word = trim($word);
+
+            if ($word === "")
                 continue;
 
-            $query=makeAdvancedQuery($word, $query);
+            $query = makeAdvancedQuery($word, $query);
+        }
+        
+        if ($query) { 
+            // Si jamais on a écrit une requête, on l'entoure de parenthèses pour pouvoir y
+            // ajouter des composantes
+            $query = "($query)";
         }
 
-        if ($query) {
-            $finalquery = "SELECT g.*, a.gene_id, a.specie, a.linkable, a.alias, 
-                (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
-                FROM Pathways p 
-                WHERE g.id = p.id) as pathways,
-            (CASE 
-                WHEN a.sequence_adn IS NOT NULL THEN 1
-                ELSE 0
-            END) as is_seq_adn,
-            (CASE 
-                WHEN a.sequence_pro IS NOT NULL THEN 1
-                ELSE 0
-            END) as is_seq_pro
-            FROM GeneAssociations a 
-            JOIN Gene g ON a.id=g.id
-            WHERE $query
-            GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie";
+        // ___ PATHWAYS TREATEMENT ____
+        if (!empty($selected_pathways)) {
+            $path_q = '';
 
-            //var_dump($finalquery);
-
-            $q = mysqli_query($sql, $finalquery);
-
-            echo mysqli_error($sql);
-
-            if (!$q) {
-                throw new UnexpectedValueException("SQL request failed");
+            if ($query) {
+                $query .= " AND ";
             }
 
-            if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
-                while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
-                    if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
-                        continue;
-                    }
+            $query .= '(';
 
-                    $r['results'][] = new GeneObject($row);
-                } 
-                // results empêche la génération du formulaire de recherche,
-                // et affiche les résultats à la page
+            foreach ($selected_pathways as $p) {
+                if ($path_q !== '') {
+                    $path_q .= " OR ";
+                }
+                
+                $path_q .= "pa.pathway = '$p'";
             }
-            else {
-                $r['results'] = [];
+
+            $query .= $path_q . ')';
+        }
+
+        // ___ SPECIES TREATEMENT ____
+        if (!empty($selected_species)) {
+            $spec_q = '';
+
+            if ($query) {
+                $query .= " AND ";
             }
+
+            $query .= '(';
+
+            foreach ($selected_species as $p) {
+                if ($spec_q !== '') {
+                    $spec_q .= " OR ";
+                }
+                
+                $spec_q .= "a.specie = '$p'";
+            }
+
+            $query .= $spec_q . ')';
+        }
+
+        // ____ FINAL QUERY ____
+        if (!$query) {
+            $r['form_data']['empty_search'] = true;
         }
         else {
-            $r['form_data']['no_checkbox'] = true;
+            $query = "WHERE $query";
+        }
+
+        $finalquery = "SELECT g.*, a.gene_id, a.specie, a.linkable, a.alias, 
+            (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
+            FROM Pathways p 
+            WHERE g.id = p.id) as pathways,
+        (CASE 
+            WHEN a.sequence_adn IS NOT NULL THEN 1
+            ELSE 0
+        END) as is_seq_adn,
+        (CASE 
+            WHEN a.sequence_pro IS NOT NULL THEN 1
+            ELSE 0
+        END) as is_seq_pro
+        FROM GeneAssociations a 
+        JOIN Gene g ON a.id=g.id
+        JOIN Pathways pa ON pa.id=g.id
+        $query
+        GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie";
+
+        $q = mysqli_query($sql, $finalquery);
+
+        if (!$q) {
+            throw new UnexpectedValueException("SQL request failed");
+        }
+
+        if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
+            while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
+                if (LIMIT_GENOMES && !isUserLogged() && isProtectedSpecie($row['specie'])) {
+                    continue;
+                }
+
+                $r['results'][] = new GeneObject($row);
+            } 
+            // results empêche la génération du formulaire de recherche,
+            // et affiche les résultats à la page
+        }
+        else {
+            $r['results'] = [];
         }
     }
     else {
-        $_GET['species'] = $_GET['names'] = $_GET['ids'] = $_GET['functions'] = true;
+        $_GET['family'] = $_GET['names'] = $_GET['subfamily'] = $_GET['ids'] = $_GET['functions'] = true;
     }
 
     return $r;
 }
 
-function makeAdvancedQuery(string $word, string $query): string {
+function makeAdvancedQuery(string $word, string $query) : string {
     global $sql;
     $word = mysqli_real_escape_string($sql, $word);
     $word = addcslashes($word, '%_');
@@ -437,13 +526,19 @@ function makeAdvancedQuery(string $word, string $query): string {
             $query=$query . "a.gene_id LIKE '$word%'";
         }
     }
-    if (isset($_GET['species'])) {
+    if (isset($_GET['family'])) {
         if ($query != '') {
-            $query=$query . " OR a.specie LIKE '$word%'";
+            $query .= " OR ";
         }
-        else {
-            $query=$query . "a.specie LIKE '$word%'";
+
+        $query .= "g.family LIKE '$word%'";
+    }
+    if (isset($_GET['subfamily'])) {
+        if ($query != '') {
+            $query .= " OR ";
         }
+
+        $query .= "g.subfamily LIKE '$word%'";
     }
     if (isset($_GET['functions'])) {
         if ($query != '') {
@@ -555,16 +650,34 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                         <label>Metabolic pathway</label>
                     </div>
                 <?php }
-                else if ($mode === 'global') { ?>
-                    <?php if (isset($form_data['no_checkbox'])) {
-                        echo '<h6 class="red-text">You have selected any checkbox.</h6>';
+                else if ($mode === 'global') {
+
+                    if (isset($form_data['empty_search'])) {
+                        echo '<h6 class="red-text">You haven\'t specified any parameter. Loading the entiere database.</h6>';
                     } ?>
+
+                    <div class="input-field col s12">
+                        <select multiple data-mode="path" name="pathways[]" onchange="refreshSelect(this)">
+                            <?php constructSelectAdv('path', $form_data['selected_p'] ?? [], $form_data) ?>
+                        </select>
+                        <label>Pathways</label>
+                    </div>
+
+                    <div class="input-field col s12">
+                        <select multiple data-mode="spec" name="species[]" onchange="refreshSelect(this)">
+                            <?php constructSelectAdv('spec', $form_data['selected_s'] ?? [], $form_data) ?>
+                        </select>
+                        <label>Species</label>
+                    </div>
+
+                    <div class="clearb"></div>
+                    <div class="divider divider-margin"></div>
 
                     <div class='input-field col s12' style="margin-bottom: 20px;">
                         <i class="material-icons prefix">assignment</i>
                         <input type='text' autocomplete='off' name="global" id="global_" 
                             value='<?= $form_data['global'] ?? '' ?>'>
-                        <label for='global_'>Key words</label>
+                        <label for='global_'>Keywords</label>
                     </div>
                     <div class="margin-adv-search-left" style="margin-bottom: 15px;">
                         Search in
@@ -579,12 +692,16 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                             <span>IDs</span>
                         </label>
                         <label class="margin-adv-search-left">
-                            <input type="checkbox" class="filled-in" <?= (isset($_GET['species']) ? 'checked' : '') ?> name="species" />
-                            <span>Species</span>
+                            <input type="checkbox" class="filled-in" <?= (isset($_GET['family']) ? 'checked' : '') ?> name="family" />
+                            <span>Family</span>
+                        </label>
+                        <label class="margin-adv-search-left">
+                            <input type="checkbox" class="filled-in" <?= (isset($_GET['subfamily']) ? 'checked' : '') ?> name="subfamily" />
+                            <span>Subfamily</span>
                         </label>
                         <label class="margin-adv-search-left">
                             <input type="checkbox" class="filled-in" <?= (isset($_GET['functions']) ? 'checked' : '') ?> name="functions" />
-                            <span>Functions</span>
+                            <span>Role</span>
                         </label>
                     </div>
                 <?php } ?>
@@ -599,6 +716,27 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
     </div>
     </div>
     <?php
+}
+
+function constructSelectAdv(string $mode, array $options, array $form_data) { 
+    $m = ($mode === 'spec' ? 'species' : 'pathways');
+
+    echo "<option class='all_option' data-mode='$mode' value='all' ";
+
+    if (empty($options) || isset($options['all'])) {
+        echo "data-only-one='true' selected";
+    }
+    else {
+        echo "data-only-one=''";
+    }
+
+    echo ">All $m</option>";
+
+    $m = ($mode === 'spec' ? 'species' : 'pathways');
+    foreach ($form_data[$m] as $p) {
+        $spec = htmlspecialchars($p, ENT_QUOTES);
+        echo "<option value='$spec' ". (isset($options[$spec]) ? 'selected' : '') .">$spec</option>";
+    }
 }
 
 function generateSearchResultsArray(array $res) : void {

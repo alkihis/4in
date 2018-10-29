@@ -27,6 +27,8 @@ function makeBlastDB(string $mode = 'adn', bool $full = true) {
     $temp_file = `mktemp`;
     $temp_file = trim($temp_file);
 
+    $date = date('Y-m-d');
+
     `chmod a+a $temp_file`;
 
     if ($mode === 'adn') {
@@ -35,7 +37,7 @@ function makeBlastDB(string $mode = 'adn', bool $full = true) {
         // Écrit le contenu dans le fichier
         file_put_contents($temp_file, $str_seq);
 
-        `./makeblastdb -dbtype nucl -in "$temp_file" -out base/adn_base$suffix 2>&1`;
+        `./makeblastdb -dbtype nucl -in "$temp_file" -title "Innate_Immunity_Insect_nucleic_$date" -out base/adn_base$suffix 2>&1`;
     }
     else if ($mode === 'pro') {
         $str_seq = getAllFastaSequences('pro', $full);
@@ -43,7 +45,7 @@ function makeBlastDB(string $mode = 'adn', bool $full = true) {
         // Écrit le contenu dans le fichier
         file_put_contents($temp_file, $str_seq);
 
-        `./makeblastdb -dbtype prot -in "$temp_file" -out base/pro_base$suffix 2>&1`;
+        `./makeblastdb -dbtype prot -in "$temp_file" -title "Innate_Immunity_Insect_proteic_$date" -out base/pro_base$suffix 2>&1`;
     }
     else {
         chdir($_SERVER['DOCUMENT_ROOT']);

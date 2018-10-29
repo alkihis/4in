@@ -82,21 +82,6 @@ function getRoute() : Controller {
     return $ctrl;
 }
 
-function initTableUser() : void {
-    global $sql;
-
-    mysqli_multi_query($sql, "
-    CREATE TABLE Users (
-        id_user INT NOT NULL AUTO_INCREMENT,
-        username VARCHAR(50) NOT NULL,
-        passw VARCHAR(255) NOT NULL,
-        rights INT NOT NULL,
-        PRIMARY KEY (id_user)
-    );
-    INSERT INTO Users (username, passw, rights) 
-    VALUES ('admin', '". password_hash('admin', PASSWORD_BCRYPT) . "', 2);");
-}
-
 function logUser($mysql_user_object) : void {
     global $sql;
 
@@ -198,6 +183,19 @@ function checkSaveLinkValidity(string $specie, string $gene_id) : bool {
     }
 
     return false;
+}
+
+function buildDatabaseFromScratch() : void {
+    global $sql;
+
+    $sql_file = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/assets/db/base.sql');
+
+    $sql_file .= "\nINSERT INTO Users (username, passw, rights) 
+    VALUES ('admin', '" 
+    . password_hash('admin', PASSWORD_BCRYPT) . 
+    "', 2);";
+
+    mysqli_multi_query($sql, $sql_file);
 }
 
 connectBD();
