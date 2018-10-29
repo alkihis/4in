@@ -302,3 +302,7 @@ textarea.materialize-textarea:focus:not([readonly])+label {
 .progress {
     background-color: #90ade2;
 }
+
+.collapsible-body {
+    padding: 1.5rem;
+}
