@@ -51,7 +51,7 @@ function speciesController() : array {
 }
 
 function speciesView(array $data) : void { ?>
-     <div class="row">
+    <div class="row">
         <div class="col s12">
             <div class="card-panel light-blue darken-1 card-border white-text panel-settings">
                 <p>
@@ -126,7 +126,7 @@ function speciesView(array $data) : void { ?>
 
                         <div class="divider divider-margin"></div>
 
-                        <button type="submit" id="act_btn" class="btn-flat green-text right">
+                        <button type="submit" id="act_btn" class="btn-flat btn-perso green-text right">
                             Confirm and save
                         </button>
 

@@ -20,7 +20,6 @@ const LIMIT_GENOMES = true;
 // pages/readFile.php
 const PAGES_REF = [
     'home' => ['file' => 'static/start.php', 'view' => 'homeView', 'controller' => 'homeControl'],
-    'full_database' => ['file' => 'pages/readFile.php', 'view' => 'readFileView', 'controller' => 'readFileControl'],
     'login' => ['file' => 'pages/login.php', 'view' => 'loginView', 'controller' => 'loginControl'],
     'search' => ['file' => 'pages/search.php', 'view' => 'searchView', 'controller' => 'searchControl'],
     'blast' => ['file' => 'pages/blast.php', 'view' => 'blastView', 'controller' => 'blastControl'],
@@ -35,35 +34,25 @@ const PAGES_REF = [
     '501' => ['file' => 'static/501.php', 'view' => 'serverImplementView', 'controller' => 'serverImplementControl'],
 ];
 
-const SPECIE_TO_NAME = [
-    'Apisum' => 'ACYPI',
-    'Aaegypti' => 'AEDAE',
-    'Amellifera' => 'APIME',
-    'Agambiae' => 'ANOGA',
-    'Gmorsitans' => 'GLOMO',
-    'Msexta' => 'MANSE',
-    'Nvitripennis' => 'NASVI',
-    'Phumanus' => 'PEDHU',
-    'Soryzae' => 'SITOR',
-    'Sinvicta' => 'SOLIN',
-    'Bmori' => 'BOMMO',
-    'Cfloridanus' => 'CAMFL',
-    'Dponderosae' => 'DENPO',
-    'Dmelanogaster' => 'DROME',
-    'Pxylostella' => 'PLUXY',
-    'Tcastaneum' => 'TRICA'
-];
-
 // NEW NOTE: Protected species are now loaded through a independant PHP file.
 // Note that value of specie is useless : Associative array is used like a set container here
 // Protected specie must be defined as key of the array
-require $_SERVER['DOCUMENT_ROOT'] . '/assets/protected-species.php';
 
-// TO RENEW PROTECTED SPECIES
-/* 
-    file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/assets/protected-species.php', 
-    "<?php\n\nconst PROTECTED_SPECIES = [
-        'specie' => true,
-        'specie2' => true
-    ];");
-*/ 
+define('PARAMETERS_FILE', $_SERVER['DOCUMENT_ROOT'] . '/assets/db/site_parameters.json');
+
+function loadSiteParameters() : void {
+    $parameters = json_decode(file_get_contents(PARAMETERS_FILE), true);
+
+    // Possibilité de définir des tableaux depuis PHP 7.0
+    $pro = [];
+    foreach ($parameters['protected'] as $p) {
+        $pro[$p] = true;
+    }
+
+    define('PROTECTED_SPECIES', $pro);
+    define('SPECIE_TO_NAME', $parameters['species']);
+    define('SITE_PARAMETERS_ARRAY', $parameters);
+    define('ORDERED_SPECIES', $parameters['species_ordered']);
+}
+
+loadSiteParameters();

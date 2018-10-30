@@ -310,3 +310,19 @@ textarea.materialize-textarea:focus:not([readonly])+label {
 .collapsible-body {
     padding: 1.5rem;
 }
+
+.no-user-click {
+    user-select: none;
+    pointer-events: painted;
+}
+
+.valign-middle {
+    vertical-align: middle;
+}
+
+i.material-icons {
+    transition-duration: .3s;
+}
+.rotate {
+    transform: rotate(180deg);
+}

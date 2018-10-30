@@ -5,6 +5,7 @@ require 'pages/adm/reset_link.php';
 require 'pages/adm/build.php';
 require 'pages/adm/import.php';
 require 'pages/adm/species.php';
+require 'pages/adm/db_species.php';
 require 'pages/adm/alias.php';
 require 'pages/adm/fasta_converter.php';
 require 'pages/adm/fasta_checker.php';
@@ -67,6 +68,9 @@ function adminControl(array $args) : Controller {
     }
     else if ($args[0] === 'species') {
         $page = speciesController();
+    }
+    else if ($args[0] === 'db_species') {
+        $page = databaseSpeciesController();
     }
     else if ($args[0] === 'converter') {
         $page = converterController();
@@ -180,6 +184,9 @@ function adminView(Controller $c) : void {
             case 'reset':
                 resetLinkView($d);
                 break;
+            case 'db_species':
+                databaseSpeciesView($d);
+                break;
             case 'species':
                 speciesView($d);
                 break;
@@ -197,6 +204,7 @@ function adminView(Controller $c) : void {
     </div>
 
     <script src="/js/admin.js"></script>
+    <script src="/js/Sortable.min.js"></script>
 
     <!-- Sidenav -->
     <ul id="slide-out-admin" class="sidenav sidenav-fixed">
@@ -240,6 +248,9 @@ function adminView(Controller $c) : void {
         <li><a class="subheader">Manage</a></li>
         <li <?= ($d['active_page'] === 'reset' ? 'class="active"' : '') ?>>
             <a class="waves-effect" href="/admin/reset_link"><i class="material-icons">refresh</i>Reset link status</a>
+        </li>
+        <li <?= ($d['active_page'] === 'db_species' ? 'class="active"' : '') ?>>
+            <a class="waves-effect" href="/admin/db_species"><i class="material-icons">bug_report</i>Database species</a>
         </li>
         <li <?= ($d['active_page'] === 'species' ? 'class="active"' : '') ?>>
             <a class="waves-effect" href="/admin/species"><i class="material-icons">lock</i>Protected species</a>

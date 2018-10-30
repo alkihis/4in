@@ -1,5 +1,12 @@
 <?php
 
+// Les espèces présentes dans le fichier, dans le bon ordre
+$assocs_species = ['Soryzae', 'Apisum', 'Agambiae', 'Amellifera', 
+    'Bmori', 'Cfloridanus', 'Dmelanogaster', 'Gmorsitans',
+    'Msexta', 'Nvitripennis', 'Phumanus', 'Pxylostella',
+    'Tcastaneum', 'Sinvicta', 'Dponderosae', 'Aaegypti'
+];
+
 /**
  * insertPathway
  *
@@ -23,6 +30,7 @@ function insertPathway(int $id_gene, string $pathway, $stmt_request) : void {
  */
 function explodeFile(string $filename, bool $trim_first_line = false) : void { 
     global $sql; // importe la connexion SQL chargée avec l'appel à connectBD()
+    global $assocs_species;
 
     $stmt_gene = mysqli_prepare($sql, "INSERT INTO Gene 
         (func, gene_name, fullname, family, subfamily)
@@ -37,6 +45,8 @@ function explodeFile(string $filename, bool $trim_first_line = false) : void {
         (id, pathway)
         VALUES
         (?, ?);");
+
+    $number_of_species = count($assocs_species);
 
     $h = fopen($filename, 'r'); // ouvre le fichier $filename en lecture, et stocke le pointeur-sur-fichier dans $h
 
@@ -87,15 +97,8 @@ function explodeFile(string $filename, bool $trim_first_line = false) : void {
             insertPathway($id_insert, $pathway, $stmt_pathway);
         }
 
-        // Les espèces présentes, dans le bon ordre
-        $assocs_species = ['Soryzae', 'Apisum', 'Agambiae', 'Amellifera', 
-            'Bmori', 'Cfloridanus', 'Dmelanogaster', 'Gmorsitans',
-            'Msexta', 'Nvitripennis', 'Phumanus', 'Pxylostela',
-            'Tcastaneum', 'Sinvicta', 'Dponderosae', 'Aaegypti'
-        ];
-
         // Pour les lignes 6 à 21 du tableau
-        for ($i = 6; $i < 22; $i++) {
+        for ($i = 6; $i < ($number_of_species+6); $i++) {
             $m = [];
             // Enregistre les matches de l'expression régulière ci-dessous dans $m
             preg_match_all("/\((.+?)\),?/m", $arr[$i], $m);
@@ -140,7 +143,11 @@ session_start();
 if (isUserLogged()) {
     session_write_close();
 
-    if (isset($_POST['file']) && is_string($_POST['file'])) {
+    if (isset($_POST['file'], $_POST['species']) && is_string($_POST['file']) && is_string($_POST['species'])) {
+        global $assocs_species;
+
+        $assocs_species = explode(',', $_POST['species']);
+
         $file = $_POST['file'];
 
         $empty = (isset($_POST['empty']) && $_POST['empty'] === 'true');

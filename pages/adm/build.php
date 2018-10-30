@@ -42,6 +42,8 @@ function buildGenomeController() : array {
         $data['files'][] = ['name' => basename($f), 'size' => round(filesize($f) / 1024, 2), 'date' => filemtime($f)];
     }
 
+    $data['species'] = getOrderedSpecies();
+
     return $data;
 }
 
@@ -87,15 +89,15 @@ function buildGenomeView(array $data) : void { ?>
                             <label>File to use</label>
                         </div>
 
-                        <a href="#modal_build" id="go_db" class="btn-flat modal-trigger btn-perso green-text darken-1 right">
+                        <a href="#!" id="go_db" class="btn-flat btn-perso green-text darken-1 right">
                             Build database
                         </a>
 
                         <!-- set modal build parameter -->
                         <script>
-                            var btn = document.getElementById('setter_builder');
+                            var btn = document.getElementById('go_db');
                             btn.onclick = function () {
-                                launchDatabaseBuild(document.getElementById('construct').value);
+                                buildGenomeDbModal(document.getElementById('construct').value);
                             };
                         </script>
                     <?php } ?>
@@ -107,6 +109,26 @@ function buildGenomeView(array $data) : void { ?>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- SPECIES USED FOR GENERATION: WILL BE _HIDDEN_ -->
+    <div class="hide" id="collection-build">
+        <ul class="collection">
+            <?php foreach ($data['species'] as $s) { ?>
+                <li class="collection-item collection-specie" data-specie="<?= htmlspecialchars($s) ?>">
+                    <div>
+                        <?= htmlspecialchars($s) ?>
+                        <a href="#!" class="secondary-content" style="margin-left: 15px;" 
+                            onclick="$(this.parentElement.parentElement).remove()">
+                            <i class="material-icons red-text">delete_forever</i>
+                        </a>
+                        <a href="#!" class="secondary-content no-user-click">
+                            <i class="material-icons blue-text">swap_vert</i>
+                        </a>
+                    </div>
+                </li>
+            <?php } ?>
+        </ul>
     </div>
 
     <?php if (count($data['files']) !== 0) { ?>

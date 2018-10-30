@@ -72,7 +72,7 @@ function searchBlastView(Controller $c) : void { ?>
                                 </div>
 
                                 <div class="input-field col s12">
-                                    <textarea id="query" name="query" class="materialize-textarea"></textarea>
+                                    <textarea id="query" name="query" class="materialize-textarea" style="resize: vertical;"></textarea>
                                     <label for="query">Query sequence</label>
                                 </div>
 
@@ -90,21 +90,6 @@ function searchBlastView(Controller $c) : void { ?>
                                     </div>
                                 </div>
 
-                                <div class="clearb"></div>
-                                <div class="divider" style="margin-bottom: 15px;"></div>
-                               
-                                <div class="col s12">
-                                    <span class="underline">Set subsequence</span>
-                                </div>
-                                
-                                <div class="input-field col s6">
-                                    <input id="subset-low" type="number" name="subsetl">
-                                    <label for="subset-low">From</label>
-                                </div>
-                                <div class="input-field col s6">
-                                    <input id="subset-up" type="number" name="subseth">
-                                    <label for="subset-up">To</label>
-                                </div>
                                 <div class="clearb"></div>
                             </div>
                         </li>
@@ -292,7 +277,6 @@ function searchBlastView(Controller $c) : void { ?>
         $(function() { 
             $('.collapsible').collapsible(); 
             initRadioBlast(); 
-            initNumberForm(); 
             refreshBlastForm(document.querySelector('[name=program]:checked').value); 
             refreshBlastGapMatrix(document.getElementById('matrix').value);
         });

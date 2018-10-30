@@ -133,29 +133,31 @@ function isProtectedSpecie(string $specie) : bool {
     return array_key_exists($specie, PROTECTED_SPECIES);
 }
 
+function getSpecies() : array {
+    return array_keys(SPECIE_TO_NAME);
+}
+
+function getOrderedSpecies() : array {
+    return ORDERED_SPECIES;
+}
+
 function getProtectedSpecies() : array {
     return array_keys(PROTECTED_SPECIES);
 }
 
+function saveSpecies(array $specie_to_name, array $ordered) : void {
+    $p = SITE_PARAMETERS_ARRAY;
+    $p['species'] = $specie_to_name;
+    $p['species_ordered'] = $ordered;
+
+    file_put_contents(PARAMETERS_FILE, json_encode($p));
+}
+
 function renewProtectedSpecies(array $species) : void {
-    $str = "<?php\n\nconst PROTECTED_SPECIES = [";
+    $p = SITE_PARAMETERS_ARRAY;
+    $p['protected'] = $species;
 
-    $first = true;
-
-    foreach ($species as $s) {
-        if ($first) {
-            $first = false;
-        }
-        else {
-            $str .= ",";
-        }
-        
-        $str .= "'$s' => true";
-    }
-
-    $str .= "];\n";
-
-    file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/assets/protected-species.php', $str);
+    file_put_contents(PARAMETERS_FILE, json_encode($p));
 }
 
 function checkSaveLinkValidity(string $specie, string $gene_id) : bool {

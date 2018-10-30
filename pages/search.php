@@ -207,7 +207,7 @@ function showSearchById(array $data) : void {
 function searchByName() : array {
     $r = [];
 
-    if (isset($_GET['name']) && is_string($_GET['name'])) {
+    if (isset($_GET['name']) && is_string($_GET['name']) && $_GET['name']) {
         $r['form_data'] = [];
         $r['form_data']['name'] = htmlspecialchars($_GET['name'], ENT_QUOTES);
 
@@ -452,50 +452,48 @@ function searchAdvanced() : array {
         }
 
         // ____ FINAL QUERY ____
-        if (!$query) {
+        if ($query) {
+            $finalquery = "SELECT g.*, a.gene_id, a.specie, a.linkable, a.alias, 
+                (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
+                FROM Pathways p 
+                WHERE g.id = p.id) as pathways,
+            (CASE 
+                WHEN a.sequence_adn IS NOT NULL THEN 1
+                ELSE 0
+            END) as is_seq_adn,
+            (CASE 
+                WHEN a.sequence_pro IS NOT NULL THEN 1
+                ELSE 0
+            END) as is_seq_pro
+            FROM GeneAssociations a 
+            JOIN Gene g ON a.id=g.id
+            JOIN Pathways pa ON pa.id=g.id
+            WHERE $query
+            GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie";
+
+            $q = mysqli_query($sql, $finalquery);
+
+            if (!$q) {
+                throw new UnexpectedValueException("SQL request failed");
+            }
+
+            if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
+                while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
+                    if (LIMIT_GENOMES && !isUserLogged() && isProtectedSpecie($row['specie'])) {
+                        continue;
+                    }
+
+                    $r['results'][] = new GeneObject($row);
+                } 
+                // results empêche la génération du formulaire de recherche,
+                // et affiche les résultats à la page
+            }
+            else {
+                $r['results'] = [];
+            }
+        }
+        else {
             $r['form_data']['empty_search'] = true;
-        }
-        else {
-            $query = "WHERE $query";
-        }
-
-        $finalquery = "SELECT g.*, a.gene_id, a.specie, a.linkable, a.alias, 
-            (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
-            FROM Pathways p 
-            WHERE g.id = p.id) as pathways,
-        (CASE 
-            WHEN a.sequence_adn IS NOT NULL THEN 1
-            ELSE 0
-        END) as is_seq_adn,
-        (CASE 
-            WHEN a.sequence_pro IS NOT NULL THEN 1
-            ELSE 0
-        END) as is_seq_pro
-        FROM GeneAssociations a 
-        JOIN Gene g ON a.id=g.id
-        JOIN Pathways pa ON pa.id=g.id
-        $query
-        GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie";
-
-        $q = mysqli_query($sql, $finalquery);
-
-        if (!$q) {
-            throw new UnexpectedValueException("SQL request failed");
-        }
-
-        if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
-            while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
-                if (LIMIT_GENOMES && !isUserLogged() && isProtectedSpecie($row['specie'])) {
-                    continue;
-                }
-
-                $r['results'][] = new GeneObject($row);
-            } 
-            // results empêche la génération du formulaire de recherche,
-            // et affiche les résultats à la page
-        }
-        else {
-            $r['results'] = [];
         }
     }
     else {
@@ -653,7 +651,7 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                 else if ($mode === 'global') {
 
                     if (isset($form_data['empty_search'])) {
-                        echo '<h6 class="red-text">You haven\'t specified any parameter. Loading the entiere database.</h6>';
+                        echo '<h6 class="red-text">You haven\'t specified any parameter. You must filter with at least one parameter.</h6>';
                     } ?>
 
                     <div class="input-field col s12">
@@ -675,9 +673,9 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
 
                     <div class='input-field col s12' style="margin-bottom: 20px;">
                         <i class="material-icons prefix">assignment</i>
-                        <input type='text' autocomplete='off' name="global" id="global_" 
+                        <input type='text' autocomplete='off' name="global" id="global" 
                             value='<?= $form_data['global'] ?? '' ?>'>
-                        <label for='global_'>Keywords</label>
+                        <label for='global'>Keywords</label>
                     </div>
                     <div class="margin-adv-search-left" style="margin-bottom: 15px;">
                         Search in
