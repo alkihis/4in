@@ -8,7 +8,7 @@ function searchBlastView(Controller $c) : void { ?>
     <div class="container">
         <div class="row">
             <div class="col s12">
-                <form method="post" action="/blast" enctype="multipart/form-data">
+                <form method="post" action="/blast" enctype="multipart/form-data" onsubmit="return checkBlastForm()">
                     <div class="card-panel card-border" style='margin-top: 20px;'>
                         <div class="row no-margin-bottom">
                             <div class="col s2">
@@ -51,6 +51,13 @@ function searchBlastView(Controller $c) : void { ?>
                                             <span>tblastx</span>
                                         </label>
                                     </div>
+
+                                    <div class="col s4">
+                                        <label>
+                                            <input name="program" value="meg" class="radio-blast" type="radio">
+                                            <span>megablastn</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -65,8 +72,22 @@ function searchBlastView(Controller $c) : void { ?>
                                 </div>
 
                                 <div class="input-field col s12">
-                                    <textarea id="query" name="query" class="materialize-textarea" required></textarea>
+                                    <textarea id="query" name="query" class="materialize-textarea"></textarea>
                                     <label for="query">Query sequence</label>
+                                </div>
+
+                                <div class="col s12">
+                                    <span>or from file</span>
+                                </div>
+
+                                <div class="file-field input-field col s12">
+                                    <div class="btn light-blue darken-1">
+                                        <span>FASTA input</span>
+                                        <input type="file" id="query_file" name="fasta_file">
+                                    </div>
+                                    <div class="file-path-wrapper">
+                                        <input class="file-path validate" type="text">
+                                    </div>
                                 </div>
 
                                 <div class="clearb"></div>
@@ -91,7 +112,7 @@ function searchBlastView(Controller $c) : void { ?>
                             <div class="collapsible-header"><i class="material-icons">build</i>General</div>
                             <div class="collapsible-body">
                                 <div class="input-field col s6">
-                                    <select name="max_target_seqs">
+                                    <select name="num_descriptions">
                                         <option value="50">50</option>
                                         <option value="100">100</option>
                                         <option value="250">250</option>
@@ -99,8 +120,21 @@ function searchBlastView(Controller $c) : void { ?>
                                         <option value="2000">2000</option>
                                         <option value="5000">5000</option>
                                     </select>
-                                    <label>Max target sequences</label>
+                                    <label>Max descriptions</label>
                                 </div>
+
+                                <div class="input-field col s6">
+                                    <select name="num_alignments">
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="250" selected>250</option>
+                                        <option value="500">500</option>
+                                        <option value="1000">1000</option>
+                                        <option value="2500">2500</option>
+                                    </select>
+                                    <label>Max alignements</label>
+                                </div>
+
                                 <div class="input-field col s6">
                                     <select name="evalue">
                                         <option value="0.0001">0.0001</option>
@@ -113,14 +147,9 @@ function searchBlastView(Controller $c) : void { ?>
                                     <label>Expect threshold (evalue)</label>
                                 </div>
 
-                                <div class="input-field col s12">
-                                    <select name="word_size" id="word_size">
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="6">6</option>
-                                        <option value="7" selected>7</option>
-                                        <option value="11">11</option>
-                                        <option value="15">15</option>
+                                <div class="input-field col s6">
+                                    <select class="blast-select" name="word_size" id="word_size">
+                                        
                                     </select>
                                     <label>Word size</label>
                                 </div>
@@ -131,8 +160,18 @@ function searchBlastView(Controller $c) : void { ?>
                         <li>
                             <div class="collapsible-header"><i class="material-icons">exposure_plus_2</i>Scoring</div>
                             <div class="collapsible-body">
+                                <div class="blast-message red-text show-for-n show-for-meg" style='margin-bottom: 15px;'>
+                                    Scoring parameters are disabled for BLASTn and megaBLAST. Default parameters
+                                    will be used instead.
+                                </div>
+
+                                <div class="blast-message red-text show-for-tx" style='margin-bottom: 15px; display: none;'>
+                                    tBLASTx only supports ungapped searches.
+                                </div>
+
                                 <div class="input-field col s6"> <!-- NOT FOR BLASTN -->
-                                    <select disabled class="blast-select not-for-n" name="matrix">
+                                    <select disabled class="blast-select not-for-n" name="matrix" id="matrix"
+                                        onchange="refreshBlastGapMatrix(this.value)">
                                         <option value="PAM30">PAM30</option>
                                         <option value="PAM250">PAM250</option>
                                         <option value="BLOSUM45">BLOSUM45</option>
@@ -153,26 +192,11 @@ function searchBlastView(Controller $c) : void { ?>
                                     <label>Compositional adjustments</label>
                                 </div>
 
-                                <div class="input-field col s6"> <!-- NOT FOR TBLASTX -->
-                                    <select class="blast-select not-for-tx" name="gapopen" id="gapopen">
-                                        <option value="8">8</option>
-                                        <option value="9">9</option>
-                                        <option value="10">10</option>
-                                        <option value="11" selected>11</option>
-                                        <option value="12">12</option>
-                                        <option value="13">13</option>
+                                <div class="input-field col s12"> <!-- NOT FOR TBLASTX, MEGABLAST AND BLASTN -->
+                                    <select class="blast-select not-for-tx not-for-n not-for-meg" name="gapvalues" id="gapvalues">
+                                        
                                     </select>
-                                    <label>Open gap cost</label>
-                                </div>
-
-                                <div class="input-field col s6"> <!-- NOT FOR TBLASTX -->
-                                    <select class="blast-select not-for-tx" name="gapextend" id="gapextend">
-                                        <option value="0">0</option>
-                                        <option value="1" selected>1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                    </select>
-                                    <label>Extend gap cost</label>
+                                    <label>Gap penalities</label>
                                 </div>
                             
                                 <div class="clearb"></div>
@@ -183,14 +207,15 @@ function searchBlastView(Controller $c) : void { ?>
                             <div class="collapsible-body">
                                 <p>
                                     <label>
-                                        <input type="checkbox" name="filter_low_complexity" data-tip="seg(p) or dust(n)">
+                                        <input type="checkbox" id="low_complex" 
+                                            name="filter_low_complexity" data-tip="seg(p) or dust(n)">
                                         <span>Filter low complexity regions</span>
                                     </label>
                                 </p>
 
                                 <p>
                                     <label>
-                                        <input type="checkbox" name="db_soft_mask">
+                                        <input type="checkbox" name="soft_masking" id="soft_masking" checked>
                                         <span>Mask for lookup table only</span>
                                     </label>
                                 </p>
@@ -244,8 +269,6 @@ function searchBlastView(Controller $c) : void { ?>
                                         <option value="2">Query-anchored (no identities)</option>
                                         <option value="3">Flat query-anchored (show identities)</option>
                                         <option value="4">Flat query-anchored (no identities)</option>
-                                        <option value="5">XML</option>
-                                        <option value="6">Tabular</option>
                                     </select>
                                     <label>Alignement view</label>
                                 </div>
@@ -259,14 +282,20 @@ function searchBlastView(Controller $c) : void { ?>
                     <div class="clearb"></div>
                     <div class="divider divider-margin"></div>
 
-                    <button type="submit" class="btn-flat right green-text">Launch BLAST</button>
+                    <button type="submit" class="btn-flat btn-perso right green-text">Launch BLAST</button>
                 </form>
             </div>
         </div>
     </div>
 
     <script>
-        $(function() { $('.collapsible').collapsible(); initRadioBlast(); initNumberForm(); });
+        $(function() { 
+            $('.collapsible').collapsible(); 
+            initRadioBlast(); 
+            initNumberForm(); 
+            refreshBlastForm(document.querySelector('[name=program]:checked').value); 
+            refreshBlastGapMatrix(document.getElementById('matrix').value);
+        });
     </script>
     <?php
 }

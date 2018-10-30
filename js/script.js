@@ -268,25 +268,155 @@ function refreshSelect(element) {
     }
 }
 
+function refreshBlastGapMatrix(mode) {
+
+    // COMPOSITION D'UN TABLEAU
+    /* 
+    MATRIX_NAME = {
+        gap_extend_penality_one: [
+            start_of_gap_open_range(for this gap_extend_penality), 
+            end_of_gap_open_range,
+            [abberant value of this gap_extend_penality, another abberant value of this gap_extend_penality]
+        ],
+        ...
+    }
+    */
+
+    var PAM30 = {
+        "1": [8, 10, [13, 14]],
+        "2": [5, 7, [14]] 
+    };
+    var PAM250 = {
+        "1": [17, 21],
+        "2": [13, 17],
+        "3": [11, 15]
+    };
+    var BLOSUM45 = {
+        "1": [16, 19],
+        "2": [12, 16],
+        "3": [10, 13]
+    };
+    var BLOSUM62 = {
+        "1": [9, 13],
+        "2": [6, 11] 
+    };
+    var BLOSUM80 = {
+        "1": [9, 11],
+        "2": [6, 9, [13]] 
+    };
+    var BLOSUM90 = {
+        "1": [9, 11],
+        "2": [6, 9] 
+    };
+
+    var sel = null;
+    switch (mode) {
+        case 'PAM30':
+            sel = PAM30;
+            break;
+        case 'PAM250':
+            sel = PAM250;
+            break;
+        case 'BLOSUM45':
+            sel = BLOSUM45;
+            break;
+        case 'BLOSUM62':
+            sel = BLOSUM62;
+            break;
+        case 'BLOSUM80':
+            sel = BLOSUM80;
+            break;
+        default:
+            sel = BLOSUM90;
+    }
+
+    var element = document.getElementById('gapvalues');
+    var str = '';
+
+    for (var key in sel) {
+        for (var i = sel[key][0]; i <= sel[key][1]; i++) {
+            str += "<option value='" + i + "/" + key + "' ";
+
+            if (Number(key) === 1 && i === 11) { // Si gap 11/1 : on select (valeur par défaut basique)
+                str += 'selected';
+            }
+            
+            str += ">Existence: " + i + " / Extension: " + key + "</option>";
+        }
+
+        if (sel[key].length > 2) { 
+            // Si on a défini des valeurs "aberrantes" (le tableau sel[key] a 3 cases)
+            for (var i = 0; i < sel[key][2].length; i++) {
+                str += "<option value='" + sel[key][2][i] + "/" + key + "'>Existence: " + 
+                    sel[key][2][i] + " / Extension: " + key + "</option>";
+            }
+        }
+    }
+
+    element.innerHTML = str;
+
+    // Actualisation du select
+    try { $(element).formSelect('destroy'); } catch (e) {}
+    $(element).formSelect();
+}
+
 function refreshBlastForm(mode) {
-    $b = $('.blast-select');
-    $b.formSelect('destroy');
+    var select_megablast = `<option value="16">16</option>
+    <option value="20">20</option>
+    <option value="24">24</option>
+    <option value="28" selected>28</option>
+    <option value="32">32</option>
+    <option value="48">48</option>`;
+
+    var select_blastn = `<option value="7">7</option>
+    <option value="11" selected>11</option>
+    <option value="15">15</option>`;
+
+    var select_blastx = `<option value="2">2</option>
+    <option value="3" selected>3</option>
+    <option value="6">6</option>`;
+
+    var $b = $('.blast-select');
+
+    try { $b.formSelect('destroy'); } catch (e) {}
+
     $b.prop('disabled', false);
+
+    var select = document.getElementById('word_size');
 
     if (mode === "n") {
         $('.blast-select.not-for-n').prop('disabled', true);
+        select.innerHTML = select_blastn;
     }
     else if (mode === "p") {
         $('.blast-select.not-for-p').prop('disabled', true);
+        select.innerHTML = select_blastx;
     }
     else if (mode === "x") {
         $('.blast-select.not-for-x').prop('disabled', true);
+        select.innerHTML = select_blastx;
     }
     else if (mode === "tn") {
         $('.blast-select.not-for-tn').prop('disabled', true);
+        select.innerHTML = select_blastx;
     }
     else if (mode === "tx") {
         $('.blast-select.not-for-tx').prop('disabled', true);
+        select.innerHTML = select_blastx;
+    }
+    else if (mode === "meg") {
+        $('.blast-select.not-for-n').prop('disabled', true);
+        $('.blast-select.not-for-meg').prop('disabled', true);
+        select.innerHTML = select_megablast;
+    }
+
+    // Actualisation de la checkbox low complexity si megablast
+    document.getElementById('low_complex').checked = mode === 'meg' || mode === 'n';
+
+    $('.blast-message:not(.show-for-' + mode + ')').slideUp(200);
+    $messages = $('.blast-message.show-for-' + mode);
+    if (! $messages.is(":visible")) {
+        $messages.slideDown(200);
     }
 
     $b.formSelect();
@@ -325,4 +455,16 @@ function initNumberForm() {
         }
             
     });
+}
+
+function checkBlastForm() {
+    var q = document.getElementById('query'), f = document.getElementById('query_file');
+
+    if (q.value.length > 0 || f.files.length > 0) {
+        return true;
+    }
+    else {
+        M.toast({html: "You must precise either a query string or a query file.", displayLength: 5000});
+        return false;
+    }
 }
