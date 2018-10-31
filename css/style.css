@@ -330,3 +330,25 @@ i.material-icons {
 .rotate {
     transform: rotate(180deg);
 }
+
+/* test d'animation */
+@keyframes waiter {
+    0%, 30% { transform: rotate(0); }
+    60%, 72% { transform: rotate(180deg); }
+    100% { transform: rotate(0); }
+}
+
+@keyframes color-changer {
+    0% { color: rgb(250, 53, 53); }
+    20% { color:  rgb(58, 58, 209);}
+    40% { color: rgb(1, 206, 221); }
+    60% { color: rgb(5, 146, 0); }
+    80% { color: rgb(243, 227, 0); }
+    100% { color: rgb(250, 53, 53); }
+}
+
+.waiter-anim {
+    animation: 
+        waiter 4s infinite,
+        color-changer linear 10s infinite;
+}

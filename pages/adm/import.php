@@ -176,6 +176,12 @@ function importGenomeView(array $data) : void { ?>
             </div>
 
             <div class="divider divider-margin"></div>
+
+            <a href="/api/tools/download_db.php" target="_blank" class="btn-flat green-text btn-perso center-block center">
+                <i class="material-icons left">file_download</i>Download current website database in TSV format
+            </a>
+
+            <div class="divider divider-margin"></div>
             
             <?php if (count($data['files']) !== 0) { ?>
                 <h5>Currently uploaded database files</h5>
