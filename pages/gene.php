@@ -141,8 +141,8 @@ function geneView(Controller $c) : void {
                 if ($data['gene']->getFunction())
                     echo "<h4>Function</h4>" . $data['gene']->getFunction();
 
-                if (empty($data['gene']->getPathways())) {
-                    echo "<h4>Pathways</h4>";
+                if (!empty($data['gene']->getPathways())) {
+                    echo "<h4>Pathway</h4>";
                     foreach ($data['gene']->getPathways() as $element) {
                         echo $element . "<br>";
                     }
@@ -166,6 +166,36 @@ function geneView(Controller $c) : void {
                         implode(',', $data['orthologues'][$specie]) . 
                     "' onclick='loadOrthologuesModal(this)'>$specie</span>";
                 }
+            }
+
+            if ($data['gene']->getSeqADN() || $data['gene']->getSeqProt()) {
+                echo '<div class="divider divider-margin divider-color" style="margin-bottom: 1.52rem;"></div>';
+
+                echo "<div class='download-results row col s12'>";
+                    if ($data['gene']->getSeqADN()) { ?>
+                        <div class='col s6'>
+                            <a href='#!' class='btn-flat btn-perso purple-text right' 
+                                onclick="downloadCheckedSequences('adn', true);">
+                                <i class='material-icons left'>file_download</i>FASTA sequence (DNA)
+                            </a>
+                        </div>
+                    <?php }
+
+                    if ($data['gene']->getSeqProt()) { ?>
+                        <div class='col s6'>
+                            <a href='#!' class='btn-flat btn-perso blue-text left' 
+                                onclick="downloadCheckedSequences('pro', true);">
+                                <i class='material-icons left'>file_download</i>FASTA sequence (Protein)
+                            </a>
+                        </div>
+                    <?php } ?>
+                    <div class='clearb'></div>
+                    
+                    <div class="hide">
+                        <input type="checkbox" class="chk-srch" data-id="<?= $data['gene']->getID() ?>">
+                    </div>
+                </div> 
+            <?php
             }
 
             if ($data['gene']->getSeqADN()) {

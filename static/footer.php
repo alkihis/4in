@@ -15,7 +15,8 @@
                     </a></li>
                     <li><a class="white-text" href="/search">Search</a></li>
                     <li><a class="white-text" href="/blast_search">BLAST</a></li>
-                    <li><a class="white-text" href="/help">Help</a></li>
+                    <!-- <li><a class="white-text" href="/help">Help</a></li> -->
+                    <li><a class="white-text" href="/contact">Contact us</a></li>
                     <?php if (isUserLogged()) { ?>
                         <li><a class="white-text" href="/admin">Administration</a></li>
                     <?php } ?>

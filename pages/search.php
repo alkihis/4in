@@ -97,7 +97,7 @@ function showSearchHome(array $data) : void {
                         </h5>
 
                         <p class="light text-justify">
-                            Check the details of a specific gene with an ID search.
+                            Check quickly the details of a specific gene with an ID search.
                         </p>
                     </div>
                 </div>
@@ -128,8 +128,9 @@ function showSearchHome(array $data) : void {
                         </h5>
 
                         <p class="light text-justify">
-                            Combine your search criterias, with pathways, species, names and others to find a 
-                            specific gene or group of genes.
+                            Combine your search criterias using keywords to find names, IDs, families and genes roles
+                            at the same time, filter your search with specific pathways and species to find 
+                            what you want.
                         </p>
                     </div>
                 </div>
@@ -188,7 +189,13 @@ function searchById() : array {
                 }
 
                 $r['results'][] = new GeneObject($row);
-            }            
+            } 
+
+            if (count($r['results']) === 1) {
+                // Si le nombre de résultat est de 1 (un seul ID),
+                // on redirige immédiatement vers la page de gène
+                header('Location: /gene/' . $r['results'][0]->getID());
+            }
         }
     }
 
@@ -375,6 +382,10 @@ function searchAdvanced() : array {
                 $r['form_data']['selected_p'][$p] = true;
             }
         }
+        if (count($selected_pathways) === count($r['form_data']['pathways'])) {
+            // Si on a sélectionné tous les pathways, c'est comme si on ne filtrait pas
+            $selected_pathways = [];
+        }
 
         // ___ SPECIES ____
         $selected_species = [];
@@ -387,6 +398,10 @@ function searchAdvanced() : array {
                 
                 $r['form_data']['selected_s'][$p] = true;
             }
+        }
+        if (count($selected_species) === count($r['form_data']['species'])) {
+            // Si on a sélectionné toutes les espèces
+            $selected_species = [];
         }
 
         // ___ KEYWORDS ____

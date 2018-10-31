@@ -24,6 +24,12 @@ if (isset($_POST['ids']) && is_string($_POST['ids']) && $_POST['mode'] && is_str
 
     $ids = explode(',', $_POST['ids']);
     $final_fasta = '';
+    $name = "search";
+    if (count($ids) === 1) {
+        // Si il n'y a qu'un seul ID, le fichier aura pour nom l'ID
+        // échappe le nom de fichier
+        $name = preg_replace('/[^A-Za-z0-9_\-]/', '_', $ids[0]) . ($_POST['mode'] === 'pro' ? '_pro' : '_dna');
+    }
 
     foreach($ids as $id) {
         $id = mysqli_real_escape_string($sql, $id);
@@ -50,7 +56,7 @@ if (isset($_POST['ids']) && is_string($_POST['ids']) && $_POST['mode'] && is_str
 
     if ($final_fasta) {
         header("Content-Type: chemical/seq-$seq-fasta");
-        header("Content-disposition: attachment; filename=\"search.fasta\""); 
+        header("Content-disposition: attachment; filename=\"$name.fasta\""); 
         echo $final_fasta;
     }
     else {

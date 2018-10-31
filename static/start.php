@@ -42,21 +42,6 @@ function homeView(Controller $c) : void { ?>
                 <div class="col s12 m4">
                     <div class="icon-block">
                         <h2 class="center">
-                            <a href='/full_database'><i class="material-icons mat-title light-blue-text">settings_system_daydream</i></a>
-                        </h2>
-                        <h5 class="center">Database</h5>
-
-                        <p class="light text-justify">
-                            Check out our entire database here. Download any sequence in the format of your choice, 
-                            sort your results according to your requirements and learn about the functionnal annotations available
-                            through links to the Bf2i's database. 
-                        </p>
-                    </div>
-                </div>
-
-                <div class="col s12 m4">
-                    <div class="icon-block">
-                        <h2 class="center">
                             <a href='/blast_search'><i class="material-icons mat-title light-blue-text">sort</i></a>
                         </h2>
                         <h5 class="center">BLAST</h5>
@@ -64,6 +49,20 @@ function homeView(Controller $c) : void { ?>
                         <p class="light text-justify">
                             Align your own sequences using BLAST's algorithm on our database's sequences.
                             You can choose whether to align nucleotides or amino acids sequences.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col s12 m4">
+                    <div class="icon-block">
+                        <h2 class="center">
+                            <a href='/contact'><i class="material-icons mat-title light-blue-text">contact_mail</i></a>
+                        </h2>
+                        <h5 class="center">Contact Us</h5>
+
+                        <p class="light text-justify">
+                            If you want to know more about the database, report a problem or a mistake, or suggest new
+                            informations to add in the database, please let us know your request.
                         </p>
                     </div>
                 </div>
@@ -76,7 +75,8 @@ function homeView(Controller $c) : void { ?>
         <div class="parallax"><img src="/img/ADN.jpg"></div>
     </div>
 
-<?php }
+    <?php 
+}
 
 function homeControl() : Controller {
     // Insérer ici des traitements à réaliser dans la page d'accueil
