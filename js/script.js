@@ -133,7 +133,10 @@ function sortTable(idTable, interval_for_view) {
     var table = $('#' + idTable);
 
     $('#' + idTable + ' th.sortable')
-        .wrapInner('<span title="Sort"/>')
+        .each(function() {
+            var title = "Sort by " + this.innerText.toLowerCase().trim();
+            this.innerHTML = "<div class='sort' title='"+title+"'><i class='material-icons left sort sort-anim'>unfold_more</i>"+this.innerHTML+"<div class='clearb'></div></div>";
+        })
         .each(function() {
             var th = $(this),
                 thIndex = th.index(),
