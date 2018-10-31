@@ -38,8 +38,8 @@ function explodeFile(string $filename, bool $trim_first_line = false) : void {
         (?, ?, ?, ?, ?)");
 
     $stmt_assoc = mysqli_prepare($sql, "INSERT INTO GeneAssociations
-        (id, gene_id, sequence_adn, sequence_pro, specie, addi)
-        VALUES (?, ?, NULL, NULL, ?, ?)");
+        (id, gene_id, sequence_adn, sequence_pro, specie)
+        VALUES (?, ?, NULL, NULL, ?)");
 
     $stmt_pathway = mysqli_prepare($sql, "INSERT INTO Pathways 
         (id, pathway)
@@ -94,34 +94,96 @@ function explodeFile(string $filename, bool $trim_first_line = false) : void {
         // Si un pathway est défini, on le split en fonction de /, et on insère autant de pathways que défini dans Pathways,
         // ceux-ci étant reliés au Gene par son ID
         if (!empty($pathway)) {
-            insertPathway($id_insert, $pathway, $stmt_pathway);
+            $pathways = explode('|', $pathway);
+
+            foreach ($pathways as $p) {
+                $p = trim($p);
+
+                if ($p) {
+                    insertPathway($id_insert, $p, $stmt_pathway);
+                }
+            }
         }
 
         // Pour les lignes 6 à 21 du tableau
         for ($i = 6; $i < ($number_of_species+6); $i++) {
             $m = [];
             // Enregistre les matches de l'expression régulière ci-dessous dans $m
-            preg_match_all("/\((.+?)\),?/m", $arr[$i], $m);
+            // preg_match_all("/\((.+?)\),?/m", $arr[$i], $m);
+            /*
+            UPDATE : l'expression régulière fonctionne, mais mal.
+            Il y a des lignes étrangement formatées... avec des parenthèses à l'intérieur des parenthèses.
+            L'expression régulière capture donc assez mal pour ces gènes là.
+            Le choix fait est plutôt de la simulation d'une pile, où les parenthèses ouvrantes/fermantes empilent/dépilent
+            et où on lit un ID uniquement après la première parenthèse ouverte et puis jusqu'à la première virgule rencontrée
+            */
+
+            $found_ids = [];
+            $parenthese_pile = 0;
+            $current_id = "";
+            $should_read = false;
+            for ($j = 0; $j < strlen($arr[$i]); $j++) {
+                $char = $arr[$i][$j];
+
+                // Si c'est une parenthèse ouvrante, on incrémente le compteur de parenthèse
+                if ($char === '(') {
+                    $parenthese_pile++;
+
+                    // Si on est à la première parenthèse ouverte, on peut lire
+                    $should_read = ($parenthese_pile === 1);
+                }
+                // Si elle est fermante, on décrémente
+                else if ($char === ')') {
+                    if ($parenthese_pile === 1) {
+                        // Si il n'y avait qu'une parenthèse ouverte, c'est le moment
+                        // de stocker l'ID enregistré
+                        if (trim($current_id)) {
+                            $found_ids[] = trim($current_id);
+                            $current_id = "";
+                        }
+                    }
+
+                    $parenthese_pile--;
+                    if ($parenthese_pile < 0) {
+                        $parenthese_pile = 0;
+                    }
+                }
+                // Si on rencontre une virgule, on interrompt la lecture si elle l'était
+                else if ($char === ',') {
+                    $should_read = false;
+                }
+                // Si on doit lire, on ajoute le caractère dans la chaîne tampon
+                else if ($should_read) {
+                    $current_id .= $char;
+                }
+            }
+
+            foreach ($found_ids as $id_f) {
+                $stmt_assoc->bind_param("iss", $id_insert, $id_f, $assocs_species[$i - 6]);
+
+                /* execute query */
+                $stmt_assoc->execute();
+            } 
 
             // Si il y a eu des matches ($m[1] représente tous les matches fait pour la PREMIÈRE parenthèse capturante,
             // $m[0] représente le match entier)
-            if (isset($m[1])) {
-                // Pour chaque match dans la parenthèse
-                foreach($m[1] as $key => $match) { 
-                    // On extrait la "ligne" entière qui est dans $m[0] (full-match) [$key] (et on l'escape)
-                    $full_line = mysqli_real_escape_string($sql, $m[0][$key]);
-                    // Pour récupérer l'ID, c'est la première valeur de la "parenthèse" séparée par des ,
-                    // On récupère donc le premier élément du split
-                    $id = explode(',', $match)[0];
+            // if (isset($m[1])) {
+            //     // Pour chaque match dans la parenthèse
+            //     foreach($m[1] as $key => $match) { 
+            //         // On extrait la "ligne" entière qui est dans $m[0] (full-match) [$key] (et on l'escape)
+            //         $full_line = mysqli_real_escape_string($sql, $m[0][$key]);
+            //         // Pour récupérer l'ID, c'est la première valeur de la "parenthèse" séparée par des ,
+            //         // On récupère donc le premier élément du split
+            //         $id = explode(',', $match)[0];
 
-                    // On insère le gène dans les associations
-                    /* bind parameters for markers */
-                    $stmt_assoc->bind_param("isss", $id_insert, $id, $assocs_species[$i - 6], $full_line);
+            //         // On insère le gène dans les associations
+            //         /* bind parameters for markers */
+            //         $stmt_assoc->bind_param("isss", $id_insert, $id, $assocs_species[$i - 6], $full_line);
 
-                    /* execute query */
-                    $stmt_assoc->execute();
-                }
-            }
+            //         /* execute query */
+            //         $stmt_assoc->execute();
+            //     }
+            // }
         }
     }
 

@@ -687,7 +687,7 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                     <div class="divider divider-margin"></div>
 
                     <div class='input-field col s12' style="margin-bottom: 20px;">
-                        <i class="material-icons prefix">assignment</i>
+                        <i class="material-icons prefix">keyboard</i>
                         <input type='text' autocomplete='off' name="global" id="global" 
                             value='<?= $form_data['global'] ?? '' ?>'>
                         <label for='global'>Keywords</label>

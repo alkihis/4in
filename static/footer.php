@@ -4,7 +4,9 @@
             <div class="col l6 s12">
                 <h5 class="white-text">Developers</h5>
                 <p class="grey-text text-lighten-4">
-                    We are a team of students in our first year of master, working hastily to achieve the world's greatest database.
+                    We are a team of students in our first year of master, 
+                    working hastily to achieve the world's greatest database.<br>
+                    Learn more about our <a class="underline white-text" href="/team">team</a>.
                 </p>
             </div>
             <div class="col l3 s12">
