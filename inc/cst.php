@@ -31,6 +31,7 @@ const PAGES_REF = [
     '403' => ['file' => 'static/403.php', 'view' => 'forbiddenView', 'controller' => 'forbiddenControl'],
     '500' => ['file' => 'static/500.php', 'view' => 'serverErrorView', 'controller' => 'serverErrorControl'],
     '501' => ['file' => 'static/501.php', 'view' => 'serverImplementView', 'controller' => 'serverImplementControl'],
+    '503' => ['file' => 'static/503.php', 'view' => 'maintenanceView', 'controller' => 'maintenanceControl'],
 ];
 
 // NEW NOTE: Protected species are now loaded through a independant PHP file.
@@ -52,6 +53,7 @@ function loadSiteParameters() : void {
     define('SPECIE_TO_NAME', $parameters['species']);
     define('SITE_PARAMETERS_ARRAY', $parameters);
     define('ORDERED_SPECIES', $parameters['species_ordered']);
+    define('SITE_MAINTENANCE', !$parameters['accessible']);
 }
 
 loadSiteParameters();

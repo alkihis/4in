@@ -12,7 +12,18 @@ require 'inc/CustomExceptions.php';
 require 'inc/Controller.php';
 
 // Obtention du Controller pour afficher la page
-$ctrl = getRoute();
+// D'abord, on obtient l'url
+$parms = getSelectedUrl();
+$maintenance_mode = false;
+
+// On vérifie si le site n'est pas en maintenance
+if ($parms[0] !== 'login' && !isUserLogged() && SITE_MAINTENANCE) {
+    $parms[0] = "503";
+    $maintenance_mode = true;
+}
+
+// On obtient le contrôleur
+$ctrl = getRoute($parms[0], $parms[1]);
 
 ?>
 
@@ -40,7 +51,7 @@ $ctrl = getRoute();
 
     <body>
         <header>
-        <?php require 'static/nav.php'; ?>
+        <?php if (!$maintenance_mode) { require 'static/nav.php'; } ?>
         </header>
 
         <main>
@@ -50,7 +61,7 @@ $ctrl = getRoute();
         ?>
         </main>
         
-        <?php require 'static/footer.php'; // footer.php contient déjà <footer></footer> ?>
+        <?php if (!$maintenance_mode) { require 'static/footer.php'; } // footer.php contient déjà <footer></footer> ?>
 
         <!--JavaScript at end of body for optimized loading-->
         <script type="text/javascript" src="/js/materialize.min.js"></script>

@@ -1,7 +1,5 @@
 <?php
 
-session_start();
-
 if (isUserLogged()) {
     session_write_close();
 

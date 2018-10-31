@@ -33,8 +33,6 @@ function readBuildIndex(string $filename) : void {
     }
 }
 
-session_start();
-
 if (isUserLogged()) {
     session_write_close();
 

@@ -86,7 +86,7 @@ function adminControl(array $args) : Controller {
 }
 
 function homePageController() : array {
-    return ['active_page' => 'home'];
+    return ['active_page' => 'home', 'accessible' => !SITE_MAINTENANCE];
 }
 
 function adminView(Controller $c) : void {
@@ -213,8 +213,8 @@ function adminView(Controller $c) : void {
                 <div class="background">
                     <img src="/img/ADN.jpg">
                 </div>
-                <a><img class="circle" src="/img/favicon.png"></a>
-                <a><span class="white-text name">Admin Console</span></a>
+                <a href="/admin"><img class="circle" src="/img/favicon.png"></a>
+                <a href="/admin"><span class="white-text name">Admin Console</span></a>
                 <a><span class="white-text email"></span></a>
             </div>
         </li>
@@ -301,6 +301,25 @@ function homePageView(array $data) : void { ?>
             <p class="flow-text">
                 Please choose a module in the side-navigation menu.
             </p>
+
+            <div class='divider divider-margin'></div>
+
+            <div class="col s12">
+                <p>
+                    Website is currently 
+                    <span class="underline" id="accessible_text"><?= ($data['accessible'] ? 'accessible' : 'in maintenance mode') ?></span>.
+                
+                <?php if ($data['accessible']) { ?>
+                    <a href="#!" class="btn-flat btn-perso red-text" onclick="changeWebsiteAccess(this)" data-access="1">
+                        Toggle site maintenance mode
+                    </a>
+                <?php } else { ?>
+                    <a href="#!" class="btn-flat btn-perso green-text" onclick="changeWebsiteAccess(this)" data-access="0">
+                        Restore site visibility
+                    </a>
+                <?php } ?>
+                </p>
+            </div>
         </div>
     </div>
     <?php

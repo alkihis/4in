@@ -76,8 +76,6 @@ function loadFasta(string $filename, $mode = 'adn') : void {
     fclose($h);
 }
 
-session_start();
-
 if (isUserLogged()) {
     session_write_close();
 

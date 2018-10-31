@@ -138,8 +138,6 @@ function emptyTables() : void {
     mysqli_query($sql, "ALTER TABLE Pathways AUTO_INCREMENT=1;");
 }
 
-session_start();
-
 if (isUserLogged()) {
     session_write_close();
 

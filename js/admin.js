@@ -396,3 +396,33 @@ function sendSpecieOrder() {
 
     $(modal).modal('open');
 }
+
+function changeWebsiteAccess(ele) {
+    var st = (ele.dataset.access === "1" ? "maintenance" : "ok");
+    var txt = document.getElementById('accessible_text');
+        
+    request({
+        url: '/api/tools/maintenance.php',
+        method: 'POST',
+        body: 'status=' + st
+    }).then(function () {
+        M.toast({html: "Status has been successfully updated."});
+
+        if (ele.dataset.access === "1") {
+            ele.dataset.access = "0";
+            ele.innerText = "Restore site visibility";
+            txt.innerText = 'in maintenance mode';
+            ele.classList.remove('red-text');
+            ele.classList.add('green-text');
+        }
+        else {
+            ele.dataset.access = "1";
+            ele.innerText = "Toggle site maintenance mode";
+            txt.innerText = 'accessible';
+            ele.classList.remove('green-text');
+            ele.classList.add('red-text');
+        }
+    }).catch(function (e) { 
+        M.toast({html: "Modification failed."});
+    });
+}

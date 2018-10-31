@@ -12,8 +12,7 @@ function connectBD() : void {
         mysqli_query($sql, 'SET NAMES UTF8mb4'); // requete pour avoir les noms en UTF8mb4
 }
 
-function getRoute() : Controller {
-    // Get Controller object for asked page, Controller for home page if page undefined otherwise
+function getSelectedUrl() : array {
     $page_name = 'home';
     $page_arguments = [];
     $ctrl = null;
@@ -39,6 +38,12 @@ function getRoute() : Controller {
             $page_name = '404';
         }
     }
+
+    return [$page_name, $page_arguments];
+}
+
+function getRoute(string $page_name, array $page_arguments) : Controller {
+    // Get Controller object for asked page, Controller for home page if page undefined otherwise
 
     // Charge le fichier demandé
     require_once PAGES_REF[$page_name]['file'];
@@ -143,6 +148,13 @@ function getOrderedSpecies() : array {
 
 function getProtectedSpecies() : array {
     return array_keys(PROTECTED_SPECIES);
+}
+
+function saveMaintenanceStatus(bool $is_maintenance) : void {
+    $p = SITE_PARAMETERS_ARRAY;
+    $p['accessible'] = !$is_maintenance;
+
+    file_put_contents(PARAMETERS_FILE, json_encode($p));
 }
 
 function saveSpecies(array $specie_to_name, array $ordered) : void {

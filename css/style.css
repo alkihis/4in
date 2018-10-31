@@ -177,6 +177,10 @@ main.with-particle {
     height: 70vh !important;
 }
 
+#particle-holder.full-page canvas {
+    height: 100vh !important;
+}
+
 #particle-holder .container {
     display: block;
     user-select: none;

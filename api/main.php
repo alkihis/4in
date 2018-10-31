@@ -7,6 +7,13 @@ define('MAIN_DIR', $_SERVER['DOCUMENT_ROOT'] . '/');
 require MAIN_DIR . 'inc/cst.php';
 require MAIN_DIR . 'inc/func.php';
 
+session_start();
+
+if (!isUserLogged() && SITE_MAINTENANCE) {
+    header($_SERVER['SERVER_PROTOCOL'] . ' 503 Service Unavailable');
+    exit();
+}
+
 // Fichier principal
 
 $page = explode('/api/', $_SERVER['REQUEST_URI'])[1];

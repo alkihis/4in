@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 // Récupère tous les IDs
 global $sql;

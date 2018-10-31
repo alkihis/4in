@@ -26,7 +26,7 @@ function homeView(Controller $c) : void { ?>
                     Developed in order to facilitate access to the data harvested from different species of insects,
                     this database is centered around the genetic study of the rice weevil, also called Sitophilus oryzae.
                 </p>
-                <div class="col s12 m4">
+                <div class="col s12 m5">
                     <div class="icon-block">
                         <h2 class="center">
                             <a href='/search'><i class="material-icons mat-title light-blue-text">search</i></a>
@@ -34,12 +34,13 @@ function homeView(Controller $c) : void { ?>
                         <h5 class="center">Search</h5>
 
                         <p class="light text-justify">
-                            You can search immunity genes by ID, pathway, species and name here, across all of our database's insects.
+                            You can search immunity genes by ID, pathway, species and name here, 
+                            across all of our insect genes database.
                         </p>
                     </div>
                 </div>
 
-                <div class="col s12 m4">
+                <div class="col s12 m5 offset-m2">
                     <div class="icon-block">
                         <h2 class="center">
                             <a href='/blast_search'><i class="material-icons mat-title light-blue-text">sort</i></a>
@@ -53,6 +54,7 @@ function homeView(Controller $c) : void { ?>
                     </div>
                 </div>
 
+                <!-- 
                 <div class="col s12 m4">
                     <div class="icon-block">
                         <h2 class="center">
@@ -66,6 +68,7 @@ function homeView(Controller $c) : void { ?>
                         </p>
                     </div>
                 </div>
+                -->
             </div>
         </div>
         <br><br>
