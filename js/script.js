@@ -127,7 +127,9 @@ function gotoUrl(path, params, method) {
     form.submit();
 }
 
-function sortTable(idTable) {
+function sortTable(idTable, interval_for_view) {
+    var tbod = document.getElementById('tbody_sort');
+
     var table = $('#' + idTable);
 
     $('#' + idTable + ' th.sortable')
@@ -138,6 +140,8 @@ function sortTable(idTable) {
                 inverse = false;
 
             th.click(function() {
+                resetSegments(tbod);
+
                 table.find('td').filter(function() {
 
                     return $(this).index() === thIndex;
@@ -155,9 +159,69 @@ function sortTable(idTable) {
                     return this.parentNode; 
                 });
                 inverse = !inverse;
+
+                initSegments(tbod, interval_for_view);
             });
 
         });
+
+    
+}
+
+function resetSegments(element) {
+    var childs = element.childNodes;
+
+    for (var i = 0; i < childs.length; i++) {
+        if (childs[i].classList && childs[i].classList.contains('segment')) {
+            childs[i].parentElement.removeChild(childs[i]);
+            // la liste est actualisée en temps réel, il faut diminuer i
+            i--;
+        }
+        else if (childs[i].classList && childs[i].classList.contains('segment-container')) {
+            childs[i].dataset.segment = "null";
+        }
+    }
+}
+
+function initSegments(element, interval) {
+    var childs = element.childNodes;
+    var count = 0;
+
+    for (var i = 0; i < childs.length; i++) {
+        if (childs[i].classList) { // si l'enfant n'est pas du texte
+            var seg = Math.floor(count / interval);
+
+            if (count % interval === 0 && count !== 0) {
+                // Si on dépasse le premier segment, on en crée un nouveau
+                var tr = document.createElement('tr');
+                tr.classList.add('segment');
+                tr.dataset.nextSegment = seg;
+    
+                childs[i].parentNode.insertBefore(tr, childs[i]);
+                // childs est actualisée en temps réel, donc i va maintenant pointer sur
+                // le .segment ajouté, on incrémente i
+                i++;
+    
+                childs[i].dataset.segment = seg;
+                childs[i].style.display == "none";
+            }
+            else {
+                // tr classique, on enregistre le numéro de segment
+                childs[i].dataset.segment = seg;
+
+                // Si jamais le tr est dans le premier segment, il faut le rendre visible
+                if (seg === 0 && childs[i].style.display === "none") {
+                    childs[i].style.display = "";
+                }
+                else if (seg !== 0) {
+                    childs[i].style.display == "none";
+                }
+            }
+            count++;
+        }
+    }
+
+    initScrollFireSegments();
 }
 
 function loadOrthologuesModal(element) {
@@ -438,4 +502,23 @@ function checkBlastForm() {
         M.toast({html: "You must precise either a query string or a query file.", displayLength: 5000});
         return false;
     }
+}
+
+function initScrollFireSegments() {
+    // Initialise les segments de génération de carte
+    $('.segment').scrollfire({
+        // Offsets
+        offset: 0,
+        topOffset: 0,
+        bottomOffset: 0,
+        // Fires once when element begins to come in from the bottom, with scroll
+        onScrollDown: function(elm, distance_scrolled) {
+            // console.log('triggered', elm, elm.dataset, distance_scrolled);
+            var seg = Number(elm.dataset.nextSegment);
+            // Affiche les éléments situés en dessous de ce segment, puis supprime le segment
+            $('[data-segment=' + seg + ']').show();
+
+            $(elm).remove();
+        },
+    });
 }

@@ -798,10 +798,10 @@ function generateSearchResultsArray(array $res) : void {
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tbody_sort">
                         <?php  
-                        foreach ($res as $gene) {
-                            generateArrayLine($gene);
+                        foreach ($res as $key => $gene) {
+                            generateArrayLine($gene, $key, 100);
                         }
                         ?>
                     </tbody>
@@ -833,16 +833,24 @@ function generateSearchResultsArray(array $res) : void {
     <script>
         $(document).ready(function() {
             initCheckboxes();
+            initScrollFireSegments();
 
-            sortTable('search_table');
+            sortTable('search_table', 100);
         });
     </script>
+
+    <script src="/js/jquery.scrollfire.min.js"></script>
 
     <?php
 }
 
-function generateArrayLine(GeneObject $line) : void { ?>
-    <tr>
+function generateArrayLine(GeneObject $line, int $position, int $interval) : void { 
+    if ($position % $interval === 0 && $position !== 0) {
+        echo  '<tr class="segment" data-next-segment="' . floor($position / $interval) . '"></tr>';
+    } 
+    ?>
+    <tr class="segment-container" data-segment="<?= floor($position / $interval) ?>" 
+        <?= ($position >= $interval ? 'style="display: none;"' : '') ?>>
         <td>    
             <label>
                 <input type="checkbox" class="filled-in 
