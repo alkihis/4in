@@ -349,62 +349,70 @@ function refreshBlastGapMatrix(mode) {
     }
     */
 
-    var PAM30 = {
-        "1": [8, 10, [13, 14]],
-        "2": [5, 7, [14]] 
-    };
-    var PAM250 = {
-        "1": [17, 21],
-        "2": [13, 17],
-        "3": [11, 15]
-    };
-    var BLOSUM45 = {
-        "1": [16, 19],
-        "2": [12, 16],
-        "3": [10, 13]
-    };
-    var BLOSUM62 = {
-        "1": [9, 13],
-        "2": [6, 11] 
-    };
-    var BLOSUM80 = {
-        "1": [9, 11],
-        "2": [6, 9, [13]] 
-    };
-    var BLOSUM90 = {
-        "1": [9, 11],
-        "2": [6, 9] 
-    };
-
     var sel = null;
     switch (mode) {
         case 'PAM30':
-            sel = PAM30;
+            sel = {
+                "1": [8, 10, [13, 14]],
+                "2": [5, 7, [14]],
+                "default": [9, 1]  
+            };
+            break;
+        case 'PAM70':
+            sel = {
+                "1": [9, 11],
+                "2": [6, 8, [11]],
+                "default": [10, 1]  
+            };
             break;
         case 'PAM250':
-            sel = PAM250;
+            sel = {
+                "1": [17, 21],
+                "2": [13, 17],
+                "3": [11, 15],
+                "default": [14, 2] 
+            };
             break;
         case 'BLOSUM45':
-            sel = BLOSUM45;
+            sel = {
+                "1": [16, 19],
+                "2": [12, 16],
+                "3": [10, 13],
+                "default": [15, 2] 
+            };
             break;
         case 'BLOSUM62':
-            sel = BLOSUM62;
+            sel = {
+                "1": [9, 13],
+                "2": [6, 11],
+                "default": [11, 1] 
+            };
             break;
         case 'BLOSUM80':
-            sel = BLOSUM80;
+            sel = {
+                "1": [9, 11],
+                "2": [6, 9, [13]],
+                "default": [10, 1]  
+            };
             break;
         default:
-            sel = BLOSUM90;
+            sel = {
+                "1": [9, 11],
+                "2": [6, 9],
+                "default": [10, 1] 
+            };
     }
 
     var element = document.getElementById('gapvalues');
     var str = '';
 
     for (var key in sel) {
+        if (key === "default") continue;
+
         for (var i = sel[key][0]; i <= sel[key][1]; i++) {
             str += "<option value='" + i + "/" + key + "' ";
 
-            if (Number(key) === 1 && i === 11) { // Si gap 11/1 : on select (valeur par défaut basique)
+            if (Number(key) === sel.default[1] && i === sel.default[0]) { // Si gap est la valeur par défaut : on séléectionne
                 str += 'selected';
             }
             

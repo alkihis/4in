@@ -119,7 +119,7 @@ function constructParameters(string $program) : string {
         if (isset($_POST['matrix']) && is_string($_POST['matrix'])) {
             $mat = $_POST['matrix'];
 
-            if (in_array($mat, ['PAM30', 'PAM70', 'PAM250', 'BLOSUM45', 'BLOSUM50', 'BLOSUM62', 'BLOSUM80', 'BLOSUM90'])) {
+            if (in_array($mat, ['PAM30', 'PAM70', 'PAM250', 'BLOSUM45', 'BLOSUM62', 'BLOSUM80', 'BLOSUM90'])) {
                 $p .= " -matrix $mat ";
             }
         }

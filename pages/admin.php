@@ -218,6 +218,15 @@ function adminView(Controller $c) : void {
                 <a><span class="white-text email"></span></a>
             </div>
         </li>
+
+        <?php if (SITE_MAINTENANCE) { ?>
+            <li>
+                <a class="waves-effect red-text" href="/admin">
+                    Website is in maintenance mode
+                </a>
+            </li>
+            <li><div class="divider"></div></li>
+        <?php } ?>
         
         <li><a class="subheader">Import</a></li>
         <li <?= ($d['active_page'] === 'import_genome' ? 'class="active"' : '') ?>>
@@ -246,14 +255,14 @@ function adminView(Controller $c) : void {
         <li><div class="divider"></div></li>
 
         <li><a class="subheader">Manage</a></li>
-        <li <?= ($d['active_page'] === 'reset' ? 'class="active"' : '') ?>>
-            <a class="waves-effect" href="/admin/reset_link"><i class="material-icons">refresh</i>Reset link status</a>
-        </li>
         <li <?= ($d['active_page'] === 'db_species' ? 'class="active"' : '') ?>>
             <a class="waves-effect" href="/admin/db_species"><i class="material-icons">bug_report</i>Database species</a>
         </li>
         <li <?= ($d['active_page'] === 'species' ? 'class="active"' : '') ?>>
             <a class="waves-effect" href="/admin/species"><i class="material-icons">lock</i>Protected species</a>
+        </li>
+        <li <?= ($d['active_page'] === 'reset' ? 'class="active"' : '') ?>>
+            <a class="waves-effect" href="/admin/reset_link"><i class="material-icons">refresh</i>Reset link status</a>
         </li>
         <li <?= ($d['active_page'] === 'password' ? 'class="active"' : '') ?>>
             <a class="waves-effect" href="/admin/password"><i class="material-icons">vpn_key</i>Change password</a>

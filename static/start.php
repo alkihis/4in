@@ -22,10 +22,18 @@ function homeView(Controller $c) : void { ?>
         <div class="section">
             <!--   Icon Section   -->
             <div class="row">
+                <?php if (SITE_MAINTENANCE)  { ?>
+                    <p class='flow-text red-text'>
+                        Website is in maintenance mode. Access 
+                        <a href="/admin" class="black-text underline-hover">administration console</a> to change status.
+                    </p>
+                <?php } ?>
+
                 <p class='flow-text text-justify head-main-title'>
                     Developed in order to facilitate access to the data harvested from different species of insects,
                     this database is centered around the genetic study of the rice weevil, also called Sitophilus oryzae.
                 </p>
+                
                 <div class="col s12 m5">
                     <div class="icon-block">
                         <h2 class="center">

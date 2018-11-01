@@ -1,13 +1,13 @@
 <?php
 
-function addLine($mode, $sequence, $current_id) : void {
+function addLine($mode, $sequence, $current_id, $stmt_request) : void {
     global $sql;
 
+    $like_id = "$current_id%";
+
     // On traite la séquence en cours
-    $q = mysqli_query($sql, "UPDATE GeneAssociations 
-        SET $mode='$sequence' 
-        WHERE gene_id LIKE '$current_id%'
-        OR alias='$current_id';");
+    $stmt_request->bind_param("sss", $sequence, $like_id, $current_id);
+    $stmt_request->execute();
 }
 
 /**
@@ -21,6 +21,20 @@ function loadFasta(string $filename, $mode = 'adn') : void {
     global $sql; // importe la connexion SQL chargée avec l'appel à connectBD()
 
     $mode = ($mode === 'adn' ? 'sequence_adn' : 'sequence_pro');
+
+    if ($mode === 'sequence_adn') {
+        $stmt_request = mysqli_prepare($sql, "UPDATE GeneAssociations 
+        SET sequence_adn=? 
+        WHERE gene_id LIKE ?
+        OR alias=?");
+    }
+    else {
+        $stmt_request = mysqli_prepare($sql, "UPDATE GeneAssociations 
+        SET sequence_pro=?
+        WHERE gene_id LIKE ?
+        OR alias=?");
+    }
+    
 
     $h = fopen($filename, 'r'); // ouvre le fichier $filename en lecture, et stocke le pointeur-sur-fichier dans $h
 
@@ -36,11 +50,11 @@ function loadFasta(string $filename, $mode = 'adn') : void {
 
         if ($line[0] === '>') { // Commentaire, on récupère l'ID concerné
             if ($sequence !== '' && $current_id !== '') {
-                addLine($mode, $sequence, $current_id);
+                addLine($mode, $sequence, $current_id, $stmt_request);
             }
 
             $e = substr($line, 1);
-            $current_id = mysqli_real_escape_string($sql, trim(preg_split("/\s/", trim($e))[0]));
+            $current_id = trim(preg_split("/\s/", trim($e))[0]);
 
             // ----------
             // TO DISABLE
@@ -50,12 +64,12 @@ function loadFasta(string $filename, $mode = 'adn') : void {
                 $id_avec_tiret_de_merde = explode("|", trim($current_id))[2];
                 $id_sans_tiret_de_merde = explode("-", trim($id_avec_tiret_de_merde))[0];
 
-                $current_id = mysqli_real_escape_string($sql, trim($id_sans_tiret_de_merde));
+                $current_id = trim($id_sans_tiret_de_merde);
             }
             else if (strpos($current_id, 'BGIBMG') !== false) {
                 $id_sans_tiret_de_merde = explode("-", trim($current_id))[0];
 
-                $current_id = mysqli_real_escape_string($sql, trim($id_sans_tiret_de_merde));
+                $current_id = trim($id_sans_tiret_de_merde);
             }
 
             // ----------
@@ -70,7 +84,7 @@ function loadFasta(string $filename, $mode = 'adn') : void {
     }
 
     if ($sequence !== '' && $current_id !== '') {
-        addLine($mode, $sequence, $current_id);
+        addLine($mode, $sequence, $current_id, $stmt_request);
     }
 
     fclose($h);

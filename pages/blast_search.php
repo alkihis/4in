@@ -158,6 +158,7 @@ function searchBlastView(Controller $c) : void { ?>
                                     <select disabled class="blast-select not-for-n" name="matrix" id="matrix"
                                         onchange="refreshBlastGapMatrix(this.value)">
                                         <option value="PAM30">PAM30</option>
+                                        <option value="PAM70">PAM70</option>
                                         <option value="PAM250">PAM250</option>
                                         <option value="BLOSUM45">BLOSUM45</option>
                                         <option value="BLOSUM62" selected>BLOSUM62</option>

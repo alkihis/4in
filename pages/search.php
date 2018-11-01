@@ -868,13 +868,12 @@ function generateArrayLine(GeneObject $line, int $position, int $interval) : voi
         <td><?= $line->getSpecie() ?></td>
         <td>
             <?php 
-            if (getLinkForId($line->getID(), $line->getSpecie(), $line->getAlias()) && $line->hasLink()) {
-                echo '<a href="' . getLinkForId($line->getID(), $line->getSpecie(), $line->getAlias()) . 
-                    '" target="_blank" title="View in external database">
-                        <i class="material-icons link-external-search">launch</i>
-                    </a>';
-            }
-            ?>
+            $gene_link = getLinkForId($line->getID(), $line->getSpecie(), $line->getAlias()) && $line->hasLink();
+            if ($gene_link) { ?>
+                <a href="<?= $gene_link ?>" target="_blank" title="View in external database">
+                    <i class="material-icons link-external-search">launch</i>
+                </a>
+            <?php } ?>
         </td>
     </tr>
 
