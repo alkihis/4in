@@ -23,7 +23,7 @@ function geneControl(array $args) : Controller {
     // Recherche de l'identifiant dans la base de données
     $id = mysqli_real_escape_string($sql, $args[0]);
 
-    $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.sequence_adn, a.sequence_pro, a.linkable, a.alias,
+    $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.sequence_adn, a.sequence_pro, a.linkable, a.alias, a.addi,
         (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
          FROM Pathways p 
          WHERE g.id = p.id) as pathways,
@@ -143,10 +143,14 @@ function geneView(Controller $c) : void {
 
                 if (!empty($data['gene']->getPathways())) {
                     echo "<h4>Pathway</h4>";
-                    foreach ($data['gene']->getPathways() as $element) {
-                        echo $element . "<br>";
-                    }
+                    echo implode('<br>', $data['gene']->getPathways()) . '<br>';
                 }
+
+                if ($data['gene']->getAdditionalInfos()) {
+                    echo "<h4>Miscellaneous informations</h4>";
+                    echo ucfirst($data['gene']->getAdditionalInfos());
+                }
+                
                 ?>
             </div>
 
@@ -162,9 +166,11 @@ function geneView(Controller $c) : void {
                         $first = false;
                     else
                         echo ", ";
-                    echo "<span class='specie underline-hover blue-text text-darken-3 pointer' data-genes='" . 
-                        implode(',', $data['orthologues'][$specie]) . 
-                    "' onclick='loadOrthologuesModal(this)'>$specie</span>";
+
+                    $text_specie = ($specie === $data['gene']->getSpecie() ? "$specie (self)" : $specie);
+                    echo "<span class='specie underline-hover blue-text text-darken-3 pointer' data-specie='$specie' 
+                    data-genes='" . implode(',', $data['orthologues'][$specie]) . 
+                    "' onclick='loadOrthologuesModal(this)'>$text_specie</span>";
                 }
             }
 
@@ -201,7 +207,7 @@ function geneView(Controller $c) : void {
             if ($data['gene']->getSeqADN()) {
                 echo '<div class="divider divider-header-margin divider-color"></div>';
 
-                echo '<h4>ADN Sequence</h4>';
+                echo '<h4>DNA Sequence</h4>';
                 echo '<pre class="break-word">' . $data['gene']->getSeqADN() . '</pre>';
             }
 

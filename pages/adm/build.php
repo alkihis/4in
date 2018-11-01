@@ -89,6 +89,23 @@ function buildGenomeView(array $data) : void { ?>
                             <label>File to use</label>
                         </div>
 
+                        <div class="row col s12">
+                            <p>
+                                <label>
+                                    <input type="checkbox" id="first_line_is_text" 
+                                        onchange="(this.checked ? true : $('#read_from_first').prop('checked', false)); $('#read_from_first').prop('disabled', !this.checked);" />
+                                    <span>First line contains colomn name</span>
+                                </label>
+                            </p>
+
+                            <p>
+                                <label>
+                                    <input type="checkbox" id="read_from_first" disabled />
+                                    <span>Read specie name from first line</span>
+                                </label>
+                            </p>
+                        </div>
+                        
                         <a href="#!" id="go_db" class="btn-flat btn-perso green-text darken-1 right">
                             Build database
                         </a>
@@ -97,7 +114,11 @@ function buildGenomeView(array $data) : void { ?>
                         <script>
                             var btn = document.getElementById('go_db');
                             btn.onclick = function () {
-                                buildGenomeDbModal(document.getElementById('construct').value);
+                                buildGenomeDbModal(
+                                    document.getElementById('construct').value,
+                                    document.getElementById('first_line_is_text').checked,
+                                    document.getElementById('read_from_first').checked
+                                );
                             };
                         </script>
                     <?php } ?>

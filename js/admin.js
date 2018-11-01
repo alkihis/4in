@@ -140,7 +140,7 @@ async function launchMakeBlast(success, total) {
     </div>`;
 }
 
-async function launchDatabaseBuild(file, species) {
+async function launchDatabaseBuild(file, species, trim_first, read_first) {
     var modal = document.getElementById('modal-admin');
 
     // Obligatoire pour conserver les attributs
@@ -164,20 +164,35 @@ async function launchDatabaseBuild(file, species) {
         
     </div>`;
 
+    var ok = true;
+    var spec_text = "";
+
     await request({
         url: '/api/tools/database_creator.php',
         method: 'POST',
-        body: 'file=' +  encodeURIComponent(file) + '&empty=true&species=' + encodeURIComponent(species.join(','))
-    }).catch(function (e) {
+        body: 'file=' +  encodeURIComponent(file) + '&empty=true&species=' + 
+            encodeURIComponent(species.join(',')) + '&trim_first=' + trim_first + '&read_first=' + read_first
+    }).then(function (data) {
+        var json = JSON.parse(data);
 
+        for (var specie in json) {
+            spec_text += String(json[specie].count) + " genes from " + specie + " (" + (json[specie].name === null ? 
+                    "<span class='red-text'>No acronym is set. (Check spelling)</span>" : json[specie].name) + ")";
+
+            spec_text += "<br>";
+        }
+    }).catch(function (e) {
+        ok = false;
     });
 
     // Affiche un message signalant la fin
     modal.innerHTML = `<div class="modal-content">
         <h4>Import complete</h4>
         <p>
-            Database has been successfully builded.
+            ${ok ? "Database has been successfully builded." : 
+                "<span class='red-text'>An error occured during database creation.</span>"}
         </p>
+        ${ok ? "<h5>Imported genes and species</h5><p>" + spec_text + "</p>" : ''}
     </div>
     <div class="modal-footer">
         <a href="#!" class="modal-close red-text btn-flat">Close</a>
@@ -245,62 +260,84 @@ async function launchMapBuild(files) {
     </div>`;
 }
 
-function buildGenomeDbModal(file) {
+function buildGenomeDbModal(file, trim_first, read_first) {
     var modal = document.getElementById('modal-admin');
 
     var species = document.getElementById('collection-build').innerHTML;
 
+    var text = '';
+
+    if (read_first) {
+        text = `First line of the file will be used to define specie name.<br>
+        Be sure that file's specie names are correctly written (case-sensitive).<br><br>
+        Please note that order of first colomns (Name, family...) will NOT be defined by reading the first line and must
+        respect the following order : Name, Role, Pathway, Fullname, Family, SubFamily.<br>
+        Species must be defined after this colomns.`;
+    }
+    else {
+        text = `Check if the order of species is correct. 
+        If a specie is missing or is not meant to be present, 
+        please enter/delete it using the "manage database species" utility.<br>
+        Please be aware that if too many species are present, the build may fail.
+        ${(trim_first ? '<br>First line of the file will be ignored.' : '')}`;
+    }
     var str = `<div class="modal-content">
         <h4>Build genome database</h4>
         <p>
-            Check if the order of species is correct. 
-            If a specie is missing or is not meant to be present, 
-            please enter/delete it using the "manage database species" utility.<br>
-            Please be aware that if too many species are present, the build may fail.
+            <span class="underline">
+                All previous database genes and sequences will be cleared and replaced by choosen file</span>.<br><br>
+            ${text}
         </p>
 
-        <div class="modal-draggable" id="species-draggable">
+        ${!read_first ? `<div class="modal-draggable" id="species-draggable">
             ${species}
-        </div>
+        </div>`: ''}
     </div>
     <div class="modal-footer">
         <a href="#!" class="modal-close red-text btn-flat btn-perso left">Close</a>
-        <a href="#!" class="btn-flat orange-text btn-perso left" id="reset-spec">Reset species</a>
+        ${!read_first ? `<a href="#!" class="btn-flat orange-text btn-perso left" id="reset-spec">Reset species</a>`: ''}
 
         <a href="#!" id="next-step-build" class="green-text btn-flat btn-perso right">Build database</a>
     </div>`;
 
     modal.innerHTML = str;
 
-    document.getElementById('reset-spec').onclick = function () {
-        document.getElementById('species-draggable').innerHTML = species;
-        // Initialisation de sortable.js
-        var el = document.querySelector('.modal-content ul');
-        Sortable.create(el);
+    var reset = document.getElementById('reset-spec');
+
+    if (reset) {
+        document.getElementById('reset-spec').onclick = function () {
+            document.getElementById('species-draggable').innerHTML = species;
+            // Initialisation de sortable.js
+            var el = document.querySelector('.modal-content ul');
+            Sortable.create(el);
+        }
     }
 
     document.getElementById('next-step-build').onclick = function () {
         // Récupération de l'ordre
         var ord_sp = [];
-        // Récupération de l'élément contenant les espèces
-        var contenant = document.querySelector('.modal-content ul');
 
-        if (contenant.hasChildNodes()) {
-            var childs = contenant.childNodes;
+        if (!read_first) {
+            // Récupération de l'élément contenant les espèces
+            var contenant = document.querySelector('.modal-content ul');
 
-            for (var i = 0; i < childs.length; i++) {
-                // Vérification que l'élément est bien un DocumentElement (les espaces vides de texte entre les balises
-                // sont des childNode) et vérifie que la classe spéciale "collection-specie" est bien présente
-                // pour assurer qu'on manipule forcément notre élément voulu
-                // Si c'est le cas, on l'ajoute au tableau. Vu que les éléments sont parcourus dans
-                // l'ordre des enfants (du premier au dernier), le tableau sera trié
-                if (childs[i].classList && childs[i].classList.contains('collection-specie')) {
-                    ord_sp.push(childs[i].dataset.specie);
+            if (contenant.hasChildNodes()) {
+                var childs = contenant.childNodes;
+
+                for (var i = 0; i < childs.length; i++) {
+                    // Vérification que l'élément est bien un DocumentElement (les espaces vides de texte entre les balises
+                    // sont des childNode) et vérifie que la classe spéciale "collection-specie" est bien présente
+                    // pour assurer qu'on manipule forcément notre élément voulu
+                    // Si c'est le cas, on l'ajoute au tableau. Vu que les éléments sont parcourus dans
+                    // l'ordre des enfants (du premier au dernier), le tableau sera trié
+                    if (childs[i].classList && childs[i].classList.contains('collection-specie')) {
+                        ord_sp.push(childs[i].dataset.specie);
+                    }
                 }
             }
-
-            launchDatabaseBuild(file, ord_sp);
         }
+
+        launchDatabaseBuild(file, ord_sp, trim_first, read_first);
     }
 
     // Obligatoire pour conserver les attributs
@@ -313,7 +350,8 @@ function buildGenomeDbModal(file) {
 
     // Initialisation de sortable.js
     var el = document.querySelector('.modal-content ul');
-    var sortable = Sortable.create(el);
+    if (el)
+        Sortable.create(el);
 }
 
 function deleteSpecie(specie) {

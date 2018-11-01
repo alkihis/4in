@@ -24,6 +24,7 @@ CREATE TABLE GeneAssociations (
     specie VARCHAR(50),
     linkable BOOLEAN DEFAULT NULL,
     alias VARCHAR(50) DEFAULT NULL,
+    addi TEXT DEFAULT NULL,
     PRIMARY KEY (gene_id),
     FOREIGN KEY (id) REFERENCES Gene(id) ON DELETE CASCADE
 );

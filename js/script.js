@@ -233,7 +233,7 @@ function loadOrthologuesModal(element) {
     var list_of_h = element.dataset.genes.split(',');
     var str = '';
 
-    str = '<div class="modal-content"><h4>Homologous genes in ' + element.innerText + '</h4>';
+    str = '<div class="modal-content"><h4>Homologous genes in ' + element.dataset.specie + '</h4>';
 
     if (list_of_h.length) {
         str += "<h6>" + list_of_h.length + " homologous gene" + (list_of_h.length > 1 ? 's' : '') + "</h6>";
@@ -253,7 +253,7 @@ function loadOrthologuesModal(element) {
         str += '</p>';
     }
     else {
-        str += '<p>' + element.innerText + ' has no homologous of this gene. </p>';
+        str += '<p>' + element.dataset.specie + ' has no homologous of this gene. </p>';
     }
 
     str += '</div>';

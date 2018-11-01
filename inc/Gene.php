@@ -23,6 +23,7 @@ class Gene {
 
     protected $has_link;
     protected $alias;
+    protected $addi;
 
     public function __construct(array $row) {
         $this->id = $row['gene_id'];
@@ -44,6 +45,7 @@ class Gene {
         $this->has_link = $row['linkable'] === '0' ? false : true;
 
         $this->alias = $row['alias'] ?? null;
+        $this->addi = $row['addi'] ?? null;
     }
 
     // Implémentations des méthodes de l'interface
@@ -97,6 +99,8 @@ class Gene {
     public function getAlias() : ?string {
         return $this->alias;
     }
+
+    public function getAdditionalInfos() : ?string {
+        return $this->addi;
+    }
 }
-
-

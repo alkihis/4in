@@ -28,7 +28,7 @@ function insertPathway(int $id_gene, string $pathway, $stmt_request) : void {
  * @param string $filename : Chemin du fichier .tsv à parser
  * @return void
  */
-function explodeFile(string $filename, bool $trim_first_line = false) : void { 
+function explodeFile(string $filename, bool $trim_first_line = false, bool $read_from_first = false) : void { 
     global $sql; // importe la connexion SQL chargée avec l'appel à connectBD()
     global $assocs_species;
 
@@ -38,8 +38,8 @@ function explodeFile(string $filename, bool $trim_first_line = false) : void {
         (?, ?, ?, ?, ?)");
 
     $stmt_assoc = mysqli_prepare($sql, "INSERT INTO GeneAssociations
-        (id, gene_id, sequence_adn, sequence_pro, specie)
-        VALUES (?, ?, NULL, NULL, ?)");
+        (id, gene_id, sequence_adn, sequence_pro, specie, addi)
+        VALUES (?, ?, NULL, NULL, ?, ?)");
 
     $stmt_pathway = mysqli_prepare($sql, "INSERT INTO Pathways 
         (id, pathway)
@@ -59,6 +59,26 @@ function explodeFile(string $filename, bool $trim_first_line = false) : void {
 
         if ($trim_first_line) { // Si la première ligne doit être passée
             $trim_first_line = false;
+
+            if ($read_from_first) {
+                // Lecture des espèces
+                $line = rtrim($line, "\r\n");
+
+                $arr = explode("\t", $line); // sépare la ligne en fonction d'une tabulation et la met dans un tableau
+                // Les espèces commencent à la 6ème case
+
+                $assocs_species = [];
+                for ($i = 6; $i < count($arr); $i++) {
+                    $cur_specie = trim($arr[$i]);
+                    if (empty($cur_specie)) { // Si la case de texte est vide, on arrête là
+                        break;
+                    }
+
+                    $assocs_species[] = $cur_specie;
+                }
+
+                $number_of_species = count($assocs_species);
+            }
             continue;
         }
 
@@ -121,7 +141,9 @@ function explodeFile(string $filename, bool $trim_first_line = false) : void {
             $found_ids = [];
             $parenthese_pile = 0;
             $current_id = "";
+            $additionnal = "";
             $should_read = false;
+            $should_read_info = false;
             for ($j = 0; $j < strlen($arr[$i]); $j++) {
                 $char = $arr[$i][$j];
 
@@ -136,11 +158,22 @@ function explodeFile(string $filename, bool $trim_first_line = false) : void {
                 else if ($char === ')') {
                     if ($parenthese_pile === 1) {
                         // Si il n'y avait qu'une parenthèse ouverte, c'est le moment
-                        // de stocker l'ID enregistré
-                        if (trim($current_id)) {
-                            $found_ids[] = trim($current_id);
-                            $current_id = "";
+                        // de stocker l'ID enregistré et les informations additionnelles si il y en a
+                        $current_id = trim($current_id);
+
+                        if (!empty($current_id)) {
+                            $additionnal = trim($additionnal, ", \t\n\r\0\x0B");
+                            if (empty($additionnal)) {
+                                $additionnal = null;
+                            }
+                            // Stocke les données
+                            $found_ids[] = [
+                                'id' => $current_id, 
+                                'info' => $additionnal
+                            ];
+                            $current_id = $additionnal = "";
                         }
+                        $should_read_info = false;
                     }
 
                     $parenthese_pile--;
@@ -150,16 +183,23 @@ function explodeFile(string $filename, bool $trim_first_line = false) : void {
                 }
                 // Si on rencontre une virgule, on interrompt la lecture si elle l'était
                 else if ($char === ',') {
-                    $should_read = false;
+                    if ($should_read) {
+                        $should_read = false;
+                        $should_read_info = true;
+                    }
                 }
                 // Si on doit lire, on ajoute le caractère dans la chaîne tampon
                 else if ($should_read) {
                     $current_id .= $char;
                 }
+                
+                if ($should_read_info && !$should_read) {
+                    $additionnal .= $char;
+                }
             }
 
             foreach ($found_ids as $id_f) {
-                $stmt_assoc->bind_param("iss", $id_insert, $id_f, $assocs_species[$i - 6]);
+                $stmt_assoc->bind_param("isss", $id_insert, $id_f['id'], $assocs_species[$i - 6], $id_f['info']);
 
                 /* execute query */
                 $stmt_assoc->execute();
@@ -208,6 +248,9 @@ if (isUserLogged()) {
 
         $assocs_species = explode(',', $_POST['species']);
 
+        $trim_first = isset($_POST['trim_first']) && $_POST['trim_first'] === 'true';
+        $read_first = isset($_POST['read_first']) && $_POST['read_first'] === 'true';
+
         $file = $_POST['file'];
 
         $empty = (isset($_POST['empty']) && $_POST['empty'] === 'true');
@@ -220,9 +263,24 @@ if (isUserLogged()) {
             if ($empty)
                 emptyTables();
 
-            explodeFile($path, false);
-        }
+            explodeFile($path, $trim_first, $read_first);
 
+            // Après ça, renvoie un JSON contenant les espèces présentes dans la base et leur correspondance
+            // avec un acronyme
+            $species = [];
+            global $sql;
+            $q = mysqli_query($sql, "SELECT DISTINCT specie, COUNT(specie) c FROM GeneAssociations GROUP BY specie;");
+
+            while ($row = mysqli_fetch_assoc($q)) {            
+                $species[$row['specie']] = ['name' => SPECIE_TO_NAME[$row['specie']] ?? null, 'count' => $row['c']];
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode($species);
+        }
+        else {
+            header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+        }
     }
 }
 else {

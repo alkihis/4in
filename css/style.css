@@ -40,8 +40,22 @@ main {
     text-align: justify;
 }
 
-.logo-main {
-    margin-left: 20px;
+.logo-main img {
+    height: 48px; 
+    margin-top: 4px;
+}
+
+.logo-main .logo-text {
+    vertical-align: top;
+}
+
+@media only screen and (min-width: 993px) {
+    .logo-main {
+        margin-left: 20px;
+    }
+    .logo-main img {
+        margin-top: 8px;
+    }
 }
 
 .checkbox-search {
@@ -375,4 +389,12 @@ div.sort {
     width: -webkit-max-content;
     width: -moz-max-content;
     width: max-content;
+}
+
+.very-tiny-text {
+    font-size: .75rem;
+}
+
+.no-line-height {
+    line-height: 0%;
 }

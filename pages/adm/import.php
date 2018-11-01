@@ -6,6 +6,8 @@ function importGenomeController() : array {
 
     $files = glob($_SERVER['DOCUMENT_ROOT'] . '/assets/db/*.tsv');
 
+    $data['ord_species'] = getOrderedSpecies();
+
     // If delete request
     if (isset($_POST['delete']) && is_string($_POST['delete'])) {
         if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/assets/db/' . $_POST['delete']) 
@@ -131,13 +133,15 @@ function importGenomeView(array $data) : void { ?>
             <div class="card-panel light-blue darken-1 card-border white-text panel-settings">
                 <p>
                     Database file is a tabulated version of an Excel document.<br>
-                    Name of the colomns must <span class="underline">NOT</span> be present in the file, 
-                    or it will be imported as regular gene.<br><br>
-                    <span class="underline">Colomn order MUST be ordered as [one slash: one tabulation]</span> :<br>
-                    Name / Role / Pathway / Fullname / Family / SubFamily /
-                    Soryzae / Apisum / Agambiae / Amellifera / Bmori / Cfloridanus /
-                    Dmelanogaster / Gmorsitans / Msexta / Nvitripennis / Phumanus /
-                    Pxylostela / Tcastaneum / Sinvicta / Dponderosae / Aaegypti<br><br>
+                    Name of the colomns can be present in the file, 
+                    but you must specify it before launch build process.<br><br>
+                    <span class="underline">Colomn order should be ordered as [one slash: one tabulation]</span> :<br>
+                    Name / Role / Pathway / Fullname / Family / SubFamily / <?= implode(' / ', $data['ord_species']) ?> <br>
+                    <span class="very-tiny-text no-line-height">
+                        Species can be added and their order changed in "Database species" module.
+                        Order can be dynamically modified during build.
+                    </span>
+                    <br><br>
 
                     <span class="underline">Gene ID information by specie MUST be formatted as</span> :<br>
                     ({GENE_ID}, ...), ({OTHER_GENE_ID}, ...)
