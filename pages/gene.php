@@ -1,5 +1,5 @@
 <?php 
-require 'inc/GeneObject.php';
+require 'inc/Gene.php';
 
 // Page de gène : informations et liens
 
@@ -67,7 +67,7 @@ function geneControl(array $args) : Controller {
         }
     }
 
-    $gene = new GeneObject($row);
+    $gene = new Gene($row);
     $gene_id = mysqli_real_escape_string($sql, $row['gene_id']);
 
     $q = mysqli_query($sql, "SELECT specie, gene_id

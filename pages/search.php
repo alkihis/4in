@@ -1,6 +1,6 @@
 <?php
 
-require 'inc/GeneObject.php';
+require 'inc/Gene.php';
 
 function searchControl(array $args) : Controller {
     if (! isset($args[0])) {
@@ -188,7 +188,7 @@ function searchById() : array {
                     continue;
                 }
 
-                $r['results'][] = new GeneObject($row);
+                $r['results'][] = new Gene($row);
             } 
 
             if (count($r['results']) === 1) {
@@ -253,7 +253,7 @@ function searchByName() : array {
                     continue;
                 }
 
-                $r['results'][] = new GeneObject($row);
+                $r['results'][] = new Gene($row);
             } 
             // results empêche la génération du formulaire de recherche,
             // et affiche les résultats à la page
@@ -329,7 +329,7 @@ function searchPathway() : array {
                     continue;
                 }
 
-                $r['results'][] = new GeneObject($row);
+                $r['results'][] = new Gene($row);
             } 
             // results empêche la génération du formulaire de recherche,
             // et affiche les résultats à la page
@@ -498,7 +498,7 @@ function searchAdvanced() : array {
                         continue;
                     }
 
-                    $r['results'][] = new GeneObject($row);
+                    $r['results'][] = new Gene($row);
                 } 
                 // results empêche la génération du formulaire de recherche,
                 // et affiche les résultats à la page
@@ -844,7 +844,7 @@ function generateSearchResultsArray(array $res) : void {
     <?php
 }
 
-function generateArrayLine(GeneObject $line, int $position, int $interval) : void { 
+function generateArrayLine(Gene $line, int $position, int $interval) : void { 
     if ($position % $interval === 0 && $position !== 0) {
         echo  '<tr class="segment" data-next-segment="' . floor($position / $interval) . '"></tr>';
     } 
@@ -868,8 +868,8 @@ function generateArrayLine(GeneObject $line, int $position, int $interval) : voi
         <td><?= $line->getSpecie() ?></td>
         <td>
             <?php 
-            $gene_link = getLinkForId($line->getID(), $line->getSpecie(), $line->getAlias()) && $line->hasLink();
-            if ($gene_link) { ?>
+            $gene_link = getLinkForId($line->getID(), $line->getSpecie(), $line->getAlias());
+            if ($gene_link && $line->hasLink()) { ?>
                 <a href="<?= $gene_link ?>" target="_blank" title="View in external database">
                     <i class="material-icons link-external-search">launch</i>
                 </a>

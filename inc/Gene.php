@@ -1,10 +1,10 @@
 <?php
 
-// class GeneObject
+// class Gene
 // Contient la représentation d'un gène
 // Peut faire référence à UN gène
 
-class GeneObject {
+class Gene {
     protected $id;
     protected $specie;
 
