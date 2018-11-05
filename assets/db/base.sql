@@ -36,5 +36,6 @@ CREATE TABLE Users (
     username VARCHAR(50) NOT NULL,
     passw VARCHAR(255) NOT NULL,
     rights INT NOT NULL,
+    token TEXT DEFAULT NULL,
     PRIMARY KEY (id_user)
 );

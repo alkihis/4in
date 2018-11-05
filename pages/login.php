@@ -39,7 +39,7 @@ function loginControl($args) : Controller {
                 }
 
                 $row = mysqli_fetch_assoc($q);
-                logUser($row); // Enregistre l'utilisateur dans la session
+                logUser($row, (bool)($_POST['stay_logged'] ?? null)); // Enregistre l'utilisateur dans la session
 
                 $returns['successful_connection'] = true;
                 $returns['generate_form'] = false;
@@ -93,6 +93,14 @@ function loginView(Controller $c) : void {
                             <input class='validate' type='password' name='password' id='password' required>
                             <label for='password'>Password</label>
                         </div>
+
+                        <p class="col s12" style="margin-top: 10px;">
+                            <label>
+                                <input type="checkbox" class="filled-in" value="1" name="stay_logged" checked>
+                                <span>Stay logged</span>
+                            </label>
+                        </p>
+
                         <button class='btn-flat blue-text right'>Login</button>
                         <div class='clearb'></div>
                     </form>

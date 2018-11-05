@@ -87,17 +87,57 @@ function getRoute(string $page_name, array $page_arguments) : Controller {
     return $ctrl;
 }
 
-function logUser($mysql_user_object) : void {
+function tryLogIn() : void {
+    global $sql;
+
+    if (!isUserLogged() && isset($_COOKIE['token'])) {
+        $token = mysqli_real_escape_string($sql, $_COOKIE['token']);
+
+        $res = mysqli_query($sql, "SELECT * FROM Users WHERE token='$token';");
+
+        if ($res && mysqli_num_rows($res)) {
+            logUser(mysqli_fetch_assoc($res));
+        }
+    }
+}
+
+function logUser($mysql_user_object, bool $stay_logged = true) : void {
     global $sql;
 
     $_SESSION['user']['logged'] = true;
     $_SESSION['user']['id'] = (int)$mysql_user_object['id_user'];
     $_SESSION['user']['login'] = $mysql_user_object['username'];
     $_SESSION['user']['rights'] = (int)$mysql_user_object['rights'];
+
+    if ($stay_logged) {
+        // Enregistrement du cookie
+        if ($mysql_user_object['token']) {
+            $token = $mysql_user_object['token'];
+        }
+        else { 
+            // Tirage d'un token
+            do {
+                $pass = true;
+                $token = bin2hex(random_bytes(32));
+                // Vérif si il existe dans la BDD
+                $res = mysqli_query($sql, "SELECT * FROM Users WHERE token='$token';");
+                if(mysqli_num_rows($res) > 0){
+                    $pass = false;
+                }
+            } while (!$pass);
+
+            mysqli_query($sql, "UPDATE Users SET token='$token' WHERE id_user={$_SESSION['user']['id']}");
+        }
+
+        setcookie('token', $token, time() + 1600*24*3600, '/', null, false, true);
+    }
 }
 
 function unlogUser() : void {
     unset($_SESSION['user']);
+
+    // Supprime le cookie
+    setcookie('token', "", time() - 3600, '/', null, false, true);
 }
 
 function isUserLogged() : bool {
@@ -182,6 +222,8 @@ function checkSaveLinkValidity(string $specie, string $gene_id) : bool {
         curl_setopt($c, CURLOPT_URL, "http://bf2i200.insa-lyon.fr/$specie_code/NEW-IMAGE?type=GENE&object={$gene_id}");
 
         curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($c, CURLOPT_TIMEOUT, 6); // Attend 6 secondes maximum
+
         $return = curl_exec($c);
 
         $res = curl_getinfo($c);
@@ -189,6 +231,18 @@ function checkSaveLinkValidity(string $specie, string $gene_id) : bool {
 
         if ($res['http_code'] === 404) {
             mysqli_query($sql, "UPDATE GeneAssociations SET linkable=0 WHERE gene_id='$gene_id';");
+        }
+        else if ($res['http_code'] >= 400 && $res['http_code'] <= 505 && $res['http_code'] !== 403) {
+            // Code d'erreur client inconnu (erreur serveur)
+            // On enregistre rien
+
+            // 403: le lien existe mais est interdit (espèce protégé ?)
+            // On l'enregistre comme valide (plus bas)
+            $GLOBALS['logger']->write("Unable to check link. Error {$res['http_code']}.");
+        }
+        else if ($res['http_code'] === 0) {
+            // Code d'erreur timeout
+            $GLOBALS['logger']->write("Unable to check link : Timeout error.");
         }
         else {
             mysqli_query($sql, "UPDATE GeneAssociations SET linkable=1 WHERE gene_id='$gene_id';");

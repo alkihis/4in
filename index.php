@@ -10,6 +10,23 @@ require 'inc/cst.php';
 require 'inc/func.php';
 require 'inc/CustomExceptions.php';
 require 'inc/Controller.php';
+require 'inc/Logger.php';
+
+try {
+    $GLOBALS['logger'] = new Logger();
+} catch (Exception $e) {
+    file_put_contents(
+        $_SERVER['DOCUMENT_ROOT'] . '/assets/log/critical.log', 
+        "Unable to open log file." . $e->getMessage() . ". Log date: " . date('Y-m-d') . "\n", 
+        FILE_APPEND
+    );
+
+    // Empêche de lancer des fatal exceptions lors de l'appel de méthodes
+    $GLOBALS['logger'] = new stdClass();
+}
+
+// Tente de connecter si un cookie est set
+tryLogIn();
 
 // Obtention du Controller pour afficher la page
 // D'abord, on obtient l'url
@@ -17,13 +34,13 @@ $parms = getSelectedUrl();
 $maintenance_mode = false;
 
 // On vérifie si le site n'est pas en maintenance
-if ($parms[0] !== 'login' && !isUserLogged() && SITE_MAINTENANCE) {
+if (SITE_MAINTENANCE && $parms[0] !== 'login' && !isUserLogged()) {
     $parms[0] = "503";
     $maintenance_mode = true;
 }
 
 // On obtient le contrôleur
-$ctrl = getRoute($parms[0], $parms[1]);
+$ctrl = getRoute(...$parms);
 
 ?>
 
@@ -65,7 +82,6 @@ $ctrl = getRoute($parms[0], $parms[1]);
 
         <!--JavaScript at end of body for optimized loading-->
         <script type="text/javascript" src="/js/materialize.min.js"></script>
-        <script type="text/javascript" src="/js/jquery.sortElements.js"></script>
         <script type="text/javascript" src="/js/script.js"></script>
     </body>
 </html>

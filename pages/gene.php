@@ -105,14 +105,22 @@ function geneControl(array $args) : Controller {
  * @return void
  */
 function geneView(Controller $c) : void {
-    // TODO
     $data = $c->getData(); 
 
     $link = $data['link'];
 
     ?>
     <div class="container">
-        <h2> <?= $data['gene']->getID(); ?> </h2>
+        <h2 class="gene-id"> 
+        <?php 
+            echo $data['gene']->getID(); 
+            if ($data['gene']->getAlias()) {
+                echo " <span class='tiny-text lighter-text'>{$data['gene']->getAlias()}</span>";
+            }
+        ?> 
+        </h2>
+
+        <h4 class="light-text" style="margin-top: -10px;"><?= $data['gene']->getSpecie() ?></h4>
         <?php 
         if ($link) {
             echo "<h6><a href='$link' class='sub' target='_blank'>
@@ -123,38 +131,58 @@ function geneView(Controller $c) : void {
         <div class="section">
              <div class="light text-justify flow-text">
                 <?php 
-                if ($data['gene']->getName())
-                    echo "<h4>Name</h4>" . $data['gene']->getName();
+                $str = [];
 
-                if ($data['gene']->getFullname())
-                    echo "<h4>Fullname</h4>" . $data['gene']->getFullname() . "<br>";  
-                
-                echo '<h4>Specie</h4> ' . $data['gene']->getSpecie();
+                if ($data['gene']->getName()) {
+                    $str[] = "<h4>Name</h4><div class='gene-info'>" . $data['gene']->getName() . '</div>';
+                }
+
+                if ($data['gene']->getFullname()) {
+                    $str[] = "<h4>Fullname</h4><div class='gene-info'>" . $data['gene']->getFullname() . '</div>';  
+                }
 
                 if ($data['gene']->getFamily()) {
-                    echo "<h4> Family <br></h4>" . $data['gene']->getFamily();
+                    $str[] = "<h4>Family</h4><div class='gene-info'>" . $data['gene']->getFamily() . '</div>';
                 }
                 
-                if ($data['gene']->getSubFamily())
-                    echo "<h4> Sub-family<br></h4>" . $data['gene']->getSubFamily();
+                if ($data['gene']->getSubFamily()) {
+                    $str[] = "<h4>Sub-family</h4><div class='gene-info'>" . $data['gene']->getSubFamily() . '</div>';
+                }  
 
-                if ($data['gene']->getFunction())
-                    echo "<h4>Function</h4>" . $data['gene']->getFunction();
+                if ($data['gene']->getFunction()) {
+                    $str[] = "<h4>Function</h4><div class='gene-info'>" . $data['gene']->getFunction() . '</div>';
+                }
 
                 if (!empty($data['gene']->getPathways())) {
-                    echo "<h4>Pathway</h4>";
-                    echo implode('<br>', $data['gene']->getPathways()) . '<br>';
+                    $str[] = "<h4>Pathway</h4>" . implode('<br>', $data['gene']->getPathways()) . '<br>';
                 }
 
                 if ($data['gene']->getAdditionalInfos()) {
-                    echo "<h4>Miscellaneous informations</h4>";
-                    echo ucfirst($data['gene']->getAdditionalInfos());
+                    $str[] = "<h4>Miscellaneous informations</h4><div class='gene-info'>" . 
+                        ucfirst($data['gene']->getAdditionalInfos()) . '</div>';
+                }
+
+                foreach ($str as $key => $s) { 
+                    // Affichage des informations par ligne de deux éléments
+                    if ($key % 2 === 0) {
+                        echo '<div class="row no-margin-bottom">';
+                        if ($key === (count($str)-1)) { // Le dernier élément est un début de ligne : prend toute la ligne
+                            echo "<div class='col s12 no-pad'>$s</div></div>";
+                        }
+                        else {
+                            echo "<div class='col s12 l6 no-pad'><div style='width: 95%;'>$s</div></div>";
+                        }
+                    }
+                    else {
+                        echo "<div class='col s12 l6 no-pad'><div style='width: 95%;'>$s</div></div>";
+                        echo '</div>';
+                    }
                 }
                 
                 ?>
             </div>
 
-            <div class="divider divider-header-margin divider-color"></div>
+            <div class="divider divider-header-margin"></div>
 
             <?php
             if (count($data['orthologues'])) {

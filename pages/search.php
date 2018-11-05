@@ -290,7 +290,7 @@ function searchPathway() : array {
         $r['form_data']['select'][] = $row['pathway'];
     }
 
-    if (isset($_GET['pathway']) && is_string($_GET['pathway'])) {
+    if (isset($_GET['pathway']) && is_string($_GET['pathway']) && $_GET['pathway']) {
         $r['form_data']['pathway'] = htmlspecialchars($_GET['pathway'], ENT_QUOTES);
 
         // Recherche du nom dans la base de données
@@ -641,6 +641,8 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                     <div class='input-field col s12'>
                         <select id='pathway_select' 
                             name='pathway' onchange="document.getElementById('submit_form').submit();">
+                            <option disabled selected value=''>Choose pathway</option>
+
                             <?php 
                             // Génération des options du select en fonction des pathways dans la base de données
                             foreach ($form_data['select'] as $option) {
@@ -692,29 +694,29 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                             value='<?= $form_data['global'] ?? '' ?>'>
                         <label for='global'>Keywords</label>
                     </div>
-                    <div class="margin-adv-search-left" style="margin-bottom: 15px;">
-                        Search in
+                    <div style="margin-left: 10px; margin-bottom: 15px;">
+                        Search keyword in
                     </div>
-                    <div>
-                        <label class="margin-adv-search-left">
-                            <input type="checkbox" class="filled-in" <?= (isset($_GET['names']) ? 'checked' : '') ?> name="names" />
+                    <div class="row col s12">
+                        <label class="col s12 l2">
+                            <input type="checkbox" class="filled-in" <?= (isset($_GET['names']) ? 'checked' : '') ?> name="names">
                             <span>Names</span>
                         </label>
-                        <label class="margin-adv-search-left">
-                            <input type="checkbox" class="filled-in" <?= (isset($_GET['ids']) ? 'checked' : '') ?> name="ids" />
-                            <span>IDs</span>
+                        <label class="col s12 l2">
+                            <input type="checkbox" class="filled-in" <?= (isset($_GET['ids']) ? 'checked' : '') ?> name="ids">
+                            <span>Identifiers</span>
                         </label>
-                        <label class="margin-adv-search-left">
-                            <input type="checkbox" class="filled-in" <?= (isset($_GET['family']) ? 'checked' : '') ?> name="family" />
-                            <span>Family</span>
+                        <label class="col s12 l2">
+                            <input type="checkbox" class="filled-in" <?= (isset($_GET['family']) ? 'checked' : '') ?> name="family">
+                            <span>Families</span>
                         </label>
-                        <label class="margin-adv-search-left">
-                            <input type="checkbox" class="filled-in" <?= (isset($_GET['subfamily']) ? 'checked' : '') ?> name="subfamily" />
-                            <span>Subfamily</span>
+                        <label class="col s12 l3 xl2">
+                            <input type="checkbox" class="filled-in" <?= (isset($_GET['subfamily']) ? 'checked' : '') ?> name="subfamily">
+                            <span>Subfamilies</span>
                         </label>
-                        <label class="margin-adv-search-left">
-                            <input type="checkbox" class="filled-in" <?= (isset($_GET['functions']) ? 'checked' : '') ?> name="functions" />
-                            <span>Role</span>
+                        <label class="col s12 l2">
+                            <input type="checkbox" class="filled-in" <?= (isset($_GET['functions']) ? 'checked' : '') ?> name="functions">
+                            <span>Roles</span>
                         </label>
                     </div>
                 <?php } ?>
@@ -840,6 +842,7 @@ function generateSearchResultsArray(array $res) : void {
     </script>
 
     <script src="/js/jquery.scrollfire.min.js"></script>
+    <script src="/js/jquery.sortElements.js"></script>
 
     <?php
 }

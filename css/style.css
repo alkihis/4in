@@ -158,10 +158,6 @@ textarea.materialize-textarea:focus:not([readonly]) {
     background-color: rgba(0,0,0,0.1);
 }
 
-.divider-color {
-    background-color: grey;
-}
-
 .margin-adv-search-left {
     margin-left: 40px;
 }
@@ -341,6 +337,7 @@ textarea.materialize-textarea:focus:not([readonly])+label {
 i.material-icons {
     transition-duration: .3s;
 }
+
 .rotate {
     transform: rotate(180deg);
 }
@@ -389,6 +386,10 @@ div.sort {
     width: -webkit-max-content;
     width: -moz-max-content;
     width: max-content;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 .very-tiny-text {
@@ -397,4 +398,45 @@ div.sort {
 
 .no-line-height {
     line-height: 0%;
+}
+
+.collection-specie {
+    cursor: move !important; /* fallback if grab cursor is unsupported */
+    cursor: grab !important;
+    cursor: -moz-grab !important;
+    cursor: -webkit-grab !important;
+}
+
+.collection-specie:active {
+    cursor: grabbing !important;
+    cursor: -moz-grabbing !important;
+    cursor: -webkit-grabbing !important;
+}
+
+.linkable-card {
+    transition: .3s;
+}
+
+.linkable-card:hover {
+    cursor: pointer;
+    background-color: #ebeaf5 !important;
+}
+
+.row .col.no-pad {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.gene-id {
+    word-break: break-word;
+}
+
+.light-text {
+    font-weight: 200;
+}
+
+.gene-info {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    text-align: initial;
 }

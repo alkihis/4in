@@ -213,7 +213,7 @@ function adminView(Controller $c) : void {
                 <div class="background">
                     <img src="/img/ADN.jpg">
                 </div>
-                <a href="/admin"><img class="circle" src="/img/favicon.png"></a>
+                <a href="/admin"><img class="circle" src="/img/logo.png"></a>
                 <a href="/admin"><span class="white-text name">Admin Console</span></a>
                 <a><span class="white-text email"></span></a>
             </div>

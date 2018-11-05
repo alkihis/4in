@@ -1,7 +1,7 @@
 <nav>
     <div class="nav-wrapper light-blue darken-1">
         <a href="/home" class="brand-logo logo-main">
-            <img src='/img/favicon.png'>
+            <img src='/img/logo.png'>
             <span class="logo-text">NC3I</span>
         </a>
         <!-- <a href="/home" class="brand-logo logo-main">
