@@ -146,6 +146,7 @@ function adminView(Controller $c) : void {
         <div class="modal not-dismissible" id="modal-admin"></div>
     </div>
 
+    <div class="linear-nav-to-white tiny-top-float"></div>
     <div class="container">
         <div class="row no-margin-bottom">
             <div class="col s12">

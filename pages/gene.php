@@ -110,8 +110,9 @@ function geneView(Controller $c) : void {
     $link = $data['link'];
 
     ?>
+    <div class="linear-nav-to-white top-float"></div>
     <div class="container">
-        <h2 class="gene-id"> 
+        <h2 class="gene-id white-text"> 
         <?php 
             echo $data['gene']->getID(); 
             if ($data['gene']->getAlias()) {
@@ -207,19 +208,19 @@ function geneView(Controller $c) : void {
 
                 echo "<div class='download-results row col s12'>";
                     if ($data['gene']->getSeqADN()) { ?>
-                        <div class='col s6'>
+                        <div class='col s12 l6'>
                             <a href='#!' class='btn-flat btn-perso purple-text right' 
                                 onclick="downloadCheckedSequences('adn', true);">
-                                <i class='material-icons left'>file_download</i>FASTA sequence (DNA)
+                                <i class='material-icons left'>file_download</i>DNA Sequence
                             </a>
                         </div>
                     <?php }
 
                     if ($data['gene']->getSeqProt()) { ?>
-                        <div class='col s6'>
+                        <div class='col s12 l6'>
                             <a href='#!' class='btn-flat btn-perso blue-text left' 
                                 onclick="downloadCheckedSequences('pro', true);">
-                                <i class='material-icons left'>file_download</i>FASTA sequence (Protein)
+                                <i class='material-icons left'>file_download</i>Protein sequence
                             </a>
                         </div>
                     <?php } ?>

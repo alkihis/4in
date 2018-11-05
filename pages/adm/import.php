@@ -181,7 +181,8 @@ function importGenomeView(array $data) : void { ?>
 
             <div class="divider divider-margin"></div>
 
-            <a href="/api/tools/download_db.php" target="_blank" class="btn-flat green-text btn-perso center-block center">
+            <a href="/api/tools/download_db.php?with_title=1" target="_blank" 
+                class="btn-flat green-text btn-perso center-block center">
                 <i class="material-icons left">file_download</i>Download current website database in TSV format
             </a>
 

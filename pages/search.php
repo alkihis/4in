@@ -575,6 +575,7 @@ function showGlobalSearch(array $data) : void {
 
 ////// FONCTIONS GENERALES //////
 function generateSearchForm(string $mode = 'id', array $form_data = []) : void { ?>
+    <div class="linear-nav-to-white top-float"></div>
     <div class='container'>
     <div class='row section no-margin-bottom'>
     <div class='card col s12 card-border'>

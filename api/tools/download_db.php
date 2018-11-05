@@ -7,7 +7,7 @@
  * @param array $assocs_species : Ordre et nom des espèces
  * @return string
  */
-function downloadDatabase(array $assocs_species) : string { 
+function downloadDatabase(array $assocs_species, bool $with_titles = true) : string { 
     global $sql; // importe la connexion SQL chargée avec l'appel à connectBD()
 
     $genes = [];
@@ -16,7 +16,10 @@ function downloadDatabase(array $assocs_species) : string {
         (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR '|') FROM Pathways p WHERE g.id = p.id) as pathways 
         FROM Gene g");
 
-    $str = "";
+    if ($with_titles)
+        $str = "Name\tRole\tPathway\tFullname\tGeneFamily\tGeneSubFamily\t" . implode("\t", $assocs_species) . "\n";
+    else
+        $str = "";
 
     while ($row = mysqli_fetch_assoc($q)) {
         $current_gene = mysqli_query($sql, "SELECT * FROM GeneAssociations WHERE id={$row['id']}");
@@ -26,10 +29,10 @@ function downloadDatabase(array $assocs_species) : string {
         $ids_for_species = [];
         while ($row2 = mysqli_fetch_assoc($current_gene)) {
             $matched[] = $row2;
-            $ids_for_species[$row2['specie']][] = $row2['gene_id'];
+            $ids_for_species[$row2['specie']][] = ['id' => $row2['gene_id'], 'addi' => $row2['addi']];
         }
 
-        $str .= "{$row['gene_name']}\t{$row['func']}\t{$row['func']}\t{$row['pathways']}\t{$row['fullname']}\t";
+        $str .= "{$row['gene_name']}\t{$row['func']}\t{$row['pathways']}\t{$row['fullname']}\t";
         $str .= "{$row['family']}\t{$row['subfamily']}\t";
 
         // Écriture des espèces
@@ -54,10 +57,19 @@ function downloadDatabase(array $assocs_species) : string {
                         $str .= ", ";
                     }
 
-                    $str .= "($id_spe)";
+                    if ($id_spe['addi']) {
+                        $str .= "({$id_spe['id']}, {$id_spe['addi']})";
+                    }
+                    else {
+                        $str .= "({$id_spe['id']})";
+                    }
+                   
                 }
             }
         }
+
+        // Retour à la ligne
+        $str .= "\n";
     }
 
     return $str;
@@ -66,11 +78,13 @@ function downloadDatabase(array $assocs_species) : string {
 if (isUserLogged()) {
     session_write_close();
 
+    $title = (isset($_GET['with_title']) && $_GET['with_title'] === '1');
+
     $name = "database_" . date('Y_m_d'); 
 
     header("Content-Type: text/tab-separated-values");
     header("Content-disposition: attachment; filename=\"$name.tsv\""); 
-    echo downloadDatabase(ORDERED_SPECIES);
+    echo downloadDatabase(ORDERED_SPECIES, $title);
 }
 else {
     header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');

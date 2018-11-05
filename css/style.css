@@ -12,7 +12,30 @@
 
 .parallax-contact-page {
     height: 310px;
+}
+
+.parallax-contact-page {
     background: linear-gradient(#0099e8, #4d89de, #34abf0, #ffffff);
+}
+
+.linear-nav-to-white {
+    background: linear-gradient(#0099e8, #ffffff);
+}
+
+.top-float, .tiny-top-float {
+    top: 0;
+    width: 100%;
+    z-index: -1;
+}
+
+.top-float {
+    height: 180px;
+    margin-bottom: -190px;
+}
+
+.tiny-top-float {
+    height: 80px;
+    margin-bottom: -90px;
 }
 
 .clearb {
@@ -292,6 +315,7 @@ input[type=text]:not(.browser-default):focus:not([readonly])+label,
 input[type=password]:not(.browser-default):focus:not([readonly])+label, 
 input[type=number]:not(.browser-default):focus:not([readonly])+label, 
 input[type=search]:not(.browser-default):focus:not([readonly])+label, 
+input[type=email]:not(.browser-default):focus:not([readonly])+label, 
 textarea.materialize-textarea:focus:not([readonly])+label {
     color: #346bd3;
 }

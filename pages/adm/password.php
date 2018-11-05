@@ -44,7 +44,7 @@ function passwordController() : array {
 
 function passwordView(array $data) : void { ?>
     <div class="row">
-        <div class="card col s12 card-border">
+        <div class="card col s12 card-border" style='margin-top: 20px;'>
             <form method="post" action="#">
                 <div class="card-content">
                     <?php 

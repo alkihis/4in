@@ -40,11 +40,15 @@ function contactView(Controller $c) : void {
     <div class="container">
         <div class="section">
             <h2 class="header light-text" style="margin-top: 10px;">Send an e-mail</h2>
-            <form method="post">
+            <form method="post" action="#">
                 <div class="row">
                     <?php if (isset($data['no_mail'])) { ?>
                         <h6 class="red-text">This service is not ready yet. We're hard working on it, please be patient !</h6>
                     <?php } ?>
+                    <div class="input-field col s12">
+                        <input type='email' class="validate" id='your_mail' name="your_mail" required>
+                        <label for="your_mail">Your e-mail</label>
+                    </div>
                     <div class="input-field col s12">
                         <textarea class="materialize-textarea" placeholder="Write here your message" 
                         id="mail" name="mail" required><?= $data['mail'] ?? '' ?></textarea>

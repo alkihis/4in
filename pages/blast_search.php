@@ -5,6 +5,7 @@ function searchBlastControl(array $args) : Controller {
 }
 
 function searchBlastView(Controller $c) : void { ?>
+    <div class="linear-nav-to-white top-float"></div>
     <div class="container">
         <div class="row">
             <div class="col s12">

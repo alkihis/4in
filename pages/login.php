@@ -64,6 +64,7 @@ function loginView(Controller $c) : void {
     $data = $c->getData();
 
     ?>
+    <div class="linear-nav-to-white top-float"></div>
     <div class='container section'>
         <div class='row'>
             <div class='card card-border col s10 offset-s1'>
