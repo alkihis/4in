@@ -72,7 +72,8 @@ function searchBlastView(Controller $c) : void { ?>
                                 </div>
 
                                 <div class="input-field col s12">
-                                    <textarea id="query" name="query" class="materialize-textarea" style="resize: vertical;"></textarea>
+                                    <textarea id="query" name="query" class="materialize-textarea" 
+                                    style="resize: vertical;"></textarea>
                                     <label for="query">Query sequence</label>
                                 </div>
 

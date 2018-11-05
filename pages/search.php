@@ -671,14 +671,14 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                         echo '<h6 class="red-text">You haven\'t specified any parameter. You must filter with at least one parameter.</h6>';
                     } ?>
 
-                    <div class="input-field col s12">
+                    <div class="input-field col s12 path">
                         <select multiple data-mode="path" name="pathways[]" onchange="refreshSelect(this)">
                             <?php constructSelectAdv('path', $form_data['selected_p'] ?? [], $form_data) ?>
                         </select>
                         <label>Pathways</label>
                     </div>
 
-                    <div class="input-field col s12">
+                    <div class="input-field col s12 spec">
                         <select multiple data-mode="spec" name="species[]" onchange="refreshSelect(this)">
                             <?php constructSelectAdv('spec', $form_data['selected_s'] ?? [], $form_data) ?>
                         </select>

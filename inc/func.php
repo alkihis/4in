@@ -212,7 +212,7 @@ function renewProtectedSpecies(array $species) : void {
     file_put_contents(PARAMETERS_FILE, json_encode($p));
 }
 
-function checkSaveLinkValidity(string $specie, string $gene_id) : bool {
+function checkSaveLinkValidity(string $specie, string $gene_id, bool $is_alias = false) : bool {
     global $sql;
 
     if (array_key_exists($specie, SPECIE_TO_NAME) && !isProtectedSpecie($specie)) {
@@ -229,8 +229,10 @@ function checkSaveLinkValidity(string $specie, string $gene_id) : bool {
         $res = curl_getinfo($c);
         $gene_id = mysqli_real_escape_string($sql, $gene_id);
 
+        $colomn = ($is_alias ? 'alias' : 'gene_id');
+
         if ($res['http_code'] === 404) {
-            mysqli_query($sql, "UPDATE GeneAssociations SET linkable=0 WHERE gene_id='$gene_id';");
+            mysqli_query($sql, "UPDATE GeneAssociations SET linkable=0 WHERE $colomn='$gene_id';");
         }
         else if ($res['http_code'] >= 400 && $res['http_code'] <= 505 && $res['http_code'] !== 403) {
             // Code d'erreur client inconnu (erreur serveur)
@@ -245,7 +247,7 @@ function checkSaveLinkValidity(string $specie, string $gene_id) : bool {
             $GLOBALS['logger']->write("Unable to check link : Timeout error.");
         }
         else {
-            mysqli_query($sql, "UPDATE GeneAssociations SET linkable=1 WHERE gene_id='$gene_id';");
+            mysqli_query($sql, "UPDATE GeneAssociations SET linkable=1 WHERE $colomn='$gene_id';");
             return true;
         }
     }

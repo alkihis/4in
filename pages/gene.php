@@ -56,7 +56,7 @@ function geneControl(array $args) : Controller {
 
     if ($link && !isProtectedSpecie($row['specie'])) {
         if ($row['linkable'] === null) {
-            $is_ok = checkSaveLinkValidity($row['specie'], $row['alias'] ?? $row['gene_id']);
+            $is_ok = checkSaveLinkValidity($row['specie'], $row['alias'] ?? $row['gene_id'], (bool)($row['alias']));
 
             if (!$is_ok) {
                 $link = null;

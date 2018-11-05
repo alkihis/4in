@@ -309,8 +309,9 @@ function addSpecie(spec) {
 
 function refreshSelect(element) {
     var instance = M.FormSelect.getInstance(element);
-    var values = instance.getSelectedValues();
+    var values = $(element).val();
     var change = false;
+    var right_now = false;
 
     // element.value ne renvoie que le premier élément.... > passage par l'outil materialize
     if (values.indexOf('all') !== -1) {
@@ -320,18 +321,39 @@ function refreshSelect(element) {
             values.splice(values.indexOf('all'), 1);
 
             element.value = values;
+
             all_o.dataset.onlyOne = "";
+
+            // Tente de décocher visuellement "all", tombe sur le premier input (la checkbox) dans le premier li
+            document.querySelector('.' + element.dataset.mode +' .select-dropdown li input').checked = false;
+            // Tombe sur le premier input (la checkbox) dans le premier li
+
+            // Enlève la classe "selected"
+            document.querySelector('.' + element.dataset.mode +' .select-dropdown li').classList.remove('selected');
         }
         else { // Il y avait d'autres options cochées, on les enlève
             element.value = ['all'];
             all_o.dataset.onlyOne = "true";
+
+            right_now = true;
         }
 
         change = true;
     }
 
     if (change) {
-        M.FormSelect.init(element);
+        if (right_now) {
+            M.FormSelect.init(element);
+        }
+        else {
+            // Dit au form select de s'actualiser quand on le ferme
+            var $ele = $('.' + element.dataset.mode + ' .select-dropdown');
+            $ele.on('close', function() {
+                M.FormSelect.init(element);
+
+                $ele.unbind('close');
+            });
+        }
     }
 }
 

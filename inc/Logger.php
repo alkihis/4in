@@ -7,7 +7,7 @@ class Logger {
     protected $write_on_error;
 
     public function __construct(string $location = "assets/log/", bool $write_on_error = false) {
-        $this->location = $_SERVER['DOCUMENT_ROOT'] . '/' . $location . date('Y_m_d') . '.log';
+        $this->location = $_SERVER['DOCUMENT_ROOT'] . '/' . $location . date('Y_m') . '.log';
 
         $this->write_on_error = $write_on_error;
         $this->buffer = "";
@@ -24,6 +24,8 @@ class Logger {
     }
 
     public function write(string $message, bool $put_eol = true) : void {
+        $message = '[' . date('d H:i:s') . '] ' .  $message;
+
         if (!$this->write_on_error) {
             $this->buffer .= $message . ($put_eol ? "\n" : "");
         }

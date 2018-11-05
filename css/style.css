@@ -10,6 +10,11 @@
     height: 290px;
 }
 
+.parallax-contact-page {
+    height: 310px;
+    background: linear-gradient(#0099e8, #4d89de, #34abf0, #ffffff);
+}
+
 .clearb {
     clear: both;
 }
@@ -439,4 +444,13 @@ div.sort {
     white-space: pre-wrap;
     word-wrap: break-word;
     text-align: initial;
+}
+
+.header-main, .border-head {
+    text-shadow: 1px 0 0 #000, -1px 0 0 #000, 0 1px 0 #000, 0 -1px 0 #000;
+}
+
+textarea.materialize-textarea{
+    min-height: 5rem;
+    resize: vertical;
 }
