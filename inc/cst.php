@@ -26,6 +26,7 @@ const PAGES_REF = [
     'blast_search' => ['file' => 'pages/blast_search.php', 'view' => 'searchBlastView', 'controller' => 'searchBlastControl'],
     'help' => ['file' => 'pages/help.php', 'view' => 'helpView', 'controller' => 'helpControl'],
     'gene' => ['file' => 'pages/gene.php', 'view' => 'geneView', 'controller' => 'geneControl'],
+    'modify' => ['file' => 'pages/modify.php', 'view' => 'modifyView', 'controller' => 'modifyControl'],
     'admin' => ['file' => 'pages/admin.php', 'view' => 'adminView', 'controller' => 'adminControl'],
     'team' => ['file' => 'pages/team.php', 'view' => 'teamView', 'controller' => 'teamControl'],
     'contact' => ['file' => 'pages/contact.php', 'view' => 'contactView', 'controller' => 'contactControl'],

@@ -27,6 +27,7 @@ class Gene {
 
     public function __construct(array $row) {
         $this->id = $row['gene_id'];
+        $this->real_id = (int)($row['id'] ?? 0);
         $this->specie = $row['specie'];
         $this->name = $row['gene_name'];
         $this->fullname = $row['fullname'];
@@ -51,6 +52,10 @@ class Gene {
     // Implémentations des méthodes de l'interface
     public function getID() : string {
         return $this->id;
+    }
+
+    public function getRealID() : ?int {
+        return $this->real_id;
     }
 
     public function getSpecie() : string {

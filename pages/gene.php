@@ -128,6 +128,12 @@ function geneView(Controller $c) : void {
                 <i class='material-icons left'>launch</i>View full informations in external database
             </a></h6>";
         }
+
+        if (isUserLogged()) {
+            echo "<h6><a href='/modify/{$data['gene']->getID()}' class='sub green-text'>
+                <i class='material-icons left'>mode_edit</i>Edit
+            </a></h6>";
+        }
         ?>
         <div class="section">
              <div class="light text-justify flow-text">

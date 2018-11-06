@@ -12,9 +12,6 @@
 
 .parallax-contact-page {
     height: 310px;
-}
-
-.parallax-contact-page {
     background: linear-gradient(#0099e8, #4d89de, #34abf0, #ffffff);
 }
 
@@ -288,7 +285,9 @@ main.with-particle {
     display: block;
 }
 
-.btn-personal {
+.btn-personal, .fit-content {
+    width: -wekbit-fit-content;
+    width: -moz-fit-content;
     width: fit-content;
 }
 
