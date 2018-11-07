@@ -270,6 +270,18 @@ function importBlastView(array $data) : void { ?>
 
             <div class="divider divider-margin"></div>
 
+            <a href="/api/tools/download_fasta.php?mode=dna" target="_blank" 
+                class="col s6 btn-flat green-text btn-perso center-block center">
+                <i class="material-icons left">file_download</i>Download built DNA sequences
+            </a>
+            <a href="/api/tools/download_fasta.php?mode=pro" target="_blank" 
+                class="col s6 btn-flat purple-text btn-perso center-block center">
+                <i class="material-icons left">file_download</i>Download built proteic sequences
+            </a>
+            <div class="clearb"></div>
+
+            <div class="divider divider-margin"></div>
+
             <?php
             if (isset($data['file_not_found'])) {
                 echo '<h6 class="red-text">File not found</h6>';
