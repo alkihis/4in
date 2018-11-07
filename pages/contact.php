@@ -80,7 +80,7 @@ function contactView(Controller $c) : void {
                     <?php } ?>
                     <div class="input-field col s12">
                         <input type='email' class="validate" id='your_mail' name="your_mail" required>
-                        <label for="your_mail">Your e-mail adress</label>
+                        <label for="your_mail">Your e-mail address</label>
                     </div>
                     <div class="input-field col s12">
                         <textarea class="materialize-textarea" placeholder="Write here your message" 

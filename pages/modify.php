@@ -212,7 +212,7 @@ function modifyControl(array $args) : Controller {
         'infos' => $inf
     ];
 
-    return new Controller($arr, $gene->getID());
+    return new Controller($arr, 'Modify ' . $gene->getID());
 }
 
 function modifyView(Controller $c) : void {
@@ -308,18 +308,37 @@ function modifyView(Controller $c) : void {
                 his <?= count($data['orthologues'], COUNT_RECURSIVE) - count($data['orthologues']) ?> homologous
             </h6>
 
+            <div id="base_path" class="hide">
+                <?php 
+                foreach ($data['pathways'] as $s) {
+                    $selected = (count($data['gene']->getPathways()) && $data['gene']->getPathways()[0] === $s ? "selected" : "");
+                    echo "<option value='$s' $selected>$s</option>";
+                }
+                ?>
+                <option value="">__Enter new pathway__</option>
+            </div>
+
             <form method="post">
                 <input type="hidden" name="gene_form" value="1">
-                <div class="input-field col s12">
-                    <select name="pathway[]">
-                        <?php 
-                        foreach ($data['pathways'] as $s) {
-                            $selected = (count($data['gene']->getPathways()) && $data['gene']->getPathways()[0] === $s ? "selected" : "");
-                            echo "<option value='$s' $selected>$s</option>";
-                        }
-                        ?>
-                    </select>
-                    <label>Pathway</label>
+
+                <div id="s-container">
+                    <div class="s-wrapper">
+                        <div class="input-field col s11">
+                            <select class="s-pathway" name="pathway[]" onchange="detectChange(this)">
+                            </select>
+                            <label>Pathway</label>
+                        </div>
+                        <a href="#!" class="col s1" onclick="$(this.parentElement).remove()" style="margin-top: 20px;">
+                            <i class="material-icons red-text right-align">delete_forever</i>
+                        </a>
+                        <div class="clearb"></div>
+                    </div>
+                </div>
+                
+                <div class="col s12">
+                    <a href="#!" class="tiny-text" onclick="addPathway()">Add pathway</a>
+
+                    <div class="divider divider-margin"></div>
                 </div>
 
                 <div class="input-field col s12">
@@ -367,6 +386,12 @@ function modifyView(Controller $c) : void {
         </a>
 
         <div class="clearb" style="margin-bottom: 30px;"></div>
+
+        <script src="/js/modify.js"></script>
+
+        <div class="row no-margin-bottom">
+            <div id="modal_modif" class="modal"></div>
+        </div>
     </div>  
     <?php
 }
