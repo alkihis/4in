@@ -25,28 +25,71 @@ class Gene {
     protected $alias;
     protected $addi;
 
-    public function __construct(array $row) {
-        $this->id = $row['gene_id'];
-        $this->real_id = (int)($row['id'] ?? 0);
-        $this->specie = $row['specie'];
-        $this->name = $row['gene_name'];
-        $this->fullname = $row['fullname'];
-        $this->family = $row['family'];
-        $this->sub_family = $row['subfamily'];
-        $this->func = $row['func'];
+    public function __construct($row) {
+        if (is_string($row)) { // Construction à partir de l'ID
+            $row = self::loadAssocGene($row);
 
-        $this->sequence = $row['is_seq_adn'] ? true : false;
-        $this->sequence_pro = $row['is_seq_pro'] ? true : false;
+            if ($row === null) {
+                throw new RuntimeException("Unknown gene");
+            }
+        }
 
-        $this->full_adn = $row['sequence_adn'] ?? null;
-        $this->full_pro = $row['sequence_pro'] ?? null;
+        if (is_array($row)) {
+            $this->id = $row['gene_id'];
+            $this->real_id = (int)($row['id'] ?? 0);
+            $this->specie = $row['specie'];
+            $this->name = $row['gene_name'];
+            $this->fullname = $row['fullname'];
+            $this->family = $row['family'];
+            $this->sub_family = $row['subfamily'];
+            $this->func = $row['func'];
 
-        $this->pathways = explode(',', $row['pathways']);
+            $this->sequence = $row['is_seq_adn'] ? true : false;
+            $this->sequence_pro = $row['is_seq_pro'] ? true : false;
 
-        $this->has_link = $row['linkable'] === '0' ? false : true;
+            $this->full_adn = $row['sequence_adn'] ?? null;
+            $this->full_pro = $row['sequence_pro'] ?? null;
 
-        $this->alias = $row['alias'] ?? null;
-        $this->addi = $row['addi'] ?? null;
+            $this->pathways = explode(',', $row['pathways']);
+
+            $this->has_link = $row['linkable'] === '0' ? false : true;
+            $this->is_link = $row['linkable'] !== null;
+
+            $this->alias = $row['alias'] ?? null;
+            $this->addi = $row['addi'] ?? null;
+        }
+        else {
+            throw new NotImplementedException("Unknown type of argument passed to Gene constructor : " . gettype($row));
+        }
+    }
+
+    static protected function loadAssocGene(string $id) : ?array {
+        global $sql;
+
+        $id = mysqli_real_escape_string($sql, $id);
+
+        $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.sequence_adn, a.sequence_pro, a.linkable, a.alias, a.addi,
+            (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
+            FROM Pathways p 
+            WHERE g.id = p.id) as pathways,
+            (CASE 
+                WHEN a.sequence_adn IS NOT NULL THEN 1
+                ELSE 0
+            END) as is_seq_adn,
+            (CASE 
+                WHEN a.sequence_pro IS NOT NULL THEN 1
+                ELSE 0
+            END) as is_seq_pro
+        FROM GeneAssociations a 
+        JOIN Gene g ON a.id=g.id
+        WHERE a.gene_id = '$id'
+        GROUP BY a.gene_id, g.id");
+
+        if (mysqli_num_rows($q) === 0){
+            return null;
+        }
+
+        return mysqli_fetch_assoc($q);
     }
 
     // Implémentations des méthodes de l'interface
@@ -99,6 +142,10 @@ class Gene {
 
     public function hasLink() : bool {
         return $this->has_link;
+    }
+
+    public function isLinkDefined() : bool {
+        return $this->is_link;
     }
 
     public function getAlias() : ?string {

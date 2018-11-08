@@ -56,7 +56,7 @@ function searchBlastView(Controller $c) : void { ?>
                                     <div class="col s4">
                                         <label>
                                             <input name="program" value="meg" class="radio-blast" type="radio">
-                                            <span>megablastn</span>
+                                            <span>megablast</span>
                                         </label>
                                     </div>
                                 </div>

@@ -145,7 +145,7 @@ function isUserLogged() : bool {
 }
 
 function getLinkForId(string $id, string $specie, ?string $alias = null) : string {
-    if (!array_key_exists($specie, SPECIE_TO_NAME)) {
+    if (!specieExists($specie)) {
         return "";
     }
 
@@ -153,25 +153,21 @@ function getLinkForId(string $id, string $specie, ?string $alias = null) : strin
         $id = $alias;
     }
 
-    if ($specie === 'Soryzae') {
+    $acronym = getAcronymForSpecie($specie);
+
+    if (isProtectedSpecie($specie)) {
+        if ($specie === 'Msexta') {
+            $id = preg_replace("/Msex2\./", "Msex", $id);
+        }
+
         if (!isUserLogged()) {
             return '';
         }
 
-        return "http://bf2i200.insa-lyon.fr:3555/SITOR/NEW-IMAGE?type=GENE&object=" . $id;
-    }
-    
-    if ($specie === 'Msexta') {
-        if (!isUserLogged()) {
-            return '';
-        }
-        
-        $id = preg_replace("/Msex2\./", "Msex", $id);
-
-        return "http://bf2i200.insa-lyon.fr:3555/MANSE/NEW-IMAGE?type=GENE&object=" . $id;
+        return sprintf(LINK_PROTECTED_SPECIE, $acronym, $id);
     }
 
-    return "http://arthropodacyc.cycadsys.org/". SPECIE_TO_NAME[$specie] ."/NEW-IMAGE?type=GENE&object=" . $id;
+    return sprintf(LINK_GENERAL, $acronym, $id);
 }
 
 function isProtectedSpecie(string $specie) : bool {
@@ -180,6 +176,14 @@ function isProtectedSpecie(string $specie) : bool {
 
 function getSpecies() : array {
     return array_keys(SPECIE_TO_NAME);
+}
+
+function specieExists(string $specie) : bool {
+    return array_key_exists($specie, SPECIE_TO_NAME);
+}
+
+function getAcronymForSpecie(string $specie) : ?string {
+    return SPECIE_TO_NAME[$specie] ?? null;
 }
 
 function getOrderedSpecies() : array {
@@ -219,7 +223,7 @@ function checkSaveLinkValidity(string $specie, string $gene_id, bool $is_alias =
         $c = curl_init();
         $specie_code = SPECIE_TO_NAME[$specie];
 
-        curl_setopt($c, CURLOPT_URL, "http://bf2i200.insa-lyon.fr/$specie_code/NEW-IMAGE?type=GENE&object={$gene_id}");
+        curl_setopt($c, CURLOPT_URL, sprintf(LINK_CHECKER, $specie_code, $gene_id));
 
         curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($c, CURLOPT_TIMEOUT, 6); // Attend 6 secondes maximum
@@ -240,11 +244,11 @@ function checkSaveLinkValidity(string $specie, string $gene_id, bool $is_alias =
 
             // 403: le lien existe mais est interdit (espèce protégé ?)
             // On l'enregistre comme valide (plus bas)
-            $GLOBALS['logger']->write("Unable to check link. Error {$res['http_code']}.");
+            Logger::write("Unable to check link. Error {$res['http_code']}.");
         }
         else if ($res['http_code'] === 0) {
             // Code d'erreur timeout
-            $GLOBALS['logger']->write("Unable to check link : Timeout error.");
+            Logger::write("Unable to check link : Timeout error.");
         }
         else {
             mysqli_query($sql, "UPDATE GeneAssociations SET linkable=1 WHERE $colomn='$gene_id';");

@@ -1,7 +1,5 @@
 <?php
 
-require 'inc/Gene.php';
-
 function searchControl(array $args) : Controller {
     if (! isset($args[0])) {
         $data = searchHomePage();
@@ -97,7 +95,7 @@ function showSearchHome(array $data) : void {
                         </h5>
 
                         <p class="light text-justify">
-                            Check quickly the details of a specific gene with an ID search.
+                            Check quickly the details of a specific gene with an identifier search.
                         </p>
                     </div>
                 </div>
@@ -128,7 +126,7 @@ function showSearchHome(array $data) : void {
                         </h5>
 
                         <p class="light text-justify">
-                            Combine your search criterias using keywords to find names, IDs, families and genes roles
+                            Combine your criterias using keywords to search in names, IDs, families and genes roles
                             at the same time, filter your search with specific pathways and species to find 
                             what you want.
                         </p>

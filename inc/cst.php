@@ -10,14 +10,21 @@ const DEBUG_MODE = true;
 // Protected genomes : hide species defined in PROTECTED_SPECIES
 const LIMIT_GENOMES = true;
 
+// Link save : Checker for link validity
+// First %s goes for specie acronym, second one for gene_id (or alias, if exists)
+const LINK_CHECKER = "http://bf2i200.insa-lyon.fr/%s/NEW-IMAGE?type=GENE&object=%s";
+
+// Link to external database. First one is used for "Protected species", second is used for other species
+const LINK_PROTECTED_SPECIE = 'http://bf2i200.insa-lyon.fr:3555/%s/NEW-IMAGE?type=GENE&object=%s';
+// const LINK_GENERAL = 'http://arthropodacyc.cycadsys.org/%s/NEW-IMAGE?type=GENE&object=%s'; // < Does not work ?
+const LINK_GENERAL = 'http://bf2i200.insa-lyon.fr/%s/NEW-IMAGE?type=GENE&object=%s';
+
 // Définition des pages disponibles sur le site web
 // nom_page => [
 //      'file' => fichier_de_la_page, 
 //      'view' => fonction_generation_vue, 
 //      'controller' => fonction_generation_controller
 // ]
-// Intérêt, dans l'url, taper localhost/full_database accède à la page
-// pages/readFile.php
 const PAGES_REF = [
     'home' => ['file' => 'static/start.php', 'view' => 'homeView', 'controller' => 'homeControl'],
     'login' => ['file' => 'pages/login.php', 'view' => 'loginView', 'controller' => 'loginControl'],
@@ -27,6 +34,7 @@ const PAGES_REF = [
     'help' => ['file' => 'pages/help.php', 'view' => 'helpView', 'controller' => 'helpControl'],
     'gene' => ['file' => 'pages/gene.php', 'view' => 'geneView', 'controller' => 'geneControl'],
     'modify' => ['file' => 'pages/modify.php', 'view' => 'modifyView', 'controller' => 'modifyControl'],
+    'add_o' => ['file' => 'pages/add_ortho.php', 'view' => 'addOView', 'controller' => 'addOControl'],
     'admin' => ['file' => 'pages/admin.php', 'view' => 'adminView', 'controller' => 'adminControl'],
     'team' => ['file' => 'pages/team.php', 'view' => 'teamView', 'controller' => 'teamControl'],
     'contact' => ['file' => 'pages/contact.php', 'view' => 'contactView', 'controller' => 'contactControl'],

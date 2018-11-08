@@ -11,6 +11,7 @@ require 'inc/func.php';
 require 'inc/CustomExceptions.php';
 require 'inc/Controller.php';
 require 'inc/Logger.php';
+require 'inc/Gene.php';
 
 try {
     $GLOBALS['logger'] = new Logger();

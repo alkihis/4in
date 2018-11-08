@@ -9,6 +9,7 @@ require 'pages/adm/db_species.php';
 require 'pages/adm/alias.php';
 require 'pages/adm/fasta_converter.php';
 require 'pages/adm/fasta_checker.php';
+require 'pages/adm/stats.php';
 
 function adminControl(array $args) : Controller {
     if (!isUserLogged()) {
@@ -77,6 +78,9 @@ function adminControl(array $args) : Controller {
     }
     else if ($args[0] === 'checker') {
         $page = checkerController();
+    }
+    else if ($args[0] === 'stats') {
+        $page = statsController();
     }
     else {
         throw new PageNotFoundException();
@@ -200,6 +204,9 @@ function adminView(Controller $c) : void {
             case 'checker':
                 checkerView($d);
                 break;
+            case 'stats':
+                statsView($d);
+                break;
         }
         ?>
     </div>
@@ -272,6 +279,9 @@ function adminView(Controller $c) : void {
         <li><div class="divider"></div></li>
 
         <li><a class="subheader">Tools</a></li>
+        <li <?= ($d['active_page'] === 'stats' ? 'class="active"' : '') ?>>
+            <a class="waves-effect" href="/admin/stats"><i class="material-icons">show_chart</i>Statistics</a>
+        </li>
         <li <?= ($d['active_page'] === 'converter' ? 'class="active"' : '') ?>>
             <a class="waves-effect" href="/admin/converter"><i class="material-icons">redo</i>FASTA converter</a>
         </li>

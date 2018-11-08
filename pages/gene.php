@@ -1,5 +1,4 @@
 <?php 
-require 'inc/Gene.php';
 
 // Page de gène : informations et liens
 
@@ -21,58 +20,38 @@ function geneControl(array $args) : Controller {
 
     global $sql;
     // Recherche de l'identifiant dans la base de données
-    $id = mysqli_real_escape_string($sql, $args[0]);
-
-    $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.sequence_adn, a.sequence_pro, a.linkable, a.alias, a.addi,
-        (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
-         FROM Pathways p 
-         WHERE g.id = p.id) as pathways,
-         (CASE 
-            WHEN a.sequence_adn IS NOT NULL THEN 1
-            ELSE 0
-         END) as is_seq_adn,
-         (CASE 
-            WHEN a.sequence_pro IS NOT NULL THEN 1
-            ELSE 0
-         END) as is_seq_pro
-    FROM GeneAssociations a 
-    JOIN Gene g ON a.id=g.id
-    WHERE a.gene_id = '$id'
-    GROUP BY a.gene_id, g.id");
-
-    if (mysqli_num_rows($q) === 0){
+    try {
+        $gene = new Gene($args[0]);
+    } catch (RuntimeException $e) {
         throw new PageNotFoundException;
     }
 
-    $row = mysqli_fetch_assoc($q);
-
     // Le gene est récupéré : il faut vérifier si on a les droits de lecture (certaines
     // espèces ont des génomes non publiés) : Si l'utilisateur n'est pas connecté: affichage interdit
-    if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
-        throw new ForbiddenPageException();
+    if (LIMIT_GENOMES && isProtectedSpecie($gene->getSpecie()) && !isUserLogged()) {
+        throw new ForbiddenPageException;
     }
 
-    $link = getLinkForId($row['gene_id'], $row['specie'], $row['alias']);
+    $link = getLinkForId($gene->getID(), $gene->getSpecie(), $gene->getAlias());
 
-    if ($link && !isProtectedSpecie($row['specie'])) {
-        if ($row['linkable'] === null) {
-            $is_ok = checkSaveLinkValidity($row['specie'], $row['alias'] ?? $row['gene_id'], (bool)($row['alias']));
+    if ($link && !isProtectedSpecie($gene->getSpecie())) {
+        if (!$gene->isLinkDefined()) {
+            $is_ok = checkSaveLinkValidity($gene->getSpecie(), $gene->getAlias() ?? $gene->getID(), (bool)($gene->getAlias()));
 
             if (!$is_ok) {
                 $link = null;
             }
         }
-        else if ($row['linkable'] === "0") {
+        else if (!$gene->hasLink()) {
             $link = null;
         }
     }
 
-    $gene = new Gene($row);
-    $gene_id = mysqli_real_escape_string($sql, $row['gene_id']);
+    $gene_id = mysqli_real_escape_string($sql, $gene->getID());
 
     $q = mysqli_query($sql, "SELECT specie, gene_id
         FROM GeneAssociations
-        WHERE id='{$row['id']}'
+        WHERE id={$gene->getRealID()}
         AND gene_id != '$gene_id'
     ");
 
@@ -91,7 +70,7 @@ function geneControl(array $args) : Controller {
 
     $arr = ['gene' => $gene, 'orthologues' => $array, 'link' => $link];
 
-    return new Controller($arr, $id);
+    return new Controller($arr, $gene->getID());
 }
 
 /**
@@ -207,6 +186,11 @@ function geneView(Controller $c) : void {
                     data-genes='" . implode(',', $data['orthologues'][$specie]) . 
                     "' onclick='loadOrthologuesModal(this)'>$text_specie</span>";
                 }
+            }
+            if (isUserLogged()) {
+                echo "<h6><a href='/add_o/{$data['gene']->getID()}' class='sub blue-text'>
+                    <i class='material-icons left'>add</i>Add homologous
+                </a></h6>";
             }
 
             if ($data['gene']->getSeqADN() || $data['gene']->getSeqProt()) {

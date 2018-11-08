@@ -84,7 +84,7 @@ if (isUserLogged()) {
 
     header("Content-Type: text/tab-separated-values");
     header("Content-disposition: attachment; filename=\"$name.tsv\""); 
-    echo downloadDatabase(ORDERED_SPECIES, $title);
+    echo downloadDatabase(getOrderedSpecies(), $title);
 }
 else {
     header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
