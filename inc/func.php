@@ -272,4 +272,127 @@ function buildDatabaseFromScratch() : void {
     mysqli_multi_query($sql, $sql_file);
 }
 
+function constructNewOrthologue(int $original_sql_id, string $specie, string $id, string $addi, string $alias, string $sp, string $sn) : int {
+    global $sql;
+    // Vérif que l'ID existe pas déjà
+    $id = mysqli_real_escape_string($sql, trim($id));
+    
+    if (empty($id)) {
+        return 1;
+    }
+    $q = mysqli_query($sql, "SELECT gene_id FROM GeneAssociations WHERE gene_id='$id';");
+    if (mysqli_num_rows($q)) {
+        return 2;
+    }
+
+    $query = "INSERT INTO GeneAssociations (id, gene_id, sequence_adn, sequence_pro, specie, alias, addi) VALUES (";
+
+    // Ajout de l'ID SQL
+    $query .= "{$original_sql_id}, ";
+
+    // Ajout du gene_ID
+    $query .= "'$id', ";
+
+    // Ajout de la séquence ADN
+    $adn = mysqli_real_escape_string($sql, trim($sn));
+    if (!empty($adn)) {
+        $query .= "'$adn', ";
+    }
+    else {
+        $query .= "NULL, ";
+    }
+
+    // Ajout de la séquence Pro
+    $pro = mysqli_real_escape_string($sql, trim($sp));
+    if (!empty($pro)) {
+        $query .= "'$pro', ";
+    }
+    else {
+        $query .= "NULL, ";
+    }
+
+    // Ajout de l'espèce
+    $specie = mysqli_real_escape_string($sql, trim($specie));
+    if (empty($specie)) {
+        return 3;
+    }
+    else {
+        $query .= "'$specie', ";
+    }
+
+    // Ajout de l'alias
+    $a = mysqli_real_escape_string($sql, trim($alias));
+    if (!empty($a)) {
+        $query .= "'$a', ";
+    }
+    else {
+        $query .= "NULL, ";
+    }
+
+    // Ajout des infos en +
+    $a = mysqli_real_escape_string($sql, trim($addi));
+    if (!empty($a)) {
+        $query .= "'$a')";
+    }
+    else {
+        $query .= "NULL)";
+    }
+
+    $q = mysqli_query($sql, $query);
+
+    if ($q) {
+        return 0;
+    }
+    else {
+        return 4;
+    }
+}
+
+function constructNewGene(string $name, string $full, string $fam, string $subf, string $role, array $pathways) : int {
+    global $sql;
+
+    $query = "INSERT INTO Gene (func, gene_name, fullname, family, subfamily) VALUES (";
+
+    // Ajout de la fonction
+    $tmp = mysqli_real_escape_string($sql, trim($role));
+    $query .= "'$tmp', ";
+
+    // Ajout du nom
+    $tmp = mysqli_real_escape_string($sql, trim($name));
+    $query .= "'$tmp', ";
+
+    /// Ajout du fullnom
+    $tmp = mysqli_real_escape_string($sql, trim($full));
+    $query .= "'$tmp', ";
+
+    // Ajout de la famille
+    $tmp = mysqli_real_escape_string($sql, trim($fam));
+    $query .= "'$tmp', ";
+
+    // Ajout de la famille
+    $tmp = mysqli_real_escape_string($sql, trim($subf));
+    $query .= "'$tmp')";
+
+    $q = mysqli_query($sql, $query);
+
+    if ($q) {
+        $id = mysqli_insert_id($sql);
+
+        // Insertion des pathways
+        if ($id) {
+            foreach ($pathways as $p) {
+                $tmp = mysqli_real_escape_string($sql, trim($p));
+
+                if ($tmp) {
+                    mysqli_query($sql, "INSERT INTO Pathways (id, pathway) VALUES ($id, '$tmp')");
+                }
+            }
+
+            return $id;
+        }
+    }
+
+    return 0;
+}
+
 connectBD();

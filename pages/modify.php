@@ -68,6 +68,10 @@ function updateGeneByOrtho(Gene &$g, string $pathway, string $name, string $full
     $family = trim($family); $subfamily = trim($subfamily); $role = trim($role);
 
     $pathways = preg_split("/(\s+)?\|(\s+)?/", $pathway, -1, PREG_SPLIT_NO_EMPTY);
+    if (count($pathways) === 1 && $pathways[0] === "") {
+        $pathways = [];
+    }
+
     if ($pathways !== $g->getPathways()) {
         // Mise à jour des pathways
         // et suppression des anciens
@@ -154,7 +158,11 @@ function modifyControl(array $args) : Controller {
         updateGeneById($gene, $_POST['specie'], $_POST['adn_seq'], $_POST['pro_seq'], $_POST['addi'], $_POST['alias'], $linkable);
         $inf['updated_id'] = true;
     }
-    else if (isset($_POST['gene_form'], $_POST['pathway'], $_POST['name'], $_POST['fname'], $_POST['family'], $_POST['subfamily'], $_POST['role'])) {
+    else if (isset($_POST['gene_form'], $_POST['name'], $_POST['fname'], $_POST['family'], $_POST['subfamily'], $_POST['role'])) {
+        if (!isset($_POST['pathway'])) {
+            $_POST['pathway'] = [];
+        }
+        
         if (is_array($_POST['pathway'])) {
             // Pathway est un tableau, qui contient tous les pathways possibles
             $pa = implode('|', array_unique($_POST['pathway']));
@@ -294,12 +302,9 @@ function modifyView(Controller $c) : void {
                 </h6>
 
                 <div id="base_path" class="hide">
-                    <?php 
-                    foreach ($data['pathways'] as $s) {
-                        $selected = (count($data['gene']->getPathways()) && $data['gene']->getPathways()[0] === $s ? "selected" : "");
-                        echo "<option value='$s' $selected>$s</option>";
-                    }
-                    ?>
+                    <?php foreach ($data['pathways'] as $s) {
+                        echo "<option value='$s'>$s</option>";
+                    } ?>
                     <option value="">__Enter new pathway__</option>
                 </div>
 
@@ -307,17 +312,28 @@ function modifyView(Controller $c) : void {
                     <input type="hidden" name="gene_form" value="1">
 
                     <div id="s-container">
-                        <div class="s-wrapper">
-                            <div class="input-field col s11">
-                                <select class="s-pathway" name="pathway[]" onchange="detectChange(this)">
-                                </select>
-                                <label>Pathway</label>
+                        <?php foreach ($data['gene']->getPathways() as $p) { ?>
+                            <div class="s-wrapper">
+                                <div class="input-field col s11">
+                                    <select class="s-pathway" name="pathway[]" onchange="detectChange(this)">
+                                    <?php
+                                    // Initialise les pathways à générer
+                                    foreach ($data['pathways'] as $s) {
+                                        echo "<option value='$s' ".($p === $s ? "selected" : "").">$s</option>";
+                                    }
+                                    ?>
+                                    <option value="">__Enter new pathway__</option>
+                                    
+                                    ?>
+                                    </select>
+                                    <label>Pathway</label>
+                                </div>
+                                <a href="#!" class="col s1" onclick="removePathway(this.parentElement)" style="margin-top: 20px;">
+                                    <i class="material-icons red-text right-align">delete_forever</i>
+                                </a>
+                                <div class="clearb"></div>
                             </div>
-                            <a href="#!" class="col s1" onclick="removePathway(this.parentElement)" style="margin-top: 20px;">
-                                <i class="material-icons red-text right-align">delete_forever</i>
-                            </a>
-                            <div class="clearb"></div>
-                        </div>
+                        <?php } ?>
                     </div>
                     
                     <div class="col s12">
@@ -376,11 +392,11 @@ function modifyView(Controller $c) : void {
 
             <div class="clearb" style="margin-bottom: 30px;"></div>
 
-            <script src="/js/modify.js"></script>
-
             <div class="row no-margin-bottom">
                 <div id="modal_modif" class="modal"></div>
             </div>
+
+            <script src="/js/modify.js"></script>
         <?php } ?>
     </div>  
     <?php

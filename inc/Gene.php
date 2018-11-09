@@ -50,7 +50,13 @@ class Gene {
             $this->full_adn = $row['sequence_adn'] ?? null;
             $this->full_pro = $row['sequence_pro'] ?? null;
 
-            $this->pathways = explode(',', $row['pathways']);
+            $paths = explode(',', $row['pathways']);
+            if (count($paths) === 1 && $paths[0] === "") {
+                $this->pathways = [];
+            }
+            else {
+                $this->pathways = $paths;
+            }
 
             $this->has_link = $row['linkable'] === '0' ? false : true;
             $this->is_link = $row['linkable'] !== null;
@@ -84,6 +90,11 @@ class Gene {
         JOIN Gene g ON a.id=g.id
         WHERE a.gene_id = '$id'
         GROUP BY a.gene_id, g.id");
+
+        if (!$q) {
+            Logger::write("Unable to load gene using Gene::loadAssocGene : " . mysqli_errno($sql) . " / " . mysqli_error($sql));
+            return null;
+        }
 
         if (mysqli_num_rows($q) === 0){
             return null;

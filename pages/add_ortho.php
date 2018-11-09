@@ -1,83 +1,6 @@
 <?php 
 
 // Page d'ajout d'orthologue / homologue
-
-function constructNewOrthologue(Gene $original, string $specie, string $id, string $addi, string $alias, string $sp, string $sn) : int {
-    global $sql;
-    // Vérif que l'ID existe pas déjà
-    $id = mysqli_real_escape_string($sql, trim($id));
-    
-    if (empty($id)) {
-        return 1;
-    }
-    $q = mysqli_query($sql, "SELECT gene_id FROM GeneAssociations WHERE gene_id='$id';");
-    if (mysqli_num_rows($q)) {
-        return 2;
-    }
-
-    $query = "INSERT INTO GeneAssociations (id, gene_id, sequence_adn, sequence_pro, specie, alias, addi) VALUES (";
-
-    // Ajout de l'ID SQL
-    $query .= "{$original->getRealID()}, ";
-
-    // Ajout du gene_ID
-    $query .= "'$id', ";
-
-    // Ajout de la séquence ADN
-    $adn = mysqli_real_escape_string($sql, trim($sn));
-    if (!empty($adn)) {
-        $query .= "'$adn', ";
-    }
-    else {
-        $query .= "NULL, ";
-    }
-
-    // Ajout de la séquence Pro
-    $pro = mysqli_real_escape_string($sql, trim($sp));
-    if (!empty($pro)) {
-        $query .= "'$pro', ";
-    }
-    else {
-        $query .= "NULL, ";
-    }
-
-    // Ajout de l'espèce
-    $specie = mysqli_real_escape_string($sql, trim($specie));
-    if (empty($specie)) {
-        return 3;
-    }
-    else {
-        $query .= "'$specie', ";
-    }
-
-    // Ajout de l'alias
-    $a = mysqli_real_escape_string($sql, trim($alias));
-    if (!empty($a)) {
-        $query .= "'$a', ";
-    }
-    else {
-        $query .= "NULL, ";
-    }
-
-    // Ajout des infos en +
-    $a = mysqli_real_escape_string($sql, trim($addi));
-    if (!empty($a)) {
-        $query .= "'$a')";
-    }
-    else {
-        $query .= "NULL)";
-    }
-
-    $q = mysqli_query($sql, $query);
-
-    if ($q) {
-        return 0;
-    }
-    else {
-        return 4;
-    }
-}
-
 function addOControl(array $args) : Controller {
     if (!isset($args[0])){
         throw new PageNotFoundException;
@@ -99,7 +22,7 @@ function addOControl(array $args) : Controller {
 
     if (isset($_POST['specie'], $_POST['pro_seq'], $_POST['adn_seq'], $_POST['id_new'], $_POST['addi'], $_POST['alias'])) {
         $r = constructNewOrthologue(
-            $gene, 
+            $gene->getRealID(), 
             $_POST['specie'], 
             $_POST['id_new'], 
             $_POST['addi'], 

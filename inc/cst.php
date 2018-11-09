@@ -34,6 +34,7 @@ const PAGES_REF = [
     'help' => ['file' => 'pages/help.php', 'view' => 'helpView', 'controller' => 'helpControl'],
     'gene' => ['file' => 'pages/gene.php', 'view' => 'geneView', 'controller' => 'geneControl'],
     'modify' => ['file' => 'pages/modify.php', 'view' => 'modifyView', 'controller' => 'modifyControl'],
+    'add' => ['file' => 'pages/add.php', 'view' => 'addView', 'controller' => 'addControl'],
     'add_o' => ['file' => 'pages/add_ortho.php', 'view' => 'addOView', 'controller' => 'addOControl'],
     'admin' => ['file' => 'pages/admin.php', 'view' => 'adminView', 'controller' => 'adminControl'],
     'team' => ['file' => 'pages/team.php', 'view' => 'teamView', 'controller' => 'teamControl'],

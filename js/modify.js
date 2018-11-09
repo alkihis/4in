@@ -1,10 +1,6 @@
 var base_pathway = document.getElementById('base_path').innerHTML;
 
 $(function () {
-    $('.s-pathway').each(function() {
-        this.innerHTML = base_pathway;
-    });
-
     $('select.s-pathway').formSelect();
 
     $('.modal').modal();
@@ -39,6 +35,7 @@ function addPathway() {
 function detectChange(e) {
     if (e.value === "") {
         insertOption(e);
+        e.selectedIndex = 0;
     }
 }
 

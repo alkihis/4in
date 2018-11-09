@@ -15,6 +15,9 @@ require 'inc/Gene.php';
 
 try {
     $GLOBALS['logger'] = new Logger();
+
+    // Redirige les erreurs dans les fichiers de log
+    set_error_handler('Logger::errorHandler', E_ALL);
 } catch (Exception $e) {
     file_put_contents(
         $_SERVER['DOCUMENT_ROOT'] . '/assets/log/critical.log', 

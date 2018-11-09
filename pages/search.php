@@ -189,6 +189,8 @@ function searchById() : array {
                 $r['results'][] = new Gene($row);
             } 
 
+            $q->free();
+
             if (count($r['results']) === 1) {
                 // Si le nombre de résultat est de 1 (un seul ID),
                 // on redirige immédiatement vers la page de gène
@@ -255,6 +257,8 @@ function searchByName() : array {
             } 
             // results empêche la génération du formulaire de recherche,
             // et affiche les résultats à la page
+
+            $q->free();
         }
     }
 
@@ -331,6 +335,8 @@ function searchPathway() : array {
             } 
             // results empêche la génération du formulaire de recherche,
             // et affiche les résultats à la page
+
+            $q->free();
         }
     }
 
@@ -480,7 +486,7 @@ function searchAdvanced() : array {
             END) as is_seq_pro
             FROM GeneAssociations a 
             JOIN Gene g ON a.id=g.id
-            JOIN Pathways pa ON pa.id=g.id
+            LEFT JOIN Pathways pa ON pa.id=g.id
             WHERE $query
             GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie";
 
@@ -500,6 +506,8 @@ function searchAdvanced() : array {
                 } 
                 // results empêche la génération du formulaire de recherche,
                 // et affiche les résultats à la page
+
+                $q->free();
             }
             else {
                 $r['results'] = [];
@@ -753,9 +761,7 @@ function constructSelectAdv(string $mode, array $options, array $form_data) {
     }
 }
 
-function generateSearchResultsArray(array $res) : void {
-    ?>
-
+function generateSearchResultsArray(array $res) : void { ?>
     <div class='container'>
         <div class='row'>
             <div class='col s12'>
