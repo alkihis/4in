@@ -1,8 +1,8 @@
 <nav>
     <div class="nav-wrapper light-blue darken-1">
         <a href="/home" class="brand-logo logo-main">
-            <img src='/img/logo.png'>
-            <span class="logo-text">NC3I</span>
+            <img alt="Site logo" src='/img/logo.png'>
+            <span class="logo-text"><?= SITE_NAME ?></span>
         </a>
         <!-- <a href="/home" class="brand-logo logo-main">
             <i class="material-icons brand-logo">bug_report</i><span class="hide-on-med-and-down"><?= SITE_NAME ?></span>

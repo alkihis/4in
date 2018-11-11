@@ -4,7 +4,7 @@ const MYSQL_USER = 'projet';
 const MYSQL_PASSWORD = 'psw';
 const MYSQL_BASE = 'projet';
 
-const SITE_NAME = 'NC3I';
+const SITE_NAME = '4IN';
 const DEBUG_MODE = true;
 
 // Protected genomes : hide species defined in PROTECTED_SPECIES
@@ -12,12 +12,12 @@ const LIMIT_GENOMES = true;
 
 // Link save : Checker for link validity
 // First %s goes for specie acronym, second one for gene_id (or alias, if exists)
-const LINK_CHECKER = "http://bf2i200.insa-lyon.fr/%s/NEW-IMAGE?type=GENE&object=%s";
+const LINK_CHECKER = "http://bf2i200.insa-lyon.fr:4555/%s/NEW-IMAGE?type=GENE&object=%s";
 
 // Link to external database. First one is used for "Protected species", second is used for other species
 const LINK_PROTECTED_SPECIE = 'http://bf2i200.insa-lyon.fr:3555/%s/NEW-IMAGE?type=GENE&object=%s';
 // const LINK_GENERAL = 'http://arthropodacyc.cycadsys.org/%s/NEW-IMAGE?type=GENE&object=%s'; // < Does not work ?
-const LINK_GENERAL = 'http://bf2i200.insa-lyon.fr/%s/NEW-IMAGE?type=GENE&object=%s';
+const LINK_GENERAL = 'http://bf2i200.insa-lyon.fr:4555/%s/NEW-IMAGE?type=GENE&object=%s';
 
 // Définition des pages disponibles sur le site web
 // nom_page => [

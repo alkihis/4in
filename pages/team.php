@@ -15,7 +15,7 @@ function teamView(Controller $c) : void { ?>
                     <div class="card-panel linkable-card grey lighten-5 card-border">
                         <div class="row valign-wrapper no-margin-bottom">
                             <div class="col s2">
-                                <img src="/img/bf2i.jpg" class="circle responsive-img">
+                                <img alt="BF2i logo" src="/img/bf2i.jpg" class="circle responsive-img">
                             </div>
                             <div class="col s10">
                                 <span class="black-text">
@@ -32,7 +32,7 @@ function teamView(Controller $c) : void { ?>
                     <div class="card-panel linkable-card grey lighten-5 card-border">
                         <div class="row valign-wrapper no-margin-bottom">
                             <div class="col s2">
-                                <img src="/img/ucbl.png" class="circle responsive-img">
+                                <img alt="UCBL logo" src="/img/ucbl.png" class="circle responsive-img">
                             </div>
                             <div class="col s10">
                                 <span class="black-text">

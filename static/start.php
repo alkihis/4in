@@ -18,7 +18,7 @@ function homeView(Controller $c) : void {
         <div class="section no-pad-bot">
             <div class="container">
                 <br><br>
-                <h1 class="header center header-main white-text">NC Insect Innate Immunity DB</h1>
+                <h1 class="header center header-main white-text">INSA Innate Immunity of INsect</h1>
                 <div class="row center">
                     <p class='flow-text head-main-title white-text border-head'>
                         A database for insects' innate immunity genes. 
@@ -28,7 +28,7 @@ function homeView(Controller $c) : void {
 
             </div>
         </div>
-        <div class="parallax" style='z-index: -1;'><img src="/img/home/<?= $image ?>" style='filter: brightness(0.80)'></div>
+        <div class="parallax" style='z-index: -1;'><img alt="Home image" src="/img/home/<?= $image ?>" style='filter: brightness(0.80)'></div>
     </div>
 
     <div class="container">
@@ -96,7 +96,7 @@ function homeView(Controller $c) : void {
     </div>
 
     <div class="parallax-container parallax-home-page">
-        <div class="parallax"><img src="/img/ADN.jpg"></div>
+        <div class="parallax"><img alt="DNA image" src="/img/ADN.jpg"></div>
     </div>
 
     <?php 

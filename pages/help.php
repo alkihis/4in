@@ -54,7 +54,7 @@ function helpView(Controller $c) : void {
 function showHelpHome(array $data) : void {
     ?>
     <div class="parallax-container parallax-search-page">
-        <div class="parallax"><img src="/img/mol_search.jpg"></div>
+        <div class="parallax"><img alt="Search home image" src="/img/mol_search.jpg"></div>
     </div>
 
     <div class="container">
@@ -126,7 +126,7 @@ function showHelpHome(array $data) : void {
 function showHelpDB(array $data) : void {
     ?>
     <div class="parallax-container parallax-search-page">
-        <div class="parallax"><img src="/img/database.jpg"></div>
+        <div class="parallax"><img alt="Help home image" src="/img/database.jpg"></div>
     </div>
 
     <div class="container">

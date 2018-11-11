@@ -58,7 +58,7 @@ function searchHomePage() : array {
 function showSearchHome(array $data) : void {
     ?>
     <div class="parallax-container parallax-search-page">
-        <div class="parallax"><img src="/img/mol_search.jpg"></div>
+        <div class="parallax"><img alt="Home image" src="/img/mol_search.jpg"></div>
     </div>
 
     <div class="container">
@@ -823,7 +823,7 @@ function generateSearchResultsArray(array $res) : void { ?>
             <div class='card-content'>
                 <a href='#!' class='btn-flat btn-perso green-text left' onclick="checkAllPageBoxes(true)">Check all</a>
                 <a href='#!' class='btn-flat btn-perso red-text left' onclick="checkAllPageBoxes(false)">Uncheck all</a>
-                <div href='#!' data-count="0" id='total_count_popup' class='grey-text dl-count-popup darken-4 left'>
+                <div data-count="0" id='total_count_popup' class='grey-text dl-count-popup darken-4 left'>
                     <span id='count_popup'>0</span> selected
                 </div>
                 <a href='#!' class='btn-flat btn-perso blue-text right' onclick="downloadCheckedSequences('pro')">

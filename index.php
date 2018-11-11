@@ -46,15 +46,13 @@ if (SITE_MAINTENANCE && $parms[0] !== 'login' && !isUserLogged()) {
 // On obtient le contrôleur
 $ctrl = getRoute(...$parms);
 
-?>
-
-<!DOCTYPE html>
-<html>
+?><!DOCTYPE html>
+<html lang="en">
     <head>
         <!--Import Google Icon Font-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <!--Import materialize.css-->
-        <link type="text/css" rel="stylesheet" href="/css/materialize.min.css"  media="screen,projection"/>
+        <link type="text/css" rel="stylesheet" href="/css/materialize.min.css"  media="screen"/>
         <link type="text/css" rel="stylesheet" href="/css/style.css"/>
 
         <!--Let browser know website is optimized for mobile-->
@@ -63,7 +61,7 @@ $ctrl = getRoute(...$parms);
         <!-- favicon -->
         <link rel="icon" type="image/png" href="/img/favicon.png">
 
-        <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+        <script src="/js/jquery-3.3.1.min.js"></script>
 
         <title>
             <?= $ctrl->getTitle() ?? SITE_NAME ?>
@@ -85,7 +83,7 @@ $ctrl = getRoute(...$parms);
         <?php if (!$maintenance_mode) { require 'static/footer.php'; } // footer.php contient déjà <footer></footer> ?>
 
         <!--JavaScript at end of body for optimized loading-->
-        <script type="text/javascript" src="/js/materialize.min.js"></script>
-        <script type="text/javascript" src="/js/script.js"></script>
+        <script src="/js/materialize.min.js"></script>
+        <script src="/js/script.js"></script>
     </body>
 </html>
