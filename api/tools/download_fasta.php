@@ -4,7 +4,7 @@
  * downloadFasta
  * 
  * Renvoie une chaîne formatée en FASTA contenant toutes les séquences (DNA or Proteic) de la base
- * @param string $mode
+ * @param string $mode "dna"|"pro"
  * @return string
  */
 function downloadFasta(string $mode) : string { 

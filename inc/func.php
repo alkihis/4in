@@ -4,7 +4,7 @@ $sql = null;
 
 function connectBD() : void {
     global $sql;
-    $sql = mysqli_connect('localhost', MYSQL_USER, MYSQL_PASSWORD, MYSQL_BASE);
+    $sql = mysqli_connect(MYSQL_SERVER, MYSQL_USER, MYSQL_PASSWORD, MYSQL_BASE);
     if (mysqli_connect_errno()) {
         printf("Échec de la connexion : %s\n", mysqli_connect_error());
     }
@@ -12,6 +12,12 @@ function connectBD() : void {
         mysqli_query($sql, 'SET NAMES UTF8mb4'); // requete pour avoir les noms en UTF8mb4
 }
 
+/**
+ * Return user's selected URL and page arguments
+ * return [string $user_url, array<string> $user_arguments]
+ *
+ * @return array
+ */
 function getSelectedUrl() : array {
     $page_name = 'home';
     $page_arguments = [];
@@ -42,6 +48,13 @@ function getSelectedUrl() : array {
     return [$page_name, $page_arguments];
 }
 
+/**
+ * Get Controller object from given route
+ *
+ * @param string $page_name
+ * @param array<string> $page_arguments
+ * @return Controller
+ */
 function getRoute(string $page_name, array $page_arguments) : Controller {
     // Get Controller object for asked page, Controller for home page if page undefined otherwise
 
@@ -54,7 +67,6 @@ function getRoute(string $page_name, array $page_arguments) : Controller {
 
     // Appelle la fonction servant à initialiser le Controller
     // et le stocke dans $ctrl 
-    // (on peut appeler des variables qui sont une chaîne de caractères nommant une fonction en PHP, cherchez pas)
     try {
         // Tente d'inclure l'original. Si il lance une exception, elle est attrapée en dessous et appelle
         // les pages adéquates
@@ -74,6 +86,7 @@ function getRoute(string $page_name, array $page_arguments) : Controller {
     }
 
     if ($error) {
+        // Si il y a une erreur, on charge la page d'erreur adaptée
         $code = $error[0]; $ex = $error[1];
         require_once PAGES_REF[$code]['file'];
         $ctrl = (PAGES_REF[$code]['controller'])($ex);
@@ -87,12 +100,19 @@ function getRoute(string $page_name, array $page_arguments) : Controller {
     return $ctrl;
 }
 
+/**
+ * Tente de connecter l'utilisateur si le cookie de token est fourni (et qu'il n'est pas connecté)
+ *
+ * @return void
+ */
 function tryLogIn() : void {
     global $sql;
 
     if (!isUserLogged() && isset($_COOKIE['token'])) {
+        // échappe le token
         $token = mysqli_real_escape_string($sql, $_COOKIE['token']);
 
+        // demande à la base si un utilisateur existe avec ce token
         $res = mysqli_query($sql, "SELECT * FROM Users WHERE token='$token';");
 
         if ($res && mysqli_num_rows($res)) {
@@ -101,7 +121,15 @@ function tryLogIn() : void {
     }
 }
 
-function logUser($mysql_user_object, bool $stay_logged = true) : void {
+/**
+ * Connecte un utilisateur via le résultat de 
+ * $sql->query("SELECT * FROM Users WHERE xxx=xxx")->fetch_assoc()
+ *
+ * @param array $mysql_user_object
+ * @param boolean $stay_logged
+ * @return void
+ */
+function logUser(array $mysql_user_object, bool $stay_logged = true) : void {
     global $sql;
 
     $_SESSION['user']['logged'] = true;
@@ -129,10 +157,16 @@ function logUser($mysql_user_object, bool $stay_logged = true) : void {
             mysqli_query($sql, "UPDATE Users SET token='$token' WHERE id_user={$_SESSION['user']['id']}");
         }
 
+        // Enregistrement du cookie de token si demandé
         setcookie('token', $token, time() + 1600*24*3600, '/', null, false, true);
     }
 }
 
+/**
+ * Déconnecte l'utilisateur
+ *
+ * @return void
+ */
 function unlogUser() : void {
     unset($_SESSION['user']);
 
@@ -140,23 +174,46 @@ function unlogUser() : void {
     setcookie('token', "", time() - 3600, '/', null, false, true);
 }
 
+/**
+ * Teste si l'utilisateur est connecté
+ * > Il n'y a pas de gestion de niveau, un utilisateur connecté EST admin. <
+ *
+ * @return boolean
+ */
 function isUserLogged() : bool {
     return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'];
 }
 
+/**
+ * Récupère le lien associé à l'ID ou l'alias lié.
+ * Même si l'alias est passé, l'ID DOIT être passé (pas null).
+ * 
+ * Vérifie si l'utilisateur est autorisé à voir le lien de l'espèce en question.
+ * Renvoie un lien au format URI si existe et autorisé,
+ * renvoie une chaîne vide si lien inexistant (espèce non définie) ou non autorisée.
+ *
+ * @param string $id
+ * @param string $specie
+ * @param string|null $alias
+ * @return string
+ */
 function getLinkForId(string $id, string $specie, ?string $alias = null) : string {
+    // Si l'espèce n'existe pas, on renvoie une chaîne vide
     if (!specieExists($specie)) {
         return "";
     }
 
+    // Si l'alias est définie, on l'utilise à la place de l'ID
     if ($alias) {
         $id = $alias;
     }
 
+    // On obtient l'acronyme : nécessaire que l'espèce soit définie donc.
     $acronym = getAcronymForSpecie($specie);
 
+    // Si c'est une espèce protégée, on renvoie rien si l'utilisateur n'a pas les droits
     if (isProtectedSpecie($specie)) {
-        if ($specie === 'Msexta') {
+        if ($specie === 'Msexta') { // Cette espèce doit être gérée spécialement
             $id = preg_replace("/Msex2\./", "Msex", $id);
         }
 
@@ -170,37 +227,86 @@ function getLinkForId(string $id, string $specie, ?string $alias = null) : strin
     return sprintf(LINK_GENERAL, $acronym, $id);
 }
 
+/**
+ * Vrai si l'espèce $specie est protégée.
+ *
+ * @param string $specie
+ * @return boolean
+ */
 function isProtectedSpecie(string $specie) : bool {
     return array_key_exists($specie, PROTECTED_SPECIES);
 }
 
+/**
+ * Renvoie un tableau des espèces existantes
+ * Ce tableau est THÉORIQUE, il n'est PAS le reflet de la base SQL configurée.
+ *
+ * @return array
+ */
 function getSpecies() : array {
     return array_keys(SPECIE_TO_NAME);
 }
 
+/**
+ * Vrai si l'espèce $specie existe
+ *
+ * @param string $specie
+ * @return boolean
+ */
 function specieExists(string $specie) : bool {
     return array_key_exists($specie, SPECIE_TO_NAME);
 }
 
+/**
+ * Renvoie l'acronyme de l'espèce si il existe, null si l'espèce n'en a pas / n'existe pas
+ *
+ * @param string $specie
+ * @return string|null
+ */
 function getAcronymForSpecie(string $specie) : ?string {
     return SPECIE_TO_NAME[$specie] ?? null;
 }
 
+/**
+ * Renvoie le tableau d'espèces existantes dans l'ordre d'insertion voulue dans le fichier .tsv
+ *
+ * @return array
+ */
 function getOrderedSpecies() : array {
     return ORDERED_SPECIES;
 }
 
+/**
+ * Renvoie un tableau contenant toutes les espèces protégées
+ *
+ * @return array
+ */
 function getProtectedSpecies() : array {
     return array_keys(PROTECTED_SPECIES);
 }
 
-function saveMaintenanceStatus(bool $is_maintenance) : void {
+/**
+ * Modifie le status "maintenance" du site web
+ *
+ * @param boolean $is_on_maintenance
+ * @return void
+ */
+function saveMaintenanceStatus(bool $is_on_maintenance) : void {
     $p = SITE_PARAMETERS_ARRAY;
-    $p['accessible'] = !$is_maintenance;
+    $p['accessible'] = !$is_on_maintenance;
 
     file_put_contents(PARAMETERS_FILE, json_encode($p));
 }
 
+/**
+ * Sauvegarde les nouvelles espèces
+ * $specie_to_name DOIT être un tableau clé=>valeur avec clé = nom de l'espèce, valeur = acronyme de l'espèce
+ * $ordered représente un tableau indicé avec les espèces dans le bon ordre de lecture du fichier .tsv
+ *
+ * @param array $specie_to_name
+ * @param array $ordered
+ * @return void
+ */
 function saveSpecies(array $specie_to_name, array $ordered) : void {
     $p = SITE_PARAMETERS_ARRAY;
     $p['species'] = $specie_to_name;
@@ -209,6 +315,13 @@ function saveSpecies(array $specie_to_name, array $ordered) : void {
     file_put_contents(PARAMETERS_FILE, json_encode($p));
 }
 
+/**
+ * Sauvegarde les espèces protégées
+ * Le tableau DOIT être un tableau indicé
+ *
+ * @param array $species
+ * @return void
+ */
 function renewProtectedSpecies(array $species) : void {
     $p = SITE_PARAMETERS_ARRAY;
     $p['protected'] = $species;
@@ -216,6 +329,19 @@ function renewProtectedSpecies(array $species) : void {
     file_put_contents(PARAMETERS_FILE, json_encode($p));
 }
 
+/**
+ * Vérifie si un lien est valide (non-mort)
+ * $is_alias DOIT être true si jamais $gene_id contient l'alias et pas le gene_id.
+ * Attention : Vous DEVEZ passer l'alias si l'alias existe 
+ * (le paramètre $gene_id doit ressembler à *$alias ?? $gene_id*)
+ *
+ * Retourne vrai si le lien est valide.
+ * 
+ * @param string $specie
+ * @param string $gene_id
+ * @param boolean $is_alias
+ * @return boolean
+ */
 function checkSaveLinkValidity(string $specie, string $gene_id, bool $is_alias = false) : bool {
     global $sql;
 
@@ -249,6 +375,7 @@ function checkSaveLinkValidity(string $specie, string $gene_id, bool $is_alias =
         else if ($res['http_code'] === 0) {
             // Code d'erreur timeout
             Logger::write("Unable to check link : Timeout error.");
+            return true;
         }
         else {
             mysqli_query($sql, "UPDATE GeneAssociations SET linkable=1 WHERE $colomn='$gene_id';");
@@ -259,19 +386,47 @@ function checkSaveLinkValidity(string $specie, string $gene_id, bool $is_alias =
     return false;
 }
 
-function buildDatabaseFromScratch() : void {
+/**
+ * Reconstruit la base de données SQL depuis 0.
+ * Le mot de passe administrateur est demandé.
+ * Cette fonction n'importe PAS de TSV !
+ *
+ * @param string $user_pw
+ * @return void
+ */
+function buildDatabaseFromScratch(string $user_pw = 'admin') : void {
     global $sql;
+
+    $user_pw = trim($user_pw);
+
+    if ($user_pw === "") {
+        throw new RuntimeException("Password cannot be empty");
+    }
 
     $sql_file = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/assets/db/base.sql');
 
     $sql_file .= "\nINSERT INTO Users (username, passw, rights) 
     VALUES ('admin', '" 
-    . password_hash('admin', PASSWORD_BCRYPT) . 
+    . password_hash($user_pw, PASSWORD_BCRYPT) . 
     "', 2);";
 
     mysqli_multi_query($sql, $sql_file);
 }
 
+/**
+ * Construit un nouvel orthologue/homologue.
+ * 
+ * Retourne 0 si tout s'est bien passé, un code d'erreur positif si échec.
+ *
+ * @param integer $original_sql_id
+ * @param string $specie
+ * @param string $id
+ * @param string $addi sont les informations additionnelles du gène
+ * @param string $alias
+ * @param string $sp est la séquence protéique (peut être vide)
+ * @param string $sn est la séquence nucléique (peut être vide)
+ * @return integer ID d'insertion d'un gène dans la table Gene (l'orthologue y fera référence)
+ */
 function constructNewOrthologue(int $original_sql_id, string $specie, string $id, string $addi, string $alias, string $sp, string $sn) : int {
     global $sql;
     // Vérif que l'ID existe pas déjà
@@ -348,6 +503,18 @@ function constructNewOrthologue(int $original_sql_id, string $specie, string $id
     }
 }
 
+/**
+ * Construit un nouveau gène inséré dans la table SQL Gene.
+ * Le gène n'est PAS complet et doit être complété avec au moins un orthologue/homologue.
+ *
+ * @param string $name
+ * @param string $full
+ * @param string $fam
+ * @param string $subf
+ * @param string $role
+ * @param array $pathways
+ * @return integer ID SQL d'insertion du gène dans Gene
+ */
 function constructNewGene(string $name, string $full, string $fam, string $subf, string $role, array $pathways) : int {
     global $sql;
 

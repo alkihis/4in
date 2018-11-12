@@ -5,6 +5,7 @@
  * 
  * Renvoie une chaîne formatée en TSV dans l'ordre donnée par $assocs_species
  * @param array $assocs_species : Ordre et nom des espèces
+ * @param bool $with_titles : Renvoie ou non le header en première ligne
  * @return string
  */
 function downloadDatabase(array $assocs_species, bool $with_titles = true) : string { 
@@ -21,8 +22,10 @@ function downloadDatabase(array $assocs_species, bool $with_titles = true) : str
     else
         $str = "";
 
+    // Pour chaque gene
     while ($row = mysqli_fetch_assoc($q)) {
-        $current_gene = mysqli_query($sql, "SELECT * FROM GeneAssociations WHERE id={$row['id']}");
+        // On récupère toutes ses associations (gene_id pour chaque gene)
+        $current_gene = mysqli_query($sql, "SELECT specie, gene_id, addi FROM GeneAssociations WHERE id={$row['id']}");
 
         // Récupération de tous les gènes pour cet ID
         $matched = [];

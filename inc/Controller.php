@@ -1,11 +1,19 @@
 <?php
 
+/**
+ * Représente un contrôleur / modèle de page web
+ */
 class Controller {
     protected $data; // Mixed data registred by the page
     protected $page_title = null; // Page title;  If null: no title
     protected $view = null; // Callback function to call on invoke()
 
-
+    /**
+     * Initialise le controlleur avec les données (modèle).
+     *
+     * @param array $data
+     * @param string|null $title
+     */
     public function __construct(array $data = [], ?string $title = null) {
         $this->data = $data;
         if ($title) {
@@ -13,6 +21,11 @@ class Controller {
         }
     }
     
+    /**
+     * Appelle la fonction de vue avec les données générées par le modèle.
+     *
+     * @return void
+     */
     public function __invoke() {
         if ($this->view === null) {
             throw new UnexpectedValueException("No view function defined");

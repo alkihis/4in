@@ -1,6 +1,14 @@
 <?php
 
-function addLine($mode, $sequence, $current_id, $stmt_request) : void {
+/**
+ * ajoute une ligne contenant la séquence pour l'ID current_id
+ *
+ * @param string $sequence
+ * @param string $current_id
+ * @param mysqli_stmt $stmt_request
+ * @return void
+ */
+function addLine(string $sequence, string $current_id, $stmt_request) : void {
     global $sql;
 
     $like_id = "$current_id%";
@@ -11,13 +19,12 @@ function addLine($mode, $sequence, $current_id, $stmt_request) : void {
 }
 
 /**
- * loadFasta
- * 
  * Parse un fichier fasta, et l'enregistre dans la base de données
  * @param string $filename : Chemin du fichier .fasta à parser
+ * @param string $mode : adn ou pro
  * @return void
  */
-function loadFasta(string $filename, $mode = 'adn') : void { 
+function loadFasta(string $filename, string $mode = 'adn') : void { 
     global $sql; // importe la connexion SQL chargée avec l'appel à connectBD()
 
     $mode = ($mode === 'adn' ? 'sequence_adn' : 'sequence_pro');
@@ -50,7 +57,7 @@ function loadFasta(string $filename, $mode = 'adn') : void {
 
         if ($line[0] === '>') { // Commentaire, on récupère l'ID concerné
             if ($sequence !== '' && $current_id !== '') {
-                addLine($mode, $sequence, $current_id, $stmt_request);
+                addLine($sequence, $current_id, $stmt_request);
             }
 
             $e = substr($line, 1);
@@ -84,7 +91,7 @@ function loadFasta(string $filename, $mode = 'adn') : void {
     }
 
     if ($sequence !== '' && $current_id !== '') {
-        addLine($mode, $sequence, $current_id, $stmt_request);
+        addLine($sequence, $current_id, $stmt_request);
     }
 
     fclose($h);
@@ -93,12 +100,16 @@ function loadFasta(string $filename, $mode = 'adn') : void {
 if (isUserLogged()) {
     session_write_close();
 
+    // On check si le fichier est défini
     if (isset($_POST['file']) && is_string($_POST['file'])) {
         $file = $_POST['file'];
         $mode = (isset($_POST['mode']) && $_POST['mode'] === 'pro' ? 'pro' : 'adn');
 
+        // On protège les /../ dans le chemin
+        $file = preg_replace("/\/\.\.\//", "", $file);
         $path = $_SERVER['DOCUMENT_ROOT'] . '/fasta/' . $mode . '/' . $file;
 
+        // Si le fichier existe, on charge le fasta
         if (file_exists($path) && !is_dir($path)) {
             set_time_limit(30 * 10);
             loadFasta($path, $mode);

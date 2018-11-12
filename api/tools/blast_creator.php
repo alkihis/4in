@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Récupère toutes les séquences correspondant à un mode (adn ou pro)
+ * au format FASTA
+ *
+ * @param string $mode "adn"|"pro"
+ * @param boolean $full
+ * @return string
+ */
 function getAllFastaSequences(string $mode = 'adn', bool $full) : string {
     global $sql;
 
@@ -19,6 +27,16 @@ function getAllFastaSequences(string $mode = 'adn', bool $full) : string {
     return $s;
 }
 
+/**
+ * Construit la base de données BLAST en fonction du mode (adn ou pro)
+ * et mode complet ou non (séquences des espèces protégées cachées ou non)
+ * 
+ * DEMANDE UN UNIX
+ *
+ * @param string $mode "adn"|"pro"
+ * @param boolean $full
+ * @return void
+ */
 function makeBlastDB(string $mode = 'adn', bool $full = true) {
     chdir($_SERVER['DOCUMENT_ROOT'] . '/ncbi/bin');
 
@@ -56,6 +74,11 @@ function makeBlastDB(string $mode = 'adn', bool $full = true) {
     `rm -f $temp_file`;
 }
 
+/**
+ * Construit toutes les bases BLAST
+ *
+ * @return void
+ */
 function makeAllBlastDB() : void {
     // Construction des 4 bases :
     // ADN sans autorisation et complète (génomes protégés), de même protéine
@@ -69,6 +92,7 @@ if (isUserLogged()) {
     session_write_close();
 
     if (isset($_POST['make'])) {
+        // Si jamais on est sur windows, on bloque
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { // Pas possible sur Windows
             header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
         } 

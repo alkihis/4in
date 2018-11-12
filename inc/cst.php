@@ -3,6 +3,7 @@
 const MYSQL_USER = 'projet';
 const MYSQL_PASSWORD = 'psw';
 const MYSQL_BASE = 'projet';
+const MYSQL_SERVER = 'localhost';
 
 const SITE_NAME = '4IN';
 const DEBUG_MODE = true;

@@ -1,11 +1,23 @@
 <?php
 
+/**
+ * Réinitilise les alias
+ *
+ * @return void
+ */
 function resetIndex() : void {
     global $sql;
 
     mysqli_query($sql, "UPDATE GeneAssociations SET alias=NULL;");
 }
 
+/**
+ * Construit les alias depuis un fichier $filename tabulé
+ * gene_id \t alias
+ *
+ * @param string $filename
+ * @return void
+ */
 function readBuildIndex(string $filename) : void {
     global $sql;
 
@@ -22,7 +34,7 @@ function readBuildIndex(string $filename) : void {
         $line = explode("\t", $line);
 
         if (count($line) < 2) {
-            // Ligne invalide, on ne lance rien mais on devrait...
+            // Ligne invalide, on ne lance aucune exception mais on devrait...
             continue;
         }
 
@@ -39,8 +51,12 @@ if (isUserLogged()) {
     if (isset($_POST['file']) && is_string($_POST['file'])) {
         $file = $_POST['file'];
 
+        // Supprime les /../ du chemin
+        $file = preg_replace("/\/\.\.\//", "", $file);
+
         $path = $_SERVER['DOCUMENT_ROOT'] . '/fasta/map/' . $file;
 
+        // Si le fichier existe, on lance la création
         if (file_exists($path) && !is_dir($path)) {
             set_time_limit(30 * 10);
             readBuildIndex($path);

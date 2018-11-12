@@ -30,9 +30,11 @@ if (isset($_POST['ids']) && is_string($_POST['ids']) && $_POST['mode'] && is_str
         $name = preg_replace('/[^A-Za-z0-9_\-]/', '_', $ids[0]) . ($_POST['mode'] === 'pro' ? '_pro' : '_dna');
     }
 
+    // Pour chaque ID demandé
     foreach($ids as $id) {
         $id = mysqli_real_escape_string($sql, $id);
 
+        // On le récupère et on inclut la séquence dans le fasta $final_fasta
         $q = mysqli_query($sql, "SELECT $mode, specie FROM GeneAssociations WHERE gene_id='$id' AND $mode IS NOT NULL");
 
         if (mysqli_num_rows($q)) {

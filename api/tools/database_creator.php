@@ -1,6 +1,8 @@
 <?php
 
 // Les espèces présentes dans le fichier, dans le bon ordre
+// Ces espèces sont là à titre INFORMATIF et sont faites pour être définies
+// manuellement via un paramètre POST
 $assocs_species = ['Soryzae', 'Apisum', 'Agambiae', 'Amellifera', 
     'Bmori', 'Cfloridanus', 'Dmelanogaster', 'Gmorsitans',
     'Msexta', 'Nvitripennis', 'Phumanus', 'Pxylostella',
@@ -13,6 +15,7 @@ $assocs_species = ['Soryzae', 'Apisum', 'Agambiae', 'Amellifera',
  * Insère le pathway souhaité pour le gène $id_gene dans la base de données
  * @param integer $id_gene
  * @param string $pathway
+ * @param mysqli_stmt $stmt_request Request to send new pathway
  * @return void
  */
 function insertPathway(int $id_gene, string $pathway, $stmt_request) : void {
@@ -26,12 +29,16 @@ function insertPathway(int $id_gene, string $pathway, $stmt_request) : void {
  * 
  * Parse un fichier séparé par des tabulations, et l'enregistre dans une base de données conçue pour
  * @param string $filename : Chemin du fichier .tsv à parser
+ * @param bool $trim_first_line
+ * @param bool $read_from_first Read species from first line
+ * > trim_first_line must be on if read_first_line is on
  * @return void
  */
 function explodeFile(string $filename, bool $trim_first_line = false, bool $read_from_first = false) : void { 
     global $sql; // importe la connexion SQL chargée avec l'appel à connectBD()
     global $assocs_species;
 
+    // Prépare les requêtes pour améliorer le temps d'exécution
     $stmt_gene = mysqli_prepare($sql, "INSERT INTO Gene 
         (func, gene_name, fullname, family, subfamily)
         VALUES
@@ -46,16 +53,17 @@ function explodeFile(string $filename, bool $trim_first_line = false, bool $read
         VALUES
         (?, ?);");
 
+    // Sauvegarde le nombre d'espèces pour l'utiliser dans la future boucle
     $number_of_species = count($assocs_species);
 
-    $h = fopen($filename, 'r'); // ouvre le fichier $filename en lecture, et stocke le pointeur-sur-fichier dans $h
+    $handle = fopen($filename, 'r'); // ouvre le fichier $filename en lecture, et stocke le pointeur-sur-fichier dans $handle
 
-    if (!$h) {
+    if (!$handle) {
         throw new RuntimeException('Unable to open file');
     }
 
-    while (!feof($h)) { // Si $h est valide et tant que le fichier n'est pas fini (feof signifie file-end-of-file)
-        $line = fgets($h); // récupère une ligne du fichier
+    while (!feof($handle)) { // Si $handle est valide et tant que le fichier n'est pas fini (feof signifie file-end-of-file)
+        $line = fgets($handle); // récupère une ligne du fichier
 
         if ($trim_first_line) { // Si la première ligne doit être passée
             $trim_first_line = false;
@@ -93,7 +101,8 @@ function explodeFile(string $filename, bool $trim_first_line = false, bool $read
 
         $arr = explode("\t", $line); // sépare la ligne en fonction d'une tabulation et la met dans un tableau
 
-        // Importe fonction, pathway... dans des variables, avec les ' échappés, et les espaces terminaux trimmés
+        // Importe fonction, pathway... dans des variables, les espaces terminaux trimmés
+        // Pas besoin d'échapper ' car on utilise mysqli_prepare
         $func = trim($arr[1]);
         $pathway = trim($arr[2]);
         $name = trim($arr[0]);
@@ -111,7 +120,7 @@ function explodeFile(string $filename, bool $trim_first_line = false, bool $read
         // Récupération de l'ID numérique d'insertion (clé primaire de Gene)
         $id_insert = $stmt_gene->insert_id;
 
-        // Si un pathway est défini, on le split en fonction de /, et on insère autant de pathways que défini dans Pathways,
+        // Si un pathway est défini, on le split en fonction de |, et on insère autant de pathways que défini dans Pathways,
         // ceux-ci étant reliés au Gene par son ID
         if (!empty($pathway)) {
             $pathways = explode('|', $pathway);
@@ -144,7 +153,8 @@ function explodeFile(string $filename, bool $trim_first_line = false, bool $read
             $additionnal = "";
             $should_read = false;
             $should_read_info = false;
-            for ($j = 0; $j < strlen($arr[$i]); $j++) {
+            $len_arr_i = strlen($arr[$i]);
+            for ($j = 0; $j < $len_arr_i; $j++) {
                 $char = $arr[$i][$j];
 
                 // Si c'est une parenthèse ouvrante, on incrémente le compteur de parenthèse
@@ -192,44 +202,34 @@ function explodeFile(string $filename, bool $trim_first_line = false, bool $read
                 else if ($should_read) {
                     $current_id .= $char;
                 }
-                
+                // Si on doit lire les infos additionnelles, on stocke dans ce buffer
                 if ($should_read_info && !$should_read) {
                     $additionnal .= $char;
                 }
             }
 
+            // Pour chaque ID trouvé, on l'insère dans la bdd
             foreach ($found_ids as $id_f) {
+                // id_insert : ID SQL du gène, 
+                // id_f['id'] : ID du gène réel, 
+                // $assocs_species[$i - 6] : parce les espèces commencent à la colonne 6 et que i correspond au numéro de colonne,
+                // $id_f['info'] : Informations additionnelles
                 $stmt_assoc->bind_param("isss", $id_insert, $id_f['id'], $assocs_species[$i - 6], $id_f['info']);
-
-                /* execute query */
                 $stmt_assoc->execute();
             } 
-
-            // Si il y a eu des matches ($m[1] représente tous les matches fait pour la PREMIÈRE parenthèse capturante,
-            // $m[0] représente le match entier)
-            // if (isset($m[1])) {
-            //     // Pour chaque match dans la parenthèse
-            //     foreach($m[1] as $key => $match) { 
-            //         // On extrait la "ligne" entière qui est dans $m[0] (full-match) [$key] (et on l'escape)
-            //         $full_line = mysqli_real_escape_string($sql, $m[0][$key]);
-            //         // Pour récupérer l'ID, c'est la première valeur de la "parenthèse" séparée par des ,
-            //         // On récupère donc le premier élément du split
-            //         $id = explode(',', $match)[0];
-
-            //         // On insère le gène dans les associations
-            //         /* bind parameters for markers */
-            //         $stmt_assoc->bind_param("isss", $id_insert, $id, $assocs_species[$i - 6], $full_line);
-
-            //         /* execute query */
-            //         $stmt_assoc->execute();
-            //     }
-            // }
         }
     }
 
-    fclose($h);
+    // Fermeture du fichier
+    fclose($handle);
 }
 
+/**
+ * emptyTables
+ * Vide les tables SQL du site web
+ * 
+ * @return void
+ */
 function emptyTables() : void {
     global $sql;
 
@@ -240,9 +240,12 @@ function emptyTables() : void {
     mysqli_query($sql, "ALTER TABLE Pathways AUTO_INCREMENT=1;");
 }
 
+// Si l'utilisateur est connecté, on autorise
 if (isUserLogged()) {
+    // On ferme la session parce qu'elle ne servira plus
     session_write_close();
 
+    // On attend l'information du nom du fichier et toutes les espèces
     if (isset($_POST['file'], $_POST['species']) && is_string($_POST['file']) && is_string($_POST['species'])) {
         global $assocs_species;
 
@@ -255,9 +258,12 @@ if (isUserLogged()) {
 
         $empty = (isset($_POST['empty']) && $_POST['empty'] === 'true');
 
+        // les fichiers sont dans %webserverroot%/assets/db/{fichier}
+        $file = preg_replace("/\/\.\.\//", "", $file);
         $path = $_SERVER['DOCUMENT_ROOT'] . '/assets/db/' . $file;
 
         if (file_exists($path) && !is_dir($path)) {
+            // Augmentation de la timelimit pour éviter le crash de PHP après 30 secondes
             set_time_limit(30 * 10);
 
             if ($empty)

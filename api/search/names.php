@@ -1,6 +1,6 @@
 <?php
 
-// Récupère tous les IDs
+// Récupère tous les noms
 global $sql;
 
 $q = mysqli_query($sql, "SELECT DISTINCT gene_name FROM Gene WHERE gene_name <> ''");

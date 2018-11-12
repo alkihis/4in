@@ -47,7 +47,7 @@ function homeView(Controller $c) : void {
                     this database is centered around the genetic study of the rice weevil, also called Sitophilus oryzae.
                 </p>
                 
-                <div class="col s12 m5">
+                <div class="col s12 m<?= (isUserLogged() ? '4' : '5') ?>">
                     <div class="icon-block">
                         <h2 class="center">
                             <a href='/search'><i class="material-icons mat-title light-blue-text">search</i></a>
@@ -61,7 +61,7 @@ function homeView(Controller $c) : void {
                     </div>
                 </div>
 
-                <div class="col s12 m5 offset-m2">
+                <div class="col s12 m<?= (isUserLogged() ? '4' : '5 offset-m2') ?>">
                     <div class="icon-block">
                         <h2 class="center">
                             <a href='/blast_search'><i class="material-icons mat-title light-blue-text">sort</i></a>
@@ -75,21 +75,20 @@ function homeView(Controller $c) : void {
                     </div>
                 </div>
 
-                <!-- 
-                <div class="col s12 m4">
-                    <div class="icon-block">
-                        <h2 class="center">
-                            <a href='/contact'><i class="material-icons mat-title light-blue-text">contact_mail</i></a>
-                        </h2>
-                        <h5 class="center">Contact Us</h5>
+                <?php if (isUserLogged()) { ?>
+                    <div class="col s12 m4">
+                        <div class="icon-block">
+                            <h2 class="center">
+                                <a href='/add'><i class="material-icons mat-title light-blue-text">add</i></a>
+                            </h2>
+                            <h5 class="center">Add gene</h5>
 
-                        <p class="light text-justify">
-                            If you want to know more about the database, report a problem or a mistake, or suggest new
-                            informations to add in the database, please let us know your request.
-                        </p>
+                            <p class="light text-justify">
+                                Add manually a gene into the database by writing all its specifications.
+                            </p>
+                        </div>
                     </div>
-                </div>
-                -->
+                <?php } ?>
             </div>
         </div>
         <br><br>

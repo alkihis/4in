@@ -1,9 +1,12 @@
 <?php
 
-// class Gene
-// Contient la représentation d'un gène
-// Peut faire référence à UN gène
-
+/**
+ * Gene
+ * 
+ * Represents a gene (one only, not a gene and all his homologous).
+ * 
+ * Can be constructed by mysqli_assoc_result or gene_id_string
+ */
 class Gene {
     protected $id;
     protected $specie;
@@ -25,6 +28,11 @@ class Gene {
     protected $alias;
     protected $addi;
 
+    /**
+     * Construct a gene by mysqli_row or gene_id_string
+     *
+     * @param array|string $row
+     */
     public function __construct($row) {
         if (is_string($row)) { // Construction à partir de l'ID
             $row = self::loadAssocGene($row);
@@ -34,6 +42,7 @@ class Gene {
             }
         }
 
+        // Si on a un tableau, on construit le Gene depuis le mysqli_result_array_assoc
         if (is_array($row)) {
             $this->id = $row['gene_id'];
             $this->real_id = (int)($row['id'] ?? 0);
@@ -69,6 +78,14 @@ class Gene {
         }
     }
 
+    /**
+     * Charge un gène via son ID numérique, et renvoie le tableau de résultat SQL.
+     * 
+     * Renvoie null si il n'existe pas.
+     *
+     * @param string $id
+     * @return array|null
+     */
     static protected function loadAssocGene(string $id) : ?array {
         global $sql;
 
