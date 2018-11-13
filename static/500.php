@@ -3,6 +3,9 @@
 // Page d'erreur 500
 
 function serverErrorControl(Throwable $e) : Controller {
+    // Log de l'exception
+    Logger::write($e->__toString());
+
     header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
     return new Controller(['error' => $e], 'Internal Server Error');
 }

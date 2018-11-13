@@ -88,6 +88,7 @@ function getRoute(string $page_name, array $page_arguments) : Controller {
     if ($error) {
         // Si il y a une erreur, on charge la page d'erreur adaptée
         $code = $error[0]; $ex = $error[1];
+
         require_once PAGES_REF[$code]['file'];
         $ctrl = (PAGES_REF[$code]['controller'])($ex);
         $view = PAGES_REF[$code]['view']; 

@@ -343,13 +343,13 @@ function modifyView(Controller $c) : void {
                     </div>
 
                     <div class="input-field col s12">
-                        <input type="text" name="name" id="name" autocomplete='off'
+                        <input type="text" name="name" id="name" autocomplete='nope'
                             value="<?= htmlspecialchars($data['gene']->getName(), ENT_QUOTES) ?>">
                         <label for='name'>Name</label>
                     </div>
 
                     <div class="input-field col s12">
-                        <input type="text" name="fname" id="fname" autocomplete='off'
+                        <input type="text" name="fname" id="fname" autocomplete='nope'
                             value="<?= htmlspecialchars($data['gene']->getFullname(), ENT_QUOTES) ?>">
                         <label for='fname'>Fullname</label>
                     </div>
@@ -361,7 +361,7 @@ function modifyView(Controller $c) : void {
                     </div>
 
                     <div class="input-field col s12">
-                        <input type="text" name="subfamily" id="subfamily" autocomplete='off'
+                        <input type="text" name="subfamily" id="subfamily" autocomplete='nope'
                             value="<?= htmlspecialchars($data['gene']->getSubFamily(), ENT_QUOTES) ?>">
                         <label for='subfamily'>SubFamily</label>
                     </div>

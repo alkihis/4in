@@ -5,6 +5,10 @@ function homeControl() : Controller {
 
     $imgs = glob($_SERVER['DOCUMENT_ROOT'] . '/img/home/*.jpg');
 
+    if (count($imgs) === 0) {
+        throw new ErrorException("No image is set");
+    }
+
     $number = mt_rand(0, count($imgs)-1);
     $name = basename($imgs[$number]);
 

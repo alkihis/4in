@@ -134,7 +134,8 @@ function importGenomeView(array $data) : void { ?>
                 <p>
                     Database file is a tabulated version of an Excel document.<br>
                     Name of the colomns can be present in the file, 
-                    but you must specify it before launch build process.<br><br>
+                    but you must specify it before launch build process.<br>
+                    If a gene has multiple pathways, they must be separated by a pipe (|).<br><br>
                     <span class="underline">Colomn order should be ordered as [one slash: one tabulation]</span> :<br>
                     Name / Role / Pathway / Fullname / Family / SubFamily / <?= implode(' / ', $data['ord_species']) ?> <br>
                     <span class="very-tiny-text no-line-height">

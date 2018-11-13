@@ -79,7 +79,9 @@ function loginView(Controller $c) : void {
                     }
                     else if (isset($data['successful_connection'])) {
                         echo '<h6 class="green-text">You have successfully logged in.</h6>
-                        <h6 class="center" style="margin-bottom: 30px;"><a href="/home">Home</a></h6>';
+                        <h6 class="center" style="margin-bottom: 30px;">
+                            <a href="/home">Home</a> · <a href="/admin">Admin console</a>
+                        </h6>';
                     }
                     else if ($data['already_logged']) {
                         echo '<h6 class="red-text" style="margin-bottom: 30px;">You seem to be already logged.</h6>';

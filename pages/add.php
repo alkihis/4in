@@ -16,7 +16,7 @@ function addControl(array $args) : Controller {
     
     $data = ['pathways' => $pathways, 'species' => getOrderedSpecies()];
 
-    if (isset($_POST['role'], $_POST['name'], $_POST['fullname'], $_POST['family'], $_POST['subf']) &&
+    if (isset($_POST['role'], $_POST['name'], $_POST['fullname'], $_POST['fam'], $_POST['subf']) &&
         isset($_POST['specie'], $_POST['pro_seq'], $_POST['adn_seq'], $_POST['id_new'], $_POST['addi'], $_POST['alias'])) {
 
         if (!isset($_POST['pathway'])) {
@@ -27,7 +27,7 @@ function addControl(array $args) : Controller {
             $pathway = array_unique($_POST['pathway']);
 
             $g_sql_id = constructNewGene(
-                $_POST['name'], $_POST['fullname'], $_POST['family'], $_POST['subf'], $_POST['role'], $pathway
+                $_POST['name'], $_POST['fullname'], $_POST['fam'], $_POST['subf'], $_POST['role'], $pathway
             );
 
             if ($g_sql_id) {
@@ -150,22 +150,58 @@ function addView(Controller $c) : void {
                     </div>
 
                     <div class="input-field col s12">
-                        <input type="text" name="role" id="role" autocomplete='off' 
+                        <input type="text" name="role" id="role" autocomplete='nope' 
                         value="<?= htmlspecialchars($_POST['role'] ?? "", ENT_QUOTES) ?>">
                         <label for='role'>Role</label>
                     </div>
 
                     <div class="input-field col s12">
-                        <input type="text" name="family" id="family" autocomplete='off' 
+                        <input type="text" name="fam" id="fam" autocomplete='nope' 
                         value="<?= htmlspecialchars($_POST['family'] ?? "", ENT_QUOTES) ?>">
-                        <label for='family'>Family</label>
+                        <label for='fam'>Family</label>
                     </div>
 
                     <div class="input-field col s12">
-                        <input type="text" name="subf" id="subf" autocomplete='off' 
+                        <input type="text" name="subf" id="subf" autocomplete='nope' 
                         value="<?= htmlspecialchars($_POST['subf'] ?? "", ENT_QUOTES) ?>">
                         <label for='subf'>SubFamily</label>
                     </div>
+
+                    <script>
+                        $(document).ready(function() {
+                            // Récupération du tableau de familles
+                            $.get(
+                                "/api/search/families.json", 
+                                { } 
+                            ).then(function (json) {
+                                $('#fam').autocomplete({
+                                    data: json,
+                                    limit: 6,
+                                    minLength: 1
+                                });
+                            });
+                            $.get(
+                                "/api/search/subfamilies.json", 
+                                { } 
+                            ).then(function (json) {
+                                $('#subf').autocomplete({
+                                    data: json,
+                                    limit: 6,
+                                    minLength: 1
+                                });
+                            });
+                            $.get(
+                                "/api/search/roles.json", 
+                                { } 
+                            ).then(function (json) {
+                                $('#role').autocomplete({
+                                    data: json,
+                                    limit: 6,
+                                    minLength: 1
+                                });
+                            });
+                        });
+                    </script>
 
                     <div id="s-container">
                     </div>
