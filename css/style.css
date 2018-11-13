@@ -341,6 +341,16 @@ textarea.materialize-textarea:focus:not([readonly])+label {
     border-bottom: 1px solid #346bd3;
 }
 
+.chips.focus {
+    border-bottom: 1px solid #346bd3;
+    -webkit-box-shadow: 0 1px 0 0 #346bd3;
+    box-shadow: 0 1px 0 0 #346bd3;
+}
+
+.chip:focus {
+    background-color: #346bd3;
+}
+
 .progress .determinate {
     background-color: #1a4ba5;
 }
@@ -475,6 +485,12 @@ div.sort {
         1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
 }
 
+@media only screen and (max-width: 993px) {
+    .header-main {
+        margin-top: -18px;
+    }
+}
+
 textarea.materialize-textarea{
     min-height: 5rem;
     resize: vertical;
@@ -483,4 +499,8 @@ textarea.materialize-textarea{
 .stats-link {
     color: rgb(15, 125, 228);
     cursor: pointer;
+}
+
+.chips .input {
+    border: 0 !important;
 }

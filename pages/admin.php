@@ -345,6 +345,13 @@ function homePageView(array $data) : void { ?>
     <?php
 }
 
+/**
+ * Print available FASTA files on screen
+ *
+ * @param array $files
+ * @param boolean $with_delete_input
+ * @return void
+ */
 function showFastaFiles(array $files, bool $with_delete_input) : void {
     ?>
     <div class="row">
@@ -404,6 +411,14 @@ function showFastaFiles(array $files, bool $with_delete_input) : void {
     <?php
 }
 
+/**
+ * Print $files in screen
+ * $files = [['name':"", 'size':0, 'date':10000000], ...]
+ *
+ * @param array $files
+ * @param boolean $with_delete_input
+ * @return void
+ */
 function showMappingFiles(array $files, bool $with_delete_input) : void {
     ?>
     <div class="row">
@@ -432,6 +447,18 @@ function showMappingFiles(array $files, bool $with_delete_input) : void {
     <?php
 }
 
+/**
+ * Find name
+ * Recursive function
+ *
+ * @param array $base_file
+ * @param array $files
+ * @param string $location
+ * @param string $basename
+ * @param string|null $initial
+ * @param integer $number
+ * @return string|null
+ */
 function findName(array $base_file, array $files, string $location, string $basename, ?string $initial = null, int $number = 1) : ?string {
     $initial = $initial ?? $basename;
 
@@ -463,6 +490,14 @@ function findName(array $base_file, array $files, string $location, string $base
     return $basename;
 }
 
+/**
+ * Find a usable free name in $location using $name and $files
+ *
+ * @param array $files
+ * @param string $location
+ * @param string $name
+ * @return string|null
+ */
 function findSafeName(array $files, string $location, string $name) : ?string {
     $base_files = array_map('basename', $files);
     $basename = basename($name);

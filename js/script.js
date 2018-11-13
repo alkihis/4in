@@ -555,3 +555,68 @@ function initScrollFireSegments() {
         },
     });
 }
+
+function searchFormMake(form) {
+    var instance = M.Chips.getInstance(document.getElementById('chip_container'));
+
+    form.global.value = "";
+    var str = "";
+
+    for (var i = 0; i < instance.chipsData.length; i++) {
+        if (i > 0) {
+            str += " ";
+        }
+        // Entoure le texte de guillemets doubles ""
+        str += '"' + instance.chipsData[i].tag + '"'; 
+    } 
+
+    var form_val = form.global_chip.value.trim();
+
+    if (form_val !== "") {
+        form.global.value = str + ' "' + form_val + '"';
+    }
+    else {
+        form.global.value = str;
+    }
+
+    return true;
+}
+
+function checkChips(insts) {
+    var e = insts[0];
+    for (var i = 0; i < e.chipsData.length; i++) {
+        e.chipsData[i].tag = e.chipsData[i].tag.trim();
+
+        if (e.chipsData[i].tag.length < 2) {
+            e.deleteChip(i--);
+            M.toast({html: "Keyword must be as long as 2 characters minimal.", displayLength: 5000});
+        }
+    } 
+}
+
+function initGlobalSearchForm(dat) {
+    var elems = document.querySelectorAll('.chips-autocomplete');
+    $.get(
+        "/api/search/get_all.json", 
+        { } 
+    ).then(function (json) {
+        var instance = M.Chips.init(elems, {
+            data: dat,
+            autocompleteOptions: {
+                data: json,
+                limit: 6,
+                minLength: 1
+            },
+            onChipAdd: function() { checkChips(instance) }
+        });
+    }).catch(function () {
+        var instance = M.Chips.init(elems, {
+            data: dat,
+            onChipAdd: function() { checkChips(instance) }
+        });
+    });
+
+    $('#submit_form').on('submit', function() {
+        return searchFormMake(this);
+    });
+}
