@@ -4,3 +4,4 @@ fasta/
 assets/db/tsv_with_names.tsv
 assets/db/tableau_donnee_master_bioinfo_immuneDB_191018_v2_complete - Feuil1.tsv
 assets/log/*
+assets/cache/*

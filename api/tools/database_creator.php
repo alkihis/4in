@@ -238,6 +238,13 @@ function emptyTables() : void {
     mysqli_query($sql, "DELETE FROM Pathways;");
     mysqli_query($sql, "ALTER TABLE Gene AUTO_INCREMENT=1;");
     mysqli_query($sql, "ALTER TABLE Pathways AUTO_INCREMENT=1;");
+
+    // Supprime les fichiers du cache (sauf fichiers cachés)
+    $files_cache = glob($_SERVER['DOCUMENT_ROOT'] . '/assets/cache/*');
+
+    foreach ($files_cache as $f) {
+        unlink($f);
+    }
 }
 
 // Si l'utilisateur est connecté, on autorise

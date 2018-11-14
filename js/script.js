@@ -596,6 +596,18 @@ function checkChips(insts) {
 
 function initGlobalSearchForm(dat) {
     var elems = document.querySelectorAll('.chips-autocomplete');
+
+    var id_loading = "loading_block_form";
+
+    // Affiche le message de chargement si jamais cela met plus de 800ms à se lancer
+    setTimeout(function() {
+        var load = document.getElementById(id_loading);
+
+        if (load) {
+            $(load).slideDown(200);
+        }
+    }, 500);
+
     $.get(
         "/api/search/get_all.json", 
         { } 
@@ -604,7 +616,7 @@ function initGlobalSearchForm(dat) {
             data: dat,
             autocompleteOptions: {
                 data: json,
-                limit: 6,
+                limit: 5,
                 minLength: 1
             },
             onChipAdd: function() { checkChips(instance) }
@@ -614,6 +626,8 @@ function initGlobalSearchForm(dat) {
             data: dat,
             onChipAdd: function() { checkChips(instance) }
         });
+    }).always(function() {
+        $('#' + id_loading).slideUp(150, function() { $(this).remove() });
     });
 
     $('#submit_form').on('submit', function() {

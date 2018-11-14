@@ -1,5 +1,17 @@
 <?php
 
+$cache = $_SERVER['DOCUMENT_ROOT'] . '/assets/cache/get_all_cache.json';
+
+// Checke le cache
+if (file_exists($cache) && (time() - filemtime($cache)) < (60*60)) {
+    // Si il existe et que le fichier est récent (moins d'une heure),
+    // on affiche le contenu de ce fichier plutôt que tout calculer depuis la base de données
+    header('Content-Type: application/json');
+    echo file_get_contents($cache);
+
+    return;
+}
+
 // Récupère tous les familles
 global $sql;
 
@@ -37,4 +49,9 @@ if ($q) {
 }
 
 header('Content-Type: application/json');
-echo json_encode($res);
+$json = json_encode($res);
+
+// Enregistre le cache
+file_put_contents($cache, $json);
+
+echo $json;

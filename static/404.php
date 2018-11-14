@@ -2,22 +2,29 @@
 
 // Page d'erreur 404
 
-function notFoundControl() : Controller {
+function notFoundControl(PageNotFoundException $t) : Controller {
     header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
-    return new Controller([], 'Page not found');
+    return new Controller(['message' => $t->getMessage()], 'Page not found');
 }
 
 function notFoundView(Controller $c) : void {
+    $data = $c->getData();
     ?>
     <div id='particle-holder'>
         <div class='container'>
             <div class='row section'>
                 <div style='margin-top: 90px;'></div>
+                
                 <div class='tiny-container'>
                     <h2 class='header lighter-text red-att-text'>404 <span class='tiny-text'>Page Not Found</span></h2>
                     <div class='divider divider-white'></div>
                     <p class='white-text text-justify'>
-                        You're trying to reach a non-existant page.<br><br>
+                        <?php if ($data['message']) { 
+                            $msg = htmlspecialchars($data['message']);
+                            echo "<span class='fatal-error-message'>$msg</span><br><br>"; 
+                        } else {
+                            echo "You're trying to reach a non-existant page.<br><br>";
+                        } ?>
                         Please check the page URL or use search module to find specific informations.
                     </p>
                     <p class='flow-text center'>

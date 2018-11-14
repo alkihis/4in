@@ -3,8 +3,8 @@
 function contactControl(array $args) : Controller {
     $data = [];
 
-    if (isset($_POST['mail'], $_POST['token_rec']) && is_string($_POST['mail']) && is_string($_POST['token_rec'])) {
-        $mail = trim($_POST['mail']);
+    if (isset($_POST['content'], $_POST['token_rec']) && is_string($_POST['content']) && is_string($_POST['token_rec'])) {
+        $mail = trim($_POST['content']);
 
         // Vérification du token Recaptcha
         $token = $_POST['token_rec'];
@@ -32,7 +32,7 @@ function contactControl(array $args) : Controller {
                     // todo
         
                     $data['no_mail'] = true;
-                    $data['mail'] = htmlspecialchars($mail);
+                    $data['content'] = htmlspecialchars($mail);
                 }
             }
             else {
@@ -84,12 +84,12 @@ function contactView(Controller $c) : void {
                     </div>
                     <div class="input-field col s12">
                         <textarea class="materialize-textarea" placeholder="Write here your message" 
-                        id="mail" name="mail" required><?= $data['mail'] ?? '' ?></textarea>
-                        <label for="mail">Content</label>
+                        id="content" name="content" required><?= $data['content'] ?? '' ?></textarea>
+                        <label for="content">Content</label>
                     </div>
 
                     <span class="left light-text" style="margin-top: 4px; margin-left: 10px;">
-                        This form is protected by <a target="_blank" href="https://www.google.com/recaptcha">ReCaptcha</a>
+                        Protected by <a target="_blank" href="https://www.google.com/recaptcha">ReCaptcha</a>
                     </span>
 
                     <button class="btn-flat blue-text right">Send</button>

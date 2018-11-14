@@ -115,11 +115,11 @@ function updateGeneByOrtho(Gene &$g, string $pathway, string $name, string $full
 
 function modifyControl(array $args) : Controller {
     if (!isset($args[0])){
-        throw new PageNotFoundException;
+        throw new PageNotFoundException("You must specify a gene to modify.");
     }
 
     if (!isUserLogged()) {
-        throw new ForbiddenPageException;
+        throw new ForbiddenPageException("Log in to modify genes.");
     }
 
     global $sql;
@@ -130,7 +130,7 @@ function modifyControl(array $args) : Controller {
     try {
         $gene = new Gene($args[0]);
     } catch (RuntimeException $e) {
-        throw new PageNotFoundException;
+        throw new PageNotFoundException("You can't modify a gene that does not exists.");
     }
 
     $gene_id = mysqli_real_escape_string($sql, $gene->getID());

@@ -1,11 +1,17 @@
 <?php
 
+// Paramètres MySQL
 const MYSQL_USER = 'projet';
 const MYSQL_PASSWORD = 'psw';
 const MYSQL_BASE = 'projet';
 const MYSQL_SERVER = 'localhost';
 
+// Nom textuel du site
 const SITE_NAME = '4IN';
+
+// Active l'affichage des erreurs BLAST dans l'HTML (sinon, l'erreur est loggée)
+// Active l'affichage des notices/warning à l'écran
+// Active l'affichage du texte des Exceptions lors d'une rencontre
 const DEBUG_MODE = true;
 
 // Protected genomes : hide species defined in PROTECTED_SPECIES
@@ -47,9 +53,12 @@ const PAGES_REF = [
     '503' => ['file' => 'static/503.php', 'view' => 'maintenanceView', 'controller' => 'maintenanceControl'],
 ];
 
-// NEW NOTE: Protected species are now loaded through a independant PHP file.
-// Note that value of specie is useless : Associative array is used like a set container here
-// Protected specie must be defined as key of the array
+// DO NOT TOUCH
+// THE FOLLOWING
+// CODE !
+//
+// DEFINING CONSTANTS FROM JSON FILE, THIS PARAMETERS SHOULD BE
+// MODIFIED THROUGH THE ADMIN CONSOLE INTERFACE ONLY.
 
 define('PARAMETERS_FILE', $_SERVER['DOCUMENT_ROOT'] . '/assets/db/site_parameters.json');
 

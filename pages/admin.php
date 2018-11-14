@@ -368,11 +368,10 @@ function showFastaFiles(array $files, bool $with_delete_input) : void {
                                 Imported <?= date('Y-m-d', $f['date']) ?>
                             </p>
                             <?php if ($with_delete_input) { ?>
-                                <form method="post" action="#">
-                                    <input type="hidden" name="delete" value="<?= htmlspecialchars($f['name'], ENT_QUOTES) ?>">
-                                    <input type="hidden" name="mode" value="adn">
-                                    <a href="#!" onclick="this.parentElement.submit()" class="secondary-content"><i class="material-icons red-text">delete_forever</i></a>
-                                </form>
+                                <a href="#!" onclick="deleteFile('<?= htmlspecialchars($f['name'], ENT_QUOTES) ?>', 'adn')" 
+                                class="secondary-content">
+                                    <i class="material-icons red-text">delete_forever</i>
+                                </a>
                             <?php } ?>
                         </li>
                     <?php } ?>
@@ -395,11 +394,10 @@ function showFastaFiles(array $files, bool $with_delete_input) : void {
                                 Imported <?= date('Y-m-d', $f['date']) ?>
                             </p>
                             <?php if ($with_delete_input) { ?>
-                                <form method="post" action="#">
-                                    <input type="hidden" name="delete" value="<?= htmlspecialchars($f['name'], ENT_QUOTES) ?>">
-                                    <input type="hidden" name="mode" value="pro">
-                                    <a href="#!" onclick="this.parentElement.submit()" class="secondary-content"><i class="material-icons red-text">delete_forever</i></a>
-                                </form>
+                                <a href="#!" onclick="deleteFile('<?= htmlspecialchars($f['name'], ENT_QUOTES) ?>', 'pro')" 
+                                class="secondary-content">
+                                    <i class="material-icons red-text">delete_forever</i>
+                                </a>
                             <?php } ?>
                         </li>
                     <?php } ?>
@@ -433,10 +431,10 @@ function showMappingFiles(array $files, bool $with_delete_input) : void {
                             Imported <?= date('Y-m-d', $f['date']) ?>
                         </p>
                         <?php if ($with_delete_input) { ?>
-                            <form method="post" action="#">
-                                <input type="hidden" name="delete" value="<?= htmlspecialchars($f['name'], ENT_QUOTES) ?>">
-                                <a href="#!" onclick="this.parentElement.submit()" class="secondary-content"><i class="material-icons red-text">delete_forever</i></a>
-                            </form>
+                            <a href="#!" onclick="deleteFile('<?= htmlspecialchars($f['name'], ENT_QUOTES) ?>')" 
+                            class="secondary-content">
+                                <i class="material-icons red-text">delete_forever</i>
+                            </a>
                         <?php } ?>
                     </li>
                 <?php } ?>

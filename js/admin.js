@@ -354,6 +354,34 @@ function buildGenomeDbModal(file, trim_first, read_first) {
         Sortable.create(el);
 }
 
+function deleteFile(file, mode = "") {
+    var modal = document.getElementById('modal_wipe');
+
+    modal.innerHTML = `<div class="modal-content">
+        <h4 id="wipe_header">Delete this file ?</h4>
+        <p id="wipe_text">
+            File will be permanetly deleted and cannot be restored.
+        </p>
+    </div>
+    <div class="modal-footer">
+        <form method="post" action="#">
+            <div id="wipe_additionnal"></div>
+            <a href="#!" class="waves-effect blue-text btn-flat modal-close">
+                Cancel
+            </a>
+        
+            <input type="hidden" name="delete" value="${file}">
+            <input type="hidden" name="mode" value="${mode}">
+            <a href="#!" onclick="this.parentElement.submit()" 
+                class="waves-effect red-text btn-flat modal-close">
+                Delete
+            </a>
+        </form>
+    </div>`;
+
+    $(modal).modal('open');
+}
+
 function deleteSpecie(specie) {
     var modal = document.getElementById('modal_wipe');
 

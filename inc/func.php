@@ -42,6 +42,7 @@ function getSelectedUrl() : array {
             // Si la page demandée n'existe pas
             // ou si la page demandée est une page d'erreur
             $page_name = '404';
+            $page_arguments = new PageNotFoundException;
         }
     }
 
@@ -52,10 +53,10 @@ function getSelectedUrl() : array {
  * Get Controller object from given route
  *
  * @param string $page_name
- * @param array<string> $page_arguments
+ * @param array|Throwable $page_arguments (array of strings, or a single Exception)
  * @return Controller
  */
-function getRoute(string $page_name, array $page_arguments) : Controller {
+function getRoute(string $page_name, $page_arguments) : Controller {
     // Get Controller object for asked page, Controller for home page if page undefined otherwise
 
     // Charge le fichier demandé
@@ -375,7 +376,7 @@ function checkSaveLinkValidity(string $specie, string $gene_id, bool $is_alias =
         }
         else if ($res['http_code'] === 0) {
             // Code d'erreur timeout
-            Logger::write("Unable to check link : Timeout error.");
+            // Logger::write("Unable to check link : Timeout error.");
             return true;
         }
         else {

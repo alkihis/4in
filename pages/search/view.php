@@ -121,6 +121,10 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
 
                     <div class="very-tiny-text">Keywords</div>
 
+                    <div class="col s12 red-text tiny-text" id='loading_block_form' style="display: none;">
+                        Loading keywords, please wait...
+                    </div>
+
                     <div class='col s12 chips chips-autocomplete' id="chip_container" style="margin-bottom: 20px; margin-top: 10px;">
                         <input type='text' style="width: 100% !important" autocomplete='off' name="global_chip" id="global_chip">
                     </div>
