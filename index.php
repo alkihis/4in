@@ -24,9 +24,6 @@ try {
         "Unable to open log file." . $e->getMessage() . ". Log date: " . date('Y-m-d') . "\n", 
         FILE_APPEND
     );
-
-    // Empêche de lancer des fatal exceptions lors de l'appel de méthodes
-    $GLOBALS['logger'] = new stdClass();
 }
 
 // Tente de connecter si un cookie est set

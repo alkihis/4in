@@ -12,11 +12,49 @@ function homeControl() : Controller {
     $number = mt_rand(0, count($imgs)-1);
     $name = basename($imgs[$number]);
 
-    return new Controller(['image' => $name], 'Home');
+    global $sql;
+
+    $beginOfDay = strtotime("midnight", time());
+
+    mt_srand($beginOfDay);
+
+    // sélection d'un gène aléatoire à présenter
+    $protected = "";
+    if (LIMIT_GENOMES && !isUserLogged() && !empty(getProtectedSpecies())) {
+        $protected = " WHERE ";
+
+        $fir = true;
+        foreach (getProtectedSpecies() as $specie) {
+            if ($fir) {
+                $fir = false;
+            }
+            else {
+                $protected .= " AND ";
+            }
+
+            $specie = mysqli_real_escape_string($sql, $specie);
+            $protected .= " specie != '$specie' ";
+        }
+    }
+
+    $q = mysqli_query($sql, "SELECT gene_id FROM GeneAssociations $protected");
+
+    $rows = mysqli_fetch_all($q, MYSQLI_ASSOC);
+
+    $random_gene = mt_rand(0, count($rows) - 1);
+
+    // Reset de la seed
+    mt_srand();
+
+    $gene_id_random = $rows[$random_gene]['gene_id'];
+
+    return new Controller(['image' => $name, 'gene' => new Gene($gene_id_random)], 'Home');
 }
 
 function homeView(Controller $c) : void { 
-    $image = $c->getData()['image'];
+    $data = $c->getData();
+    $image = $data['image'];
+
     ?>
     <div class="parallax-container parallax-home-page">
         <div class="section no-pad-bot">
@@ -38,7 +76,7 @@ function homeView(Controller $c) : void {
     <div class="container">
         <div class="section">
             <!--   Icon Section   -->
-            <div class="row">
+            <div class="row no-margin-bottom">
                 <?php if (SITE_MAINTENANCE)  { ?>
                     <p class='flow-text red-text'>
                         Website is in maintenance mode. Access 
@@ -93,6 +131,60 @@ function homeView(Controller $c) : void {
                         </div>
                     </div>
                 <?php } ?>
+            </div>
+
+            <div class="divider divider-margin"></div>
+            <div class="row">
+                <div class="col s12">
+                    <h4>Gene of the day</h4>
+                    <h5 class="center"><a target='_blank' href="/gene/<?= $data['gene']->getID() ?>"><?= $data['gene']->getID() ?></a></h5>
+                    <?php 
+                    // Assemblage des données du gène
+                    $str = [];
+
+                    if ($data['gene']->getName()) {
+                        $str[] = "<h5>Name</h5><div class='gene-info center-force'>" . $data['gene']->getName() . '</div>';
+                    }
+
+                    if ($data['gene']->getFullname()) {
+                        $str[] = "<h5>Fullname</h5><div class='gene-info center-force'>" . $data['gene']->getFullname() . '</div>';  
+                    }
+
+                    if ($data['gene']->getFamily()) {
+                        $str[] = "<h5>Family</h5><div class='gene-info center-force'>" . $data['gene']->getFamily() . '</div>';
+                    }
+                    
+                    if ($data['gene']->getSubFamily()) {
+                        $str[] = "<h5>Sub-family</h5><div class='gene-info center-force'>" . $data['gene']->getSubFamily() . '</div>';
+                    }  
+
+                    if ($data['gene']->getFunction()) {
+                        $str[] = "<h5>Function</h5><div class='gene-info center-force'>" . $data['gene']->getFunction() . '</div>';
+                    }
+
+                    if (!empty($data['gene']->getPathways())) {
+                        $str[] = "<h5>Pathway</h5>" . implode('<br>', $data['gene']->getPathways()) . '<br>';
+                    }
+
+                    foreach ($str as $key => $s) { 
+                        // Affichage des informations par ligne de deux éléments
+                        if ($key % 2 === 0) {
+                            echo '<div class="row no-margin-bottom">';
+                            if ($key === (count($str)-1)) { // Le dernier élément est un début de ligne : prend toute la ligne
+                                echo "<div class='col s12 no-pad center-force'>$s</div></div>";
+                            }
+                            else {
+                                echo "<div class='col s12 l6 no-pad center-force'><div style='width: 95%;'>$s</div></div>";
+                            }
+                        }
+                        else {
+                            echo "<div class='col s12 l6 no-pad center-force'><div style='width: 95%;'>$s</div></div>";
+                            echo '</div>';
+                        }
+                    }
+                    ?>
+                </div>
+                <div class="clearb"></div>
             </div>
         </div>
         <br><br>

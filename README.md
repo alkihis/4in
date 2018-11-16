@@ -112,7 +112,6 @@ Le site web est ordonné selon un modèle vue-contrôleur (sans framework) basiq
 Dans l'ordre de traitement, la fonction contrôleur est d'abord appelée, puis le début du document HTML (head, header) est envoyé, puis la fonction de vue est appelée après l'ouverture de la balise &lt;main&gt;.
 Le footer est ensuite généré.
 
----
 
 ## Gestions des erreurs
 
@@ -140,7 +139,7 @@ Pour logger, utilisez la méthode statique `write` du singleton `Logger`.
 Logger::write(string $message, bool $put_eol = true, bool $put_date = true);
 ```
 
-Il est encore rappelé de ne PAS lancer d'exceptions non attrapées dans la fonction de vue : l'exécution de PHP sera interrompue et l'intégralité des logs effectués durant cette exécution seront perdus.
+Il est rappelé de ne PAS lancer d'exceptions non attrapées dans la fonction de vue : l'exécution de PHP sera interrompue et l'intégralité des logs effectués durant cette exécution seront perdus.
 
 ### Erreurs de PHP
 
@@ -152,7 +151,6 @@ Une erreur aura la forme:
 [day hour:min:sec] E_TYPE : array_keys() expects parameter 1 to be array, null given in file /path/to/file.php at line 32
 ```
 
----
 
 ## Design
 
@@ -160,24 +158,21 @@ Ce site utilise [Materialize CSS](http://materializecss.com). La lecture de la d
 
 Les règles CSS supplémentaires sont à consigner dans `css/style.css`.
 
----
 
 ## Client
 
 L'utilisation de JavaScript est autorisée, en version ES5 pour les pages générales du site. Pour des raisons pratiques, ce site utilise jQuery (3.3). Essayez à minima d'utiliser VanillaJS au possible et de n'utiliser jQuery que lorsque le gain de code est important, pour maximiser les performances.
 
----
 
 ## API
 
 Une API est utilisée pour servir des requêtes internes.
 Une utilisation depuis l'extérieur est prohibée. 
 Son système est extrêmement simpliste et n'implémente aucun système d'identification (hors la session PHP) et est uniquement présente pour répondre aux demandes de l'autocomplétion et de la console d'administration (reconstruction de la base, import de fichier FASTA...).
-Vous pouvez rajouter des fichiers à la racine où dans des sous-dossiers du dossier `api/`.
+Vous pouvez rajouter des fichiers à la racine ou dans des sous-dossiers du dossier `api/`.
 
-Pour des raisons pratiques, l'API renvoie du JSON et convertit automatiquement l'URL demandée pour pointer sur une page PHP. Ainsi, `domain.tld/api/search/ids.json` pointera sur `api/search/ids.php`.
+Pour des raisons pratiques, l'API renvoie en général du JSON et convertit automatiquement l'URL demandée pour pointer sur une page PHP. Ainsi, `domain.tld/api/search/ids.json` pointera sur `api/search/ids.php`.
 
----
 
 ## Arborescence
 
@@ -218,8 +213,7 @@ Description rapide de l'arborescence du site web
         - Header
         - Page d'accueil
         - Pages d'erreurs
-- index.php
-    - Page générale, traite toutes les requêtes
+- index.php (Page générale, traite toutes les requêtes)
 
 
 

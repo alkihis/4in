@@ -79,8 +79,8 @@ function contactView(Controller $c) : void {
                         <h6 class="red-text">You seem to have automated behaviour. Try again later.</h6>
                     <?php } ?>
                     <div class="input-field col s12">
-                        <input type='email' class="validate" id='your_mail' name="your_mail" required>
-                        <label for="your_mail">Your e-mail address</label>
+                        <input type='email' class="validate" id='mail' name="mail" required>
+                        <label for="mail">Your e-mail address</label>
                     </div>
                     <div class="input-field col s12">
                         <textarea class="materialize-textarea" placeholder="Write here your message" 

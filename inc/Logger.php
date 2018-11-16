@@ -1,14 +1,45 @@
 <?php
 
 class Logger {
+    /**
+     * Location of current log
+     *
+     * @var string
+     */
     protected $location;
+    /**
+     * Location of notice log
+     *
+     * @var string
+     */
     protected $php_notice_location;
 
+    /**
+     * Buffer for error log
+     *
+     * @var string
+     */
     protected $buffer;
+    /**
+     * Buffer for notice log
+     *
+     * @var string
+     */
     protected $php_notice_buffer;
 
+    /**
+     * Write on file when errors occurred (true),
+     * or write buffer at the end of script (false)
+     *
+     * @var boolean
+     */
     protected $write_on_error;
 
+    /**
+     * Instance of Logger
+     *
+     * @var Logger|null
+     */
     static public $instance = null;
 
     public function __construct(string $location = "assets/log/", bool $write_on_error = false) {
@@ -59,12 +90,20 @@ class Logger {
         }
     }
 
-    static public function write(string $message, bool $put_eol = true, bool $put_date = true, bool $notice = false) : void {
+    /**
+     * Write message in log
+     *
+     * @param string $message Text of the message
+     * @param boolean $put_eol Put \n at the end of message or not
+     * @param boolean $put_date Put current date on front of the message or not
+     * @return void
+     */
+    static public function write(string $message, bool $put_eol = true, bool $put_date = true) : void {
         if (self::$instance === null) {
             throw new RuntimeException("Logger is not created");
         }
 
-        self::$instance->writeLog($message, $put_eol, $put_date, $notice);
+        self::$instance->writeLog($message, $put_eol, $put_date);
     }
 
     static public function errorHandler(int $errno, string $errstr, string $errfile, int $errline) : bool {
@@ -98,7 +137,11 @@ class Logger {
 
         $message .= " : $errstr in file $errfile at line $errline";
 
-        self::write($message, true, true, $notice);
+        if (self::$instance === null) {
+            throw new RuntimeException("Logger is not created");
+        }
+
+        self::$instance->writeLog($message, true, true, $notice);
 
         // Returning false will show the notice on screen (> if debug mode is active)
         return !DEBUG_MODE;

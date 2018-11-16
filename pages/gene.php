@@ -23,7 +23,7 @@ function geneControl(array $args) : Controller {
     try {
         $gene = new Gene($args[0]);
     } catch (RuntimeException $e) {
-        throw new PageNotFoundException;
+        throw new PageNotFoundException("Gene does not exists.");
     }
 
     // Le gene est récupéré : il faut vérifier si on a les droits de lecture (certaines
@@ -35,16 +35,17 @@ function geneControl(array $args) : Controller {
     $link = getLinkForId($gene->getID(), $gene->getSpecie(), $gene->getAlias());
 
     if ($link && !isProtectedSpecie($gene->getSpecie())) {
-        if (!$gene->isLinkDefined()) {
+        if (!$gene->isLinkDefined()) { // linkable vaut null, on checke si il est valide
             $is_ok = checkSaveLinkValidity($gene->getSpecie(), $gene->getAlias() ?? $gene->getID(), (bool)($gene->getAlias()));
 
             if (!$is_ok) {
                 $link = null;
             }
         }
-        else if (!$gene->hasLink()) {
+        else if (!$gene->hasLink()) { // linkable vaut 0
             $link = null;
         }
+        // Sinon : linkable vaut 1, le lien vers le gène est valide
     }
 
     $gene_id = mysqli_real_escape_string($sql, $gene->getID());
@@ -70,7 +71,7 @@ function geneControl(array $args) : Controller {
 
     $arr = ['gene' => $gene, 'orthologues' => $array, 'link' => $link];
 
-    return new Controller($arr, $gene->getID());
+    return new Controller($arr, htmlspecialchars($gene->getID()));
 }
 
 /**

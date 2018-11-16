@@ -504,3 +504,7 @@ textarea.materialize-textarea{
 .chips .input {
     border: 0 !important;
 }
+
+.center-force {
+    text-align: center !important;
+}
