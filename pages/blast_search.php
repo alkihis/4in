@@ -9,7 +9,7 @@ function searchBlastView(Controller $c) : void { ?>
     <div class="container">
         <div class="row">
             <div class="col s12">
-                <form method="post" id="blast_form" action="/blast" enctype="multipart/form-data">
+                <form method="post" id="blast_form" enctype="multipart/form-data">
                     <div class="card-panel card-border" style='margin-top: 20px;'>
                         <div class="row no-margin-bottom">
                             <div class="col s2">

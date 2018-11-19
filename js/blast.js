@@ -9,16 +9,19 @@ var PRELOADER = '<div class="center"><div class="preloader-wrapper big active">\
     <div class="circle"></div>\
   </div>\
 </div>\
-</div></div>';
+</div>\
+<h5 class="light-text">Search in progress</h5>\
+<h6 class="light-text">This page will be updated when BLAST request is complete</h6>\
+</div>';
 
 function closeBlastForm() {
     $('#blue_gradient').slideUp(300);
-    $('#blast_form').slideUp(300, function() { $('#back_to_form').slideDown(300); });
+    $('#blast_form').slideUp(300, function() { $('#back_to_form').slideDown(150); });
 }
 
 function openBlastForm() {
-    $('#back_to_form').slideUp(200);
-    $('#blast_form').slideDown(350);
+    $('#back_to_form').slideUp(150);
+    $('#blast_form').slideDown(300);
     $('#blue_gradient').slideDown(300);
 }
 
@@ -35,10 +38,10 @@ $(function() {
     function sendData() {
         var xhr = new XMLHttpRequest();
     
-        // Liez l'objet FormData et l'élément form
-        var FD = new FormData(form);
+        // Lie l'objet FormData et l'élément form
+        var fd = new FormData(form);
     
-        // Définissez ce qui se passe si la soumission s'est opérée avec succès
+        // Définit ce qui se passe si la soumission s'est opérée avec succès
         xhr.addEventListener("load", function(event) {
             var json_text = event.target.responseText;
 
@@ -75,25 +78,25 @@ $(function() {
             }
         });
     
-        // Definissez ce qui se passe en cas d'erreur
+        // Definit ce qui se passe en cas d'erreur
         xhr.addEventListener("error", function(event) {
             placeholder_send.innerHTML = makeBlastError("An unknown error occurred");
             openBlastForm();
         });
     
-        // Configurez la requête
+        // Configure la requête
         xhr.open("POST", "/api/blast/make_search.json", true);
     
         // Les données envoyées sont ce que l'utilisateur a mis dans le formulaire
-        xhr.send(FD);
+        xhr.send(fd);
     }
      
-    // Accédez à l'élément form …
+    // Accès à l'élément form …
     var form = document.getElementById("blast_form");
     var placeholder_send = document.getElementById('placeholder_blast');
     var saved_blast = "";
 
-    // … et prenez en charge l'événement submit.
+    // … et prend en charge l'événement submit.
     form.addEventListener("submit", function (event) {
         event.preventDefault();
 
@@ -103,10 +106,10 @@ $(function() {
 
             closeBlastForm();
             
-            // Attend que le formulaire soit caché   
+            // Attend que le formulaire soit caché avant de lancer la requête
             setTimeout(function() {
                 sendData();
-            }, 500);
+            }, 400);
         }
     });
 });

@@ -183,6 +183,8 @@ function blastControl() : int {
     $query_shell .= constructParameters($program);
 
     // Fermeture de la session
+    // pour ne pas lock la session
+    // pour d'autres pages
     session_write_close();
 
     if (isset($_FILES['fasta_file']) && $_FILES['fasta_file']['size'] && !$_FILES['fasta_file']['error']) {
@@ -220,13 +222,38 @@ function blastControl() : int {
         if ($query_str) {
             `rm -f $temp_file`;
         }
+
+        $queries = [];
     
         // Traitement de l'HTML généré
         $html = preg_replace("/a> *(.+)\nlength=/iu", "a> <a href='/gene/$1' target='_blank'>$1</a>\nlength=", $html);
+
+        // Création des liens vers queries
+        $html = preg_replace_callback("/<b>Query=<\/b> (.+)\b/iu", function($matches) use (&$queries) {
+            $match = htmlspecialchars($matches[1], ENT_QUOTES);
+            $queries[] = $match;
+
+            return "<a href='#top_blast'><i class='material-icons left'>arrow_drop_up</i>Jump to top</a>" . 
+                "<div class='clearb'></div>\n<b>Query=</b> <span id='{$match}'>{$match}</span>";
+        }, $html);
     
         $mat = [];
         preg_match("/(<pre>.+<\/pre>)/is", $html, $mat);
     
+        // Construit le texte "Queries" en haut de la recherche pour accéder rapidement aux
+        // différentes recherches
+        if (!empty($queries)) {
+            $query_text = "<h6 id='top_blast' class='light-text'>Queries :</h6>";
+            $first = true;
+            foreach ($queries as $quer) {
+                if ($first) $first = false;
+                else $query_text .= ", ";
+                $query_text .= "<a href='#$quer'>$quer</a>";
+            }
+    
+            echo $query_text;
+        }
+
         if (!DEBUG_MODE) {
             if (isset($mat[1])) echo $mat[1];                
 
@@ -254,9 +281,19 @@ else {
 
     ob_start();
 
-    $_SESSION['before_next_blast'] = time() + 20;
+    // Par défaut, empêche de relancer une requête pendant que l'ancienne tourne
+    // pendant au moins 120 secondes
+    // Sauf si l'utilisateur est connecté
+    if (!isUserLogged()) {
+        $_SESSION['before_next_blast'] = time() + 120;
+    }
     
+    // blastControl() ferme la session pendant le BLAST ! (pour éviter de lock)
     $errors = blastControl();
+
+    // Réouvre la session (AVANT le débuffer, sinon header HTTP envoyés!)
+    session_start();
+    $_SESSION['before_next_blast'] = 0;
     
     $html = ob_get_clean();
 }
