@@ -19,11 +19,11 @@ function blastProgram() : string {
             case 'tn':
                 return 'tblastn';
             default:
-                return 'blastn';
+                return 'blastn -task blastn';
         }
     }
     else {
-        return 'blastn';
+        return 'blastn -task blastn';
     }
 }
 
@@ -94,18 +94,38 @@ function constructParameters(string $program) : string {
                     $p .= " -comp_based_stats $mat ";
                 }
             }
+        }
+    }
 
-            if (isset($_POST['gapvalues']) && is_string($_POST['gapvalues'])) {
-                $val = $_POST['gapvalues'];
+    if ($program === 'blastn -task blastn') {
+        // Si on est sur un blastn
+        if (isset($_POST['rewardvalues']) && is_string($_POST['rewardvalues'])) {
+            $val = $_POST['rewardvalues'];
 
-                $val = explode('/', $val);
+            $val = explode('/', $val);
 
-                if (isset($val[1])) { // Si on a bien deux valeurs
-                    $open = (int)$val[0];
-                    $ext = (int)$val[1];
+            if (isset($val[1])) { // Si on a bien deux valeurs
+                $mat = (int)$val[0];
+                $mismat = (int)$val[1];
 
-                    $p .= " -gapopen $open -gapextend $ext ";
-                }
+                $p .= " -reward $mat -penalty $mismat ";
+            }
+        }
+    }
+
+    if ($program !== 'blastn -task megablast' && $program !== 'tblastx') { 
+        // Si on est pas sur megablast ou tblastx
+
+        if (isset($_POST['gapvalues']) && is_string($_POST['gapvalues'])) {
+            $val = $_POST['gapvalues'];
+
+            $val = explode('/', $val);
+
+            if (isset($val[1])) { // Si on a bien deux valeurs
+                $open = (int)$val[0];
+                $ext = (int)$val[1];
+
+                $p .= " -gapopen $open -gapextend $ext ";
             }
         }
     }
@@ -169,7 +189,7 @@ function constructParameters(string $program) : string {
     return $p;
 }
 
-function blastControl() : int {
+function blastControl(array &$stats) : int {
     $re = [];
 
     chdir($_SERVER['DOCUMENT_ROOT']);
@@ -212,10 +232,12 @@ function blastControl() : int {
     
         chdir($_SERVER['DOCUMENT_ROOT'] . '/ncbi/bin');
 
-        $query_shell .= " -query \"$temp_file\" -html 2>&1";
+        $query_shell .= " -query \"$temp_file\" -html -num_threads 4 2>&1";
     
+        $st = microtime(true);
         // echo $query_shell;
         $html = `$query_shell`;
+        $stats['time_request'] = microtime(true) - $st;
     
         chdir($_SERVER['DOCUMENT_ROOT']);
     
@@ -224,10 +246,18 @@ function blastControl() : int {
         }
 
         $queries = [];
+
+        if (strlen($html) > 7000000) { // Résultat très très long (7 millions de caractères)
+            return 4;
+        }
     
+        $st = microtime(true);
         // Traitement de l'HTML généré
         $html = preg_replace("/a> *(.+)\nlength=/iu", "a> <a href='/gene/$1' target='_blank'>$1</a>\nlength=", $html);
 
+        $stats['time_link'] = microtime(true) - $st;
+
+        $st = microtime(true);
         // Création des liens vers queries
         $html = preg_replace_callback("/<b>Query=<\/b> (.+)\b/iu", function($matches) use (&$queries) {
             $match = htmlspecialchars($matches[1], ENT_QUOTES);
@@ -236,7 +266,9 @@ function blastControl() : int {
             return "<a href='#top_blast'><i class='material-icons left'>arrow_drop_up</i>Jump to top</a>" . 
                 "<div class='clearb'></div>\n<b>Query=</b> <span id='{$match}'>{$match}</span>";
         }, $html);
+        $stats['time_queries'] = microtime(true) - $st;
     
+        $st = microtime(true);
         $mat = [];
         preg_match("/(<pre>.+<\/pre>)/is", $html, $mat);
     
@@ -253,6 +285,7 @@ function blastControl() : int {
     
             echo $query_text;
         }
+        $stats['time_generation'] = microtime(true) - $st;
 
         if (!DEBUG_MODE) {
             if (isset($mat[1])) echo $mat[1];                
@@ -276,8 +309,8 @@ if (isset($_SESSION['before_next_blast']) && $_SESSION['before_next_blast'] > ti
 }
 else {
     // Commence le BLAST
-    // Temps limite de 180 minutes (trois heures, 60*60*3)
-    set_time_limit(180*60);
+    // Temps limite de 120 minutes (deux heures, 60*60*2)
+    set_time_limit(120*60);
 
     ob_start();
 
@@ -288,8 +321,9 @@ else {
         $_SESSION['before_next_blast'] = time() + 120;
     }
     
+    $stats = [];
     // blastControl() ferme la session pendant le BLAST ! (pour éviter de lock)
-    $errors = blastControl();
+    $errors = blastControl($stats);
 
     // Réouvre la session (AVANT le débuffer, sinon header HTTP envoyés!)
     session_start();
@@ -300,4 +334,4 @@ else {
 
 header('Content-Type: application/json');
 
-echo json_encode(['html' => $html, 'error' => $errors]);
+echo json_encode(['html' => $html, 'error' => $errors, 'stats' => $stats]);

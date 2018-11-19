@@ -1,17 +1,29 @@
 var BLAST_ERROR_MSG = "<h4 class='red-text'>An error occurred. Check request informations.</h4>";
-var PRELOADER = '<div class="center"><div class="preloader-wrapper big active">\
-<div class="spinner-layer spinner-blue-only">\
-  <div class="circle-clipper left">\
-    <div class="circle"></div>\
-  </div><div class="gap-patch">\
-    <div class="circle"></div>\
-  </div><div class="circle-clipper right">\
-    <div class="circle"></div>\
-  </div>\
-</div>\
-</div>\
-<h5 class="light-text">Search in progress</h5>\
-<h6 class="light-text">This page will be updated when BLAST request is complete</h6>\
+var BLAST_PRELOADER = '<div class="center" style="margin-top: 50px">\
+    <div class="preloader-wrapper active">\
+        <div class="spinner-layer spinner-blue">\
+            <div class="circle-clipper left"><div class="circle"></div></div>\
+            <div class="gap-patch"><div class="circle"></div></div>\
+            <div class="circle-clipper right"><div class="circle"></div></div>\
+        </div>\
+        <div class="spinner-layer spinner-red">\
+            <div class="circle-clipper left"><div class="circle"></div></div>\
+            <div class="gap-patch"><div class="circle"></div></div>\
+            <div class="circle-clipper right"><div class="circle"></div></div>\
+        </div>\
+        <div class="spinner-layer spinner-yellow">\
+            <div class="circle-clipper left"><div class="circle"></div></div>\
+            <div class="gap-patch"><div class="circle"></div></div>\
+            <div class="circle-clipper right"><div class="circle"></div></div>\
+        </div>\
+        <div class="spinner-layer spinner-green">\
+            <div class="circle-clipper left"><div class="circle"></div></div>\
+            <div class="gap-patch"><div class="circle"></div></div>\
+            <div class="circle-clipper right"><div class="circle"></div></div>\
+        </div>\
+    </div>\
+    <h5 class="light-text">Search in progress</h5>\
+    <h6 class="light-text">This page will be updated when BLAST request is complete</h6>\
 </div>';
 
 function closeBlastForm() {
@@ -33,7 +45,6 @@ $(function() {
     $('.collapsible').collapsible(); 
     initRadioBlast(); 
     refreshBlastForm(document.querySelector('[name=program]:checked').value); 
-    refreshBlastGapMatrix(document.getElementById('matrix').value);
 
     function sendData() {
         var xhr = new XMLHttpRequest();
@@ -44,12 +55,15 @@ $(function() {
         // Définit ce qui se passe si la soumission s'est opérée avec succès
         xhr.addEventListener("load", function(event) {
             var json_text = event.target.responseText;
+            var json_ok = false;
 
             try {
                 // Tente d'obtenir les données téléchargées
                 var json = JSON.parse(json_text);
 
-                if (Number(json.error) == 0) {
+                json_ok = true;
+
+                if (Number(json.error) === 0) {
                     placeholder_send.innerHTML = '<div class="divider-margin divider"></div>' + json.html;
                 }
                 else {
@@ -66,6 +80,11 @@ $(function() {
                             M.toast({html: "Please wait before a new request", displayLength: 8000});
                             placeholder_send.innerHTML = saved_blast;
                             break;
+                        case 4:
+                            M.toast({html: "Result is very long. Consider trimming your request.", displayLength: 8000});
+                            placeholder_send.innerHTML = makeBlastError("This result is too long.\
+                            Try again and divide your queries for a smaller result. You can also reduce the number of alignements.");
+                            break;
                         default:
                             placeholder_send.innerHTML = makeBlastError("An unknown error occurred");
 
@@ -74,8 +93,14 @@ $(function() {
                     throw "Error";
                 }
             } catch (e) {
+                if (!json_ok) {
+                    placeholder_send.innerHTML = makeBlastError("An server error occurred. Try again later.");
+                }
+
                 openBlastForm();
             }
+
+            saved_blast = "";
         });
     
         // Definit ce qui se passe en cas d'erreur
@@ -102,7 +127,7 @@ $(function() {
 
         if (checkBlastForm()) {
             saved_blast = placeholder_send.innerHTML;
-            placeholder_send.innerHTML = '<div class="divider-margin divider"></div>' + PRELOADER;
+            placeholder_send.innerHTML = '<div class="divider-margin divider"></div>' + BLAST_PRELOADER;
 
             closeBlastForm();
             
@@ -164,6 +189,10 @@ function refreshBlastForm(mode) {
         select.innerHTML = select_megablast;
     }
 
+    if (mode !== 'meg') {
+        refreshBlastGapMatrix(mode === 'n' ? 'n' : document.getElementById('matrix').value);
+    }
+
     // Actualisation de la checkbox low complexity si megablast
     document.getElementById('low_complex').checked = mode === 'meg' || mode === 'n';
 
@@ -194,8 +223,39 @@ function checkBlastForm() {
     }
 }
 
-function refreshBlastGapMatrix(mode) {
+function selectMatrixForBlastN() {
+    var mode = document.getElementById('rewardvalues').value;
 
+    switch (mode) {
+        case '1/-4':
+            return {
+                "1": [1, 2],
+                "2": [0, 1, [5]],
+                "default": [5, 2]  
+            };
+        case '2/-3':
+            return {
+                "2": [4, 6, [2]],
+                "3": [3, 3],
+                "4": [0, 0, [2, 4, 6]],
+                "default": [5, 2]  
+            };
+        case '4/-5':
+            return {
+                "5": [3, 6],
+                "8": [12, 12],
+                "default": [12, 8]  
+            };
+        default:
+            return {
+                "1": [2, 4],
+                "2": [0, 3, [5]],
+                "default": [5, 2]  
+            };
+    }
+}
+
+function refreshBlastGapMatrix(mode) {
     // COMPOSITION D'UN TABLEAU
     /* 
     MATRIX_NAME = {
@@ -209,58 +269,76 @@ function refreshBlastGapMatrix(mode) {
     */
 
     var sel = null;
-    switch (mode) {
-        case 'PAM30':
-            sel = {
-                "1": [8, 10, [13, 14]],
-                "2": [5, 7, [14]],
-                "default": [9, 1]  
-            };
-            break;
-        case 'PAM70':
-            sel = {
-                "1": [9, 11],
-                "2": [6, 8, [11]],
-                "default": [10, 1]  
-            };
-            break;
-        case 'PAM250':
-            sel = {
-                "1": [17, 21],
-                "2": [13, 17],
-                "3": [11, 15],
-                "default": [14, 2] 
-            };
-            break;
-        case 'BLOSUM45':
-            sel = {
-                "1": [16, 19],
-                "2": [12, 16],
-                "3": [10, 13],
-                "default": [15, 2] 
-            };
-            break;
-        case 'BLOSUM62':
-            sel = {
-                "1": [9, 13],
-                "2": [6, 11],
-                "default": [11, 1] 
-            };
-            break;
-        case 'BLOSUM80':
-            sel = {
-                "1": [9, 11],
-                "2": [6, 9, [13]],
-                "default": [10, 1]  
-            };
-            break;
-        default:
-            sel = {
-                "1": [9, 11],
-                "2": [6, 9],
-                "default": [10, 1] 
-            };
+
+    // Vérif si le programme utilisé n'est pas BLASTN,
+    // Si c'est le cas, c'est une matrice spéciale
+    if (mode === 'n') {
+
+        sel = {
+            "2": [4, 6, [2]],
+            "3": [3, 3],
+            "4": [0, 0, [2, 4, 6]],
+            "default": [5, 2]  
+        };
+
+
+        sel = selectMatrixForBlastN();
     }
+    else {
+        switch (mode) {
+            case 'PAM30':
+                sel = {
+                    "1": [8, 10, [13, 14]],
+                    "2": [5, 7, [14]],
+                    "default": [9, 1]  
+                };
+                break;
+            case 'PAM70':
+                sel = {
+                    "1": [9, 11],
+                    "2": [6, 8, [11]],
+                    "default": [10, 1]  
+                };
+                break;
+            case 'PAM250':
+                sel = {
+                    "1": [17, 21],
+                    "2": [13, 17],
+                    "3": [11, 15],
+                    "default": [14, 2] 
+                };
+                break;
+            case 'BLOSUM45':
+                sel = {
+                    "1": [16, 19],
+                    "2": [12, 16],
+                    "3": [10, 13],
+                    "default": [15, 2] 
+                };
+                break;
+            case 'BLOSUM62':
+                sel = {
+                    "1": [9, 13],
+                    "2": [6, 11],
+                    "default": [11, 1] 
+                };
+                break;
+            case 'BLOSUM80':
+                sel = {
+                    "1": [9, 11],
+                    "2": [6, 9, [13]],
+                    "default": [10, 1]  
+                };
+                break;
+            default:
+                sel = {
+                    "1": [9, 11],
+                    "2": [6, 9],
+                    "default": [10, 1] 
+                };
+        }
+    }
+    
 
     var element = document.getElementById('gapvalues');
     var str = '';
@@ -271,7 +349,7 @@ function refreshBlastGapMatrix(mode) {
         for (var i = sel[key][0]; i <= sel[key][1]; i++) {
             str += "<option value='" + i + "/" + key + "' ";
 
-            if (Number(key) === sel.default[1] && i === sel.default[0]) { // Si gap est la valeur par défaut : on séléectionne
+            if (Number(key) === sel.default[1] && i === sel.default[0]) { // Si gap est la valeur par défaut : on sélectionne
                 str += 'selected';
             }
             
@@ -281,7 +359,14 @@ function refreshBlastGapMatrix(mode) {
         if (sel[key].length > 2) { 
             // Si on a défini des valeurs "aberrantes" (le tableau sel[key] a 3 cases)
             for (var i = 0; i < sel[key][2].length; i++) {
-                str += "<option value='" + sel[key][2][i] + "/" + key + "'>Existence: " + 
+                str += "<option value='" + sel[key][2][i] + "/" + key + "' ";
+                
+                if (Number(key) === sel.default[1] && sel[key][2][i] === sel.default[0]) { 
+                    // Si gap est la valeur par défaut : on sélectionne
+                    str += 'selected';
+                }
+                
+                str += ">Existence: " + 
                     sel[key][2][i] + " / Extension: " + key + "</option>";
             }
         }

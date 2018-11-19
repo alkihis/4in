@@ -147,8 +147,8 @@ function searchBlastView(Controller $c) : void { ?>
                         <li>
                             <div class="collapsible-header"><i class="material-icons">exposure_plus_2</i>Scoring</div>
                             <div class="collapsible-body">
-                                <div class="blast-message red-text show-for-n show-for-meg" style='margin-bottom: 15px;'>
-                                    Scoring parameters are disabled for BLASTn and megaBLAST. Default parameters
+                                <div class="blast-message red-text show-for-meg" style='margin-bottom: 15px;'>
+                                    Scoring parameters are disabled for megaBLAST. Default parameters
                                     will be used instead.
                                 </div>
 
@@ -180,11 +180,21 @@ function searchBlastView(Controller $c) : void { ?>
                                     <label>Compositional adjustments</label>
                                 </div>
 
-                                <div class="input-field col s12"> <!-- NOT FOR TBLASTX, MEGABLAST AND BLASTN -->
-                                    <select class="blast-select not-for-tx not-for-n not-for-meg" name="gapvalues" id="gapvalues">
+                                <div class="input-field col s6"> <!-- NOT FOR TBLASTX AND MEGABLAST -->
+                                    <select class="blast-select not-for-tx not-for-meg" name="gapvalues" id="gapvalues">
                                         
                                     </select>
                                     <label>Gap penalities</label>
+                                </div>
+                                <div class="input-field col s6"> <!-- NOT FOR ALL BLAST EXCEPT BLASTN -->
+                                    <select class="blast-select not-for-p not-for-x not-for-tn not-for-tx not-for-meg" 
+                                        name="rewardvalues" id="rewardvalues" onchange="refreshBlastGapMatrix('n')">
+                                        <option value="1/-4">Match: 1 / Mismatch: -4</option>
+                                        <option value="2/-3" selected>Match: 2 / Mismatch: -3</option>
+                                        <option value="4/-5">Match: 4 / Mismatch: -5</option>
+                                        <option value="1/-1">Match: 1 / Mismatch: -1</option>
+                                    </select>
+                                    <label>Match/mismatch score</label>
                                 </div>
                             
                                 <div class="clearb"></div>
