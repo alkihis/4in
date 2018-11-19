@@ -5,11 +5,11 @@ function searchBlastControl(array $args) : Controller {
 }
 
 function searchBlastView(Controller $c) : void { ?>
-    <div class="linear-nav-to-white top-float"></div>
+    <div class="linear-nav-to-white top-float" id="blue_gradient"></div>
     <div class="container">
         <div class="row">
             <div class="col s12">
-                <form method="post" action="/blast" enctype="multipart/form-data" onsubmit="return checkBlastForm()">
+                <form method="post" id="blast_form" action="/blast" enctype="multipart/form-data">
                     <div class="card-panel card-border" style='margin-top: 20px;'>
                         <div class="row no-margin-bottom">
                             <div class="col s2">
@@ -274,15 +274,18 @@ function searchBlastView(Controller $c) : void { ?>
                 </form>
             </div>
         </div>
+
+        <div id="back_to_form" style="display: none;">
+            <div class="center center-block">
+                <div class="btn-flat btn-perso orange-text" onclick="openBlastForm()">
+                    <i class="material-icons left">arrow_upward</i>Open BLAST form
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="placeholder_blast"></div>
     </div>
 
-    <script>
-        $(function() { 
-            $('.collapsible').collapsible(); 
-            initRadioBlast(); 
-            refreshBlastForm(document.querySelector('[name=program]:checked').value); 
-            refreshBlastGapMatrix(document.getElementById('matrix').value);
-        });
-    </script>
+    <script src="/js/blast.js"></script>
     <?php
 }

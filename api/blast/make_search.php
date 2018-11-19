@@ -1,47 +1,9 @@
 <?php
-/**
- * isValidFasta
- * Returns TRUE if FASTA is OK,
- * -1 if no valid line
- * 0+ (line position) if line 0+ failed
- *
- * @param string $str FASTA string
- * @param string $mode adn or pro
- * @return int|boolean
- */
-function isValidFasta(string $str, string $mode = 'adn') {
-    $lines = explode("\n", $str);
-    $real_lines = 0;
 
-    if ($mode === 'adn')
-        $mode = 0;
-    else
-        $mode = 1;
+global $sql;
 
-    foreach ($lines as $key => $line) {
-        if (strpos($line, '>') === 0) {
-            continue;
-        }
-
-        // REGEX
-        if ($mode === 0)
-            $is_ok = preg_match("/^[ATGC\*]+$/i", $line);
-        else
-            $is_ok = preg_match("/^[GALMFWKQESPVICYHRNDT\*]+$/i", $line);
-
-        if (!$is_ok)
-            return $key;
-
-        $real_lines++;
-    }
-
-    if ($real_lines === 0) {
-        return -1;
-    }
-    else {
-        return true;
-    }
-}
+// Construit la requête BLAST
+// et renvoie l'HTML sous forme de JSON
 
 function blastProgram() : string {
     if (isset($_POST['program']) && is_string($_POST['program'])) {
@@ -207,9 +169,10 @@ function constructParameters(string $program) : string {
     return $p;
 }
 
-function blastControl(array $args) : Controller {
+function blastControl() : int {
     $re = [];
 
+    chdir($_SERVER['DOCUMENT_ROOT']);
     // BASE DIRECTORY IS $_SERVER[’DOCUMENT_ROOT']
     $query_str = "";
     $query_file = null;
@@ -218,6 +181,9 @@ function blastControl(array $args) : Controller {
     $query_shell = './' . $query_shell . ' ' . chooseBDD($program);
 
     $query_shell .= constructParameters($program);
+
+    // Fermeture de la session
+    session_write_close();
 
     if (isset($_FILES['fasta_file']) && $_FILES['fasta_file']['size'] && !$_FILES['fasta_file']['error']) {
         $query_file = $_FILES['fasta_file']['tmp_name'];
@@ -262,51 +228,39 @@ function blastControl(array $args) : Controller {
         preg_match("/(<pre>.+<\/pre>)/is", $html, $mat);
     
         if (!DEBUG_MODE) {
-            if (isset($mat[1])) {
-                $html = $mat[1];
-            }
-            else {
-                throw new RuntimeException('BLAST is not available');
-            }
+            if (isset($mat[1])) echo $mat[1];                
+
+            else return 1; // BLAST NOT AVAILABLE
         }
-    
-        $re['html'] = $html;
-    
+        else {
+            echo $html;
+        }
     }
     else {
-        $re['html'] = '';
-        $re['error']['empty'] = true;
+        return 2; // EMPTY QUERY
     }
 
-    return new Controller($re, 'BLAST');
+    return 0;
 }
 
-function blastView(Controller $c) : void {
-    $data = $c->getData();
-
-    ?>
-    <div class='container'>
-        <?php 
-        if (isset($data['error']['query'])) {
-            echo "<h4 class='red-text'>Your file is not formated correctly.</h4>
-            <div class='divider divider-margin'></div>";
-            echo '<h6 class="red-text">';
-
-            if ($data['error']['query'] === -1) {
-                echo "Empty sequence or file.";
-            }
-            else {
-                $data['error']['query']++; // Lines are 0+ formatted, switch to 1+ format
-                echo "Line {$data['error']['query']} is invalid.";
-            }
-
-            echo '</h6>';
-        }
-        else if (isset($data['error']['empty'])) {
-            echo "<h4 class='red-text'>Query is empty.</h4>";
-        }
-        ?>
-        <?= $data['html'] ?>
-    </div>
-    <?php
+if (isset($_SESSION['before_next_blast']) && $_SESSION['before_next_blast'] > time()) {
+    $errors = 3; // RETRY LATER
+    $html = '';
 }
+else {
+    // Commence le BLAST
+    // Temps limite de 180 minutes (trois heures, 60*60*3)
+    set_time_limit(180*60);
+
+    ob_start();
+
+    $_SESSION['before_next_blast'] = time() + 20;
+    
+    $errors = blastControl();
+    
+    $html = ob_get_clean();
+}
+
+header('Content-Type: application/json');
+
+echo json_encode(['html' => $html, 'error' => $errors]);

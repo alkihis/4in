@@ -34,9 +34,9 @@ const LINK_GENERAL = 'http://bf2i200.insa-lyon.fr:4555/%s/NEW-IMAGE?type=GENE&ob
 // ]
 const PAGES_REF = [
     'home' => ['file' => 'static/start.php', 'view' => 'homeView', 'controller' => 'homeControl'],
+    'about' => ['file' => 'pages/about.php', 'view' => 'aboutView', 'controller' => 'aboutControl'],
     'login' => ['file' => 'pages/login.php', 'view' => 'loginView', 'controller' => 'loginControl'],
     'search' => ['file' => 'pages/search.php', 'view' => 'searchView', 'controller' => 'searchControl'],
-    'blast' => ['file' => 'pages/blast.php', 'view' => 'blastView', 'controller' => 'blastControl'],
     'blast_search' => ['file' => 'pages/blast_search.php', 'view' => 'searchBlastView', 'controller' => 'searchBlastControl'],
     'help' => ['file' => 'pages/help.php', 'view' => 'helpView', 'controller' => 'helpControl'],
     'gene' => ['file' => 'pages/gene.php', 'view' => 'geneView', 'controller' => 'geneControl'],
@@ -44,7 +44,6 @@ const PAGES_REF = [
     'add' => ['file' => 'pages/add.php', 'view' => 'addView', 'controller' => 'addControl'],
     'add_o' => ['file' => 'pages/add_ortho.php', 'view' => 'addOView', 'controller' => 'addOControl'],
     'admin' => ['file' => 'pages/admin.php', 'view' => 'adminView', 'controller' => 'adminControl'],
-    'team' => ['file' => 'pages/team.php', 'view' => 'teamView', 'controller' => 'teamControl'],
     'contact' => ['file' => 'pages/contact.php', 'view' => 'contactView', 'controller' => 'contactControl'],
     '404' => ['file' => 'static/404.php', 'view' => 'notFoundView', 'controller' => 'notFoundControl'],
     '403' => ['file' => 'static/403.php', 'view' => 'forbiddenView', 'controller' => 'forbiddenControl'],

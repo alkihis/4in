@@ -2,11 +2,12 @@
     <div class="container">
         <div class="row">
             <div class="col l6 s12">
-                <h5 class="white-text">Developers</h5>
+                <h5 class="white-text">INSA Innate Immunity of Insect database</h5>
                 <p class="grey-text text-lighten-4">
-                    We are a team of students in our first year of master, 
-                    working hastily to achieve the world's greatest database.<br>
-                    Learn more about our <a class="underline white-text" href="/team">team</a>.
+                    Developed in order to facilitate access to the data harvested from different species of 
+                    insects inside INSA's BF2i laboratory, 
+                    this database is centered around the genetic study of the rice weevil.<br>
+                    Learn more about our <a class="underline white-text" href="/about">team</a>.
                 </p>
             </div>
             <div class="col l3 s12">
@@ -17,7 +18,6 @@
                     </a></li>
                     <li><a class="white-text" href="/search">Search</a></li>
                     <li><a class="white-text" href="/blast_search">BLAST</a></li>
-                    <!-- <li><a class="white-text" href="/help">Help</a></li> -->
                     <li><a class="white-text" href="/contact">Contact us</a></li>
                     <?php if (isUserLogged()) { ?>
                         <li><a class="white-text" href="/admin">Administration</a></li>

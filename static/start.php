@@ -136,8 +136,14 @@ function homeView(Controller $c) : void {
             <div class="divider divider-margin"></div>
             <div class="row">
                 <div class="col s12">
-                    <h4>Gene of the day</h4>
-                    <h5 class="center"><a target='_blank' href="/gene/<?= $data['gene']->getID() ?>"><?= $data['gene']->getID() ?></a></h5>
+                    <h4>Gene of the day <div class="right light-text"><?= $data['gene']->getSpecie() ?></div></h4>
+                    <div class="clearb"></div>
+                    <h5 class="center">
+                        <a target='_blank' href="/gene/<?= $data['gene']->getID() ?>"><?= $data['gene']->getID() ?></a>
+                        <?php if ($data['gene']->getAlias()) { ?>
+                            <span class="very-tiny-text"><?= $data['gene']->getAlias() ?></span>
+                        <?php } ?>
+                    </h5>
                     <?php 
                     // Assemblage des données du gène
                     $str = [];
