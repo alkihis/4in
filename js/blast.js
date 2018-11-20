@@ -70,6 +70,7 @@ $(function() {
                     M.toast({html: "Result is very long. Some features will be disabled.", displayLength: 8000});
                 }
                 else {
+                    // Affiche un message correspondant à l'erreur
                     switch (er) {
                         case 1:
                             placeholder_send.innerHTML = makeBlastError("BLAST is not currently available. Please try again later.");
@@ -89,8 +90,18 @@ $(function() {
                             Try again and divide your queries for a smaller result. You can also reduce the number of alignements.");
                             break;
                         case 6:
-                            placeholder_send.innerHTML = makeBlastError("Input file or query string is too big.\
-                            Maximum size is 200 kB / 200 000 characters.");
+                            placeholder_send.innerHTML = makeBlastError("Input file or query string is too big.") +
+                            '<p class="red-text flow-text medium-light-text">\
+                                Maximum size is:<br>\
+                                350 kB / 350 000 characters for nucleotide queries<br>\
+                                <span class="tiny-text">\
+                                    &rsaquo; blastn<br>&rsaquo; blastx<br>&rsaquo; tblastx\
+                                </span><br><br>\
+                                100 kB / 100 000 characters for protein queries<br>\
+                                <span class="tiny-text">\
+                                    &rsaquo; blastp<br>&rsaquo; tblastn\
+                                </span>\
+                            </p>';
                             break;
                         default:
                             placeholder_send.innerHTML = makeBlastError("An unknown error occurred");
@@ -141,6 +152,7 @@ $(function() {
 });
 
 function refreshBlastForm(mode) {
+    // Les selects ici sont les select de word size
     var select_megablast = `<option value="16">16</option>
     <option value="20">20</option>
     <option value="24">24</option>

@@ -87,9 +87,12 @@ async function launchFastaBuild(files) {
                 body: 'file=' +  encodeURIComponent(f) + '&mode=' + encodeURIComponent(mode)
             }).then(function (e) {
                 success++;
-            }).catch(function (e) {
+                current++;
+                // Actualiser la barre...
+                bar.style.width = String(Math.round((current / total) * 100)) + '%';
     
-            }).finally(function (e) {
+                num.innerText = current;
+            }).catch(function (e) {
                 current++;
                 // Actualiser la barre...
                 bar.style.width = String(Math.round((current / total) * 100)) + '%';
@@ -99,11 +102,27 @@ async function launchFastaBuild(files) {
         }
     }
 
-    launchMakeBlast(success, total);
+    // Affiche un message signalant la fin
+    modal.innerHTML = `<div class="modal-content">
+        <h4>Import complete</h4>
+        <p>
+            <span id="file_number">${success}</span> files has been successfully imported (${(total - success)} failed).
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-close red-text btn-flat">Close</a>
+    </div>`;
 }
 
-async function launchMakeBlast(success, total) {
+async function launchMakeBlast() {
     var modal = document.getElementById('modal-admin');
+
+    // Obligatoire pour conserver les attributs
+    $(modal).modal({
+        dismissible: false
+    });
+    var inst = M.Modal.getInstance(modal);
+    inst.open();
     
     modal.innerHTML = `<div class="modal-content">
         <h4>Making BLAST database</h4>
@@ -128,9 +147,8 @@ async function launchMakeBlast(success, total) {
 
     // Affiche un message signalant la fin
     modal.innerHTML = `<div class="modal-content">
-        <h4>Import complete</h4>
+        <h4>Build complete</h4>
         <p>
-            <span id="file_number">${success}</span> files has been successfully imported (${(total - success)} failed).<br>
             ${ok ? "BLAST database has been successfully builded" : 
                 "<span class='red-text'>An error occurred while creating BLAST database.</span>"}.
         </p>
@@ -491,4 +509,60 @@ function changeWebsiteAccess(ele) {
     }).catch(function (e) { 
         M.toast({html: "Modification failed."});
     });
+}
+
+function initAdminModalForBlastBuild() {
+    document.getElementById('build_header').innerText = 'Build BLAST database from sequences in database ?';
+    document.getElementById('build_text').innerText = 'Building will wipe current BLAST database, \
+        and construct BLAST DB from website SQL DB.';
+
+    document.getElementById('setter_builder').onclick = function () {
+        launchMakeBlast();
+    };
+}
+
+function initAdminModalForSequenceBuild() {
+    var header = document.getElementById('build_header');
+    header.innerText = '';
+
+    var text = document.getElementById('build_text')
+    text.innerHTML = `<div class="center">${preloader_circle}</div>`;
+    
+    var setter = document.getElementById('setter_builder');
+    $(setter).hide(0);
+
+    $.get('/api/tools/get_all_fasta_files.php', {}, function(data) {
+        var json = JSON.parse(data);
+
+        var count = json.adn.length + json.pro.length;
+
+        header.innerText = 'Insert sequences in database ?';
+        text.innerHTML = '<p>' + count + ' file(s) will be parsed.<br>This operation may take a while.</p>';
+
+        $(setter).show();
+
+        setter.onclick = function () {
+            launchFastaBuild(json);
+        };
+    });
+}
+
+function initAdminModalForBlastDelete() {
+    document.getElementById('wipe_header').innerText = 'Wipe BLAST database ?';
+    document.getElementById('wipe_text').innerText = 'After BLAST database wipe, you can\'t \
+        use BLAST until you load sequences again.';
+
+    document.getElementById('wipe_additionnal').innerHTML = `
+        <input type="hidden" name="clear_blast" value="true">
+    `;
+}
+
+function initAdminModalForSequenceDelete() {
+    document.getElementById('wipe_header').innerText = 'Wipe database sequences ?';
+    document.getElementById('wipe_text').innerText = 'If you wipe sequences, all genomic and proteic data will be lost and \
+        FASTA files must be parsed again.';
+
+    document.getElementById('wipe_additionnal').innerHTML = `
+        <input type="hidden" name="wipe_seq" value="true">
+    `;
 }

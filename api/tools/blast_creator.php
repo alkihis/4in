@@ -88,6 +88,20 @@ function makeAllBlastDB() : void {
     makeBlastDB('pro', false);
 }
 
+function clearBlastDatabase() : void {
+    // Toutes les séquences ont été chargées, on construit la base BLAST
+    // Effacement des anciennes
+    $base = glob($_SERVER['DOCUMENT_ROOT'] . '/ncbi/bin/base/adn_base*');
+    foreach ($base as $file) {
+        unlink($file);
+    }
+
+    $base = glob($_SERVER['DOCUMENT_ROOT'] . '/ncbi/bin/base/pro_base*');
+    foreach ($base as $file) {
+        unlink($file);
+    }
+}
+
 if (isUserLogged()) {
     session_write_close();
 
@@ -97,6 +111,8 @@ if (isUserLogged()) {
             header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
         } 
         else {
+            clearBlastDatabase();
+            
             set_time_limit(30 * 10);
             makeAllBlastDB();
         }

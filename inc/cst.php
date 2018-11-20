@@ -10,6 +10,7 @@ const MYSQL_SERVER = 'localhost';
 const SITE_NAME = '4IN';
 
 // Emplacements (par rapport à DOCUMENT_ROOT)
+// Les slashs de début et de fin sont obligatoires
 const FASTA_ADN_DIR = '/assets/fasta/adn/';
 const FASTA_PRO_DIR = '/assets/fasta/pro/';
 const MAPPING_DIR = '/assets/mapping/';
@@ -17,7 +18,7 @@ const MAPPING_DIR = '/assets/mapping/';
 // Active l'affichage des erreurs BLAST dans l'HTML (sinon, l'erreur est loggée)
 // Active l'affichage des notices/warning à l'écran
 // Active l'affichage du texte des Exceptions lors d'une rencontre
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 
 // Protected genomes : hide species defined in PROTECTED_SPECIES
 const LIMIT_GENOMES = true;

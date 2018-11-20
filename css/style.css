@@ -243,6 +243,14 @@ main.with-particle {
     font-weight: lighter;
 }
 
+.light-text {
+    font-weight: 200;
+}
+
+.medium-light-text {
+    font-weight: 300;
+}
+
 .red-att-text {
     color: #ffb5b4;
 }
@@ -289,7 +297,7 @@ main.with-particle {
     display: block;
 }
 
-.btn-personal, .fit-content {
+.btn-personal:not(.extend), .fit-content {
     width: -wekbit-fit-content;
     width: -moz-fit-content;
     width: fit-content;
@@ -473,10 +481,6 @@ div.sort {
     word-break: break-word;
 }
 
-.light-text {
-    font-weight: 200;
-}
-
 .gene-info {
     white-space: pre-wrap;
     word-wrap: break-word;
@@ -498,6 +502,7 @@ div.sort {
 textarea.materialize-textarea{
     min-height: 5rem;
     resize: vertical;
+    max-height: 700px;
 }
 
 .stats-link {

@@ -6,6 +6,7 @@ define('MAIN_DIR', $_SERVER['DOCUMENT_ROOT'] . '/');
 
 require MAIN_DIR . 'inc/cst.php';
 require MAIN_DIR . 'inc/func.php';
+require MAIN_DIR . 'inc/Logger.php';
 
 session_start();
 
@@ -13,6 +14,9 @@ if (!isUserLogged() && SITE_MAINTENANCE) {
     header($_SERVER['SERVER_PROTOCOL'] . ' 503 Service Unavailable');
     exit();
 }
+
+// Initialise le logging
+initErrorLogging();
 
 // Fichier principal
 

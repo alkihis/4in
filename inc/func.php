@@ -73,6 +73,9 @@ function getRoute(string $page_name, $page_arguments) : Controller {
         // les pages adéquates
         $ctrl = (PAGES_REF[$page_name]['controller'])($page_arguments);
     } 
+    // Capture les exceptions particulières
+    // La variable $error doit être définie pour charger une page d'erreur
+    // [0] : clé de la page, [1] : Throwable attrapé
     catch (ForbiddenPageException $f) {
         $error = ['403', $f];
     } 
@@ -562,6 +565,21 @@ function constructNewGene(string $name, string $full, string $fam, string $subf,
     }
 
     return 0;
+}
+
+function initErrorLogging() {
+    try {
+        $GLOBALS['logger'] = new Logger();
+    
+        // Redirige les erreurs dans les fichiers de log
+        set_error_handler('Logger::errorHandler', E_ALL);
+    } catch (Exception $e) {
+        file_put_contents(
+            $_SERVER['DOCUMENT_ROOT'] . '/assets/log/critical.log', 
+            "Unable to open log file." . $e->getMessage() . ". Log date: " . date('Y-m-d') . "\n", 
+            FILE_APPEND
+        );
+    }
 }
 
 connectBD();

@@ -11,6 +11,8 @@ $(document).ready(function () {
 
     $('.modal').modal();
 
+    // Enregistre la possibilité de casser les lignes des fasta à faux
+    // Si elle n'existe pas
     if (!localStorage.getItem('fasta_line_breaks')) {
         localStorage.setItem('fasta_line_breaks', "0");
     }

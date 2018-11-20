@@ -13,18 +13,8 @@ require 'inc/Controller.php';
 require 'inc/Logger.php';
 require 'inc/Gene.php';
 
-try {
-    $GLOBALS['logger'] = new Logger();
-
-    // Redirige les erreurs dans les fichiers de log
-    set_error_handler('Logger::errorHandler', E_ALL);
-} catch (Exception $e) {
-    file_put_contents(
-        $_SERVER['DOCUMENT_ROOT'] . '/assets/log/critical.log', 
-        "Unable to open log file." . $e->getMessage() . ". Log date: " . date('Y-m-d') . "\n", 
-        FILE_APPEND
-    );
-}
+// Démarre le logging dans les fichiers texte
+initErrorLogging();
 
 // Tente de connecter si un cookie est set
 tryLogIn();

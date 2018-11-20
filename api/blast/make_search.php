@@ -206,11 +206,15 @@ function blastControl(array &$stats) : int {
     // pour ne pas lock la session
     // pour d'autres pages
     session_write_close();
+        
+    // Définit la taille maximum du fichier d'entrée (en Ko)
+    $limit_of_fasta_file = ($program === 'blastp' || $program === 'tblastn' ? 100 : 350);
 
     if (isset($_FILES['fasta_file']) && $_FILES['fasta_file']['size'] && !$_FILES['fasta_file']['error']) {
         $query_file = $_FILES['fasta_file']['tmp_name'];
 
-        if ($_FILES['fasta_file']['size'] > 200 * 1024) { // Si le poids du fichier est supérieur à 200ko
+        if ($_FILES['fasta_file']['size'] > $limit_of_fasta_file * 1024) { 
+            // Si le poids du fichier est supérieur à la limite définie (en Ko)
             return 6;
         }
     }
@@ -218,6 +222,12 @@ function blastControl(array &$stats) : int {
         $_POST['query'] = trim($_POST['query']);
 
         if ($_POST['query']) {
+            if (strlen($_POST['query']) > $limit_of_fasta_file * 1024) { 
+                // Si la taille de la chaîne (string en PHP: byte, donc comparable à un poids en octets) 
+                // est supérieur à la limite définie (en Ko)
+                return 6;
+            }
+
             $query_str = $_POST['query'];
         }
     }
@@ -300,13 +310,16 @@ function blastControl(array &$stats) : int {
         }
         $stats['time_generation'] = microtime(true) - $st;
 
-        if (!DEBUG_MODE) {
-            if (isset($mat[1])) echo $mat[1];                
-
-            else return 1; // BLAST NOT AVAILABLE
-        }
+        if (isset($mat[1])) {
+            echo $mat[1];
+        } 
         else {
-            echo $html;
+            Logger::write("BLAST error : $html");
+
+            if (!DEBUG_MODE)
+                return 1; // BLAST NOT AVAILABLE
+            else
+                echo $html;
         }
     }
     else {

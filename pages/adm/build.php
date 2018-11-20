@@ -23,19 +23,6 @@ function buildGenomeController() : array {
         $data['erased'] = true;
     }
 
-    // Traitement si l'utilisateur a demandé de construire la base de données
-    /* else if (isset($_POST['construct']) && 
-        file_exists($_SERVER['DOCUMENT_ROOT'] . '/assets/db/' . $_POST['construct']) && 
-        !is_dir($_SERVER['DOCUMENT_ROOT'] . '/assets/db/' . $_POST['construct'])) {
-
-        $file_selected = $_SERVER['DOCUMENT_ROOT'] . '/assets/db/' . $_POST['construct'];
-
-        emptyTables();
-        explodeFile($file_selected, false);
-
-        $data['construction'] = true;
-    } */
-
     $data['files'] = [];
 
     foreach ($files as $f) {
@@ -171,14 +158,16 @@ function buildBlastController() : array {
     $files['pro'] = glob($_SERVER['DOCUMENT_ROOT'] . FASTA_PRO_DIR . '*');
 
     // Traitement si l'utilisateur a demandé de supprimer les bases BLAST
-    if (isset($_POST['erase'])) {
+    if (isset($_POST['clear_blast']) && $_POST['clear_blast'] === 'true') {
         clearBlastDatabase();
 
-        if (isset($_POST['wipe_seq']) && $_POST['wipe_seq'] === 'true') {
-            mysqli_query($sql, "UPDATE GeneAssociations SET sequence_adn=NULL, sequence_pro=NULL;");
-        }
-
         $data['erased'] = true;
+    }
+
+    if (isset($_POST['wipe_seq']) && $_POST['wipe_seq'] === 'true') {
+        mysqli_query($sql, "UPDATE GeneAssociations SET sequence_adn=NULL, sequence_pro=NULL;");
+
+        $data['cleared'] = true;
     }
 
     // Traitement si l'utilisateur a demandé de construire la base de données
@@ -203,94 +192,67 @@ function buildBlastView(array $data) : void { ?>
             <div class="card-panel light-blue darken-1 card-border white-text panel-settings">
                 <p>
                     Import first sequences files using "Import sequence files" utility. After this operation,
-                    you can build BLAST database and register sequences to the website SQL Base by clicking
-                    "build BLAST".<br>
+                    you can first register sequences to the website SQL Base by clicking
+                    "Import sequences in database".<br>
+                    Finally, click to "Build BLAST" to construct BLAST database based on imported sequences.<br>
                     It will <span class='underline'>NOT</span> delete uploaded sequences files.
                 </p>
             </div>
 
-            <?php if (isset($data['construction'])) {
-                echo '<h5 class="green-text">Database is successfully updated with sequence informations 
-                    and BLAST database has been built.</h5>';
-            } 
+            <?php
             if (isset($data['erased'])) {
                 echo '<h5 class="red-text">BLAST databases has been wiped.</h5>';
+            }
+            if (isset($data['cleared'])) {
+                echo '<h5 class="red-text">Sequences of genes has been deleted.</h5>';
             }
             ?>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row no-margin-bottom">
         <div class="col s6">
-            <a href="#modal_wipe" class="btn btn-personal red darken-1 center-block modal-trigger">
-                Clear BLAST databases
+            <a href="#modal_build" onclick="initAdminModalForSequenceBuild()" 
+                class="btn btn-personal extend blue darken-1 center-block modal-trigger">
+                Insert sequences in database
             </a>
         </div>
 
+        <div class="col s6">
+            <a onclick="initAdminModalForSequenceDelete()" href="#modal_wipe" 
+                class="btn btn-personal extend orange darken-1 center-block modal-trigger">
+                Delete sequences from database
+            </a>
+        </div>
+    </div>
+
+    <div class="row no-margin-bottom">
+        <div class="col s12">
+            <div class="divider divider-margin"></div>
+        </div>
+    </div>
+
+    <div class="row">
         <?php if (count($data['files']['adn']) !== 0 || count($data['files']['pro']) !== 0) { ?>
             <div class="col s6">
-                <a href="#modal_build" id="go_db" class="modal-trigger btn btn-personal green darken-1 center-block">
-                    Build BLAST and sequence databases
+                <a href="#modal_build" onclick="initAdminModalForBlastBuild()"
+                    class="modal-trigger btn btn-personal extend green darken-1 center-block">
+                    Build BLAST databases
                 </a>
-
-                <!-- set modal build parameter -->
-                <script>
-                    document.getElementById('wipe_header').innerText = 'Wipe BLAST database / sequences ?';
-                    document.getElementById('wipe_text').innerText = 'After BLAST database wipe, you can\'t \
-                        use BLAST until you load sequences again. If you wipe sequences, all data will be lost and \
-                        FASTA files must be parsed again.';
-                    document.getElementById('wipe_additionnal').innerHTML = `
-                        <div class="left" style="margin-top: 15px; margin-left: 15px">
-                            <label>
-                                <input type="checkbox" name="wipe_seq" value="true">
-                                <span>Also wipe sequences from website database</span>
-                            </label>
-                        </div>
-                    `;
-
-                    document.getElementById('build_header').innerText = 'Build BLAST database from uploaded sequences ?';
-                    document.getElementById('build_text').innerText = 'Building will wipe current BLAST database, \
-                        try to import all the uploaded FASTA files in the website database,\
-                        then construct BLAST DB from website SQL DB.';
-
-                    $(document).ready(function () {
-                        $.get('/api/tools/get_all_fasta_files.php', {}, function(data) {
-                            document.getElementById('setter_builder').onclick = function () {
-                                launchFastaBuild(JSON.parse(data));
-                            };
-                        });
-                    });
-                </script>
             </div>
         <?php } ?>
 
+        <div class="col s6">
+            <a onclick="initAdminModalForBlastDelete()" href="#modal_wipe" 
+                class="btn btn-personal extend red darken-1 center-block modal-trigger">
+                Clear BLAST databases
+            </a>
+        </div>
     </div>
 
     <?php showFastaFiles($data['files'], false); ?>
 
     <?php
-}
-
-function readAllFastaFiles($delete = false) : void {
-    global $sql;
-        
-    if ($delete) {
-        // Construction séquences dans la BDD SQL
-        mysqli_query($sql, "UPDATE GeneAssociations SET sequence_adn=NULL;");
-        mysqli_query($sql, "UPDATE GeneAssociations SET sequence_pro=NULL;");
-    }
-
-    $adn = glob(FASTA_ADN_DIR . '*');
-    $pro = glob(FASTA_PRO_DIR . '*');
-
-    set_time_limit(0);
-
-    foreach($adn as $a) {
-        loadFasta($a, 'adn');
-    }
-    foreach($pro as $a) {
-        loadFasta($a, 'pro');
-    }
 }
 
 function clearBlastDatabase() : void {
