@@ -69,6 +69,20 @@ class Logger {
         }
     }
 
+    /**
+     * Indique des informations de debug
+     *
+     * @return array
+     */
+    public function __debugInfo() : array {
+        return [
+            'error_location' => $this->location,
+            'notice_location' => $this->php_notice_location,
+            'write_on_error' =>$this->write_on_error,
+            'current_buffer' => [$this->buffer, $this->php_notice_buffer]
+        ];
+    }
+
     private function writeLog(string $message, bool $put_eol = true, bool $put_date = true, bool $notice = false) : void {
         $message = ($put_date ? '[' . date(($notice ? 'Y-m-' : '') . 'd H:i:s') . '] ' : '') .  $message;
 

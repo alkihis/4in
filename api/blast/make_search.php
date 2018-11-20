@@ -197,9 +197,12 @@ function blastControl(array &$stats) : int {
     $query_str = "";
     $query_file = null;
 
+    // Sélection du programme
     $query_shell = $program = blastProgram();
+    // Sélection de la base de données BLAST à utiliser
     $query_shell = './' . $query_shell . ' ' . chooseBDD($program);
 
+    // Construction des paramètres en fonction du POST et du programme
     $query_shell .= constructParameters($program);
 
     // Fermeture de la session
@@ -232,7 +235,9 @@ function blastControl(array &$stats) : int {
         }
     }
 
+    // Si on a au moins une sorce de query
     if ($query_file || $query_str) {
+        // Le fichier est préféré au texte
         if ($query_file) {
             $temp_file = $query_file;
         }

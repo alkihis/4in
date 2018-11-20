@@ -35,6 +35,22 @@ class Controller {
             $this->page_title = $title;
         }
     }
+
+    protected $loaded = false;
+
+    /**
+     * Indique des informations de debug
+     *
+     * @return array
+     */
+    public function __debugInfo() : array {
+        return [
+            'data' => $this->data,
+            'function_view' => $this->view,
+            'title' => $this->page_title,
+            'displayed_view_function' => $this->loaded
+        ];
+    }
     
     /**
      * Appelle la fonction de vue avec les données générées par le modèle.
@@ -42,12 +58,18 @@ class Controller {
      * @return void
      */
     public function __invoke() {
+        if ($this->loaded) {
+            throw new RuntimeException("View function has been called twice");
+        }
+
         if ($this->view === null) {
             throw new UnexpectedValueException("No view function defined");
         }
 
         // Appel de la fonction contenue dans view avec le contrôleur en paramètre
         ($this->view)($this);
+
+        $this->loaded = true;
     }
 
     public function setTitle(?string $title) : ?string {

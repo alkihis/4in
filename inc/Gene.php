@@ -9,6 +9,7 @@
  */
 class Gene {
     protected $id;
+    protected $real_id;
     protected $specie;
 
     protected $name;
@@ -25,6 +26,7 @@ class Gene {
     protected $sub_family;
 
     protected $has_link;
+    protected $is_link;
     protected $alias;
     protected $addi;
 
@@ -118,6 +120,35 @@ class Gene {
         }
 
         return mysqli_fetch_assoc($q);
+    }
+
+    /**
+     * Indique des informations de debug
+     * Tableau formaté comme un Gene SQL
+     *
+     * @return array
+     */
+    public function __debugInfo() : array {
+        return [
+            'GeneAssociations' => [
+                'gene_id' => $this->id,
+                'specie' => $this->specie,
+                'sequence_adn' => $this->sequence,
+                'sequence_pro' => $this->sequence_pro,
+                'linkable' => ($this->is_link ? ($this->has_link ? "1" : "0") : null),
+                'alias' => $this->alias,
+                'addi' => $this->addi
+            ],
+            'Gene' => [
+                'id' => $this->real_id,
+                'func' => $this->func,
+                'gene_name' => $this->name,
+                'fullname' => $this->fullname,
+                'family' => $this->family,
+                'subfamily' => $this->sub_family
+            ],
+            'Pathways' => $this->pathways
+        ];
     }
 
     // Implémentations des méthodes de l'interface
