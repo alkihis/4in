@@ -107,7 +107,7 @@ if (isUserLogged()) {
 
         // On protège les /../ dans le chemin
         $file = preg_replace("/\/\.\.\//", "", $file);
-        $path = $_SERVER['DOCUMENT_ROOT'] . '/fasta/' . $mode . '/' . $file;
+        $path = $_SERVER['DOCUMENT_ROOT'] . ($mode === 'pro' ? FASTA_PRO_DIR : FASTA_ADN_DIR) . $file;
 
         // Si le fichier existe, on charge le fasta
         if (file_exists($path) && !is_dir($path)) {

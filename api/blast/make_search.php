@@ -209,6 +209,10 @@ function blastControl(array &$stats) : int {
 
     if (isset($_FILES['fasta_file']) && $_FILES['fasta_file']['size'] && !$_FILES['fasta_file']['error']) {
         $query_file = $_FILES['fasta_file']['tmp_name'];
+
+        if ($_FILES['fasta_file']['size'] > 200 * 1024) { // Si le poids du fichier est supérieur à 200ko
+            return 6;
+        }
     }
     else if (isset($_POST['query']) && is_string($_POST['query'])) {
         $_POST['query'] = trim($_POST['query']);
@@ -247,8 +251,17 @@ function blastControl(array &$stats) : int {
 
         $queries = [];
 
-        if (strlen($html) > 7000000) { // Résultat très très long (7 millions de caractères)
-            return 4;
+        $stats['len'] = strlen($html);
+
+        if (strlen($html) > 5000000) { // Résultat très très long (5 millions de caractères)
+            if (strlen($html) > 9000000) {
+                return 4;
+            }
+
+            // La mise en buffer est faite avec une référence sur $html,
+            // pour éviter la recopie
+            $stats['buffer'] = &$html;
+            return 5;
         }
     
         $st = microtime(true);
@@ -306,6 +319,7 @@ function blastControl(array &$stats) : int {
 if (isset($_SESSION['before_next_blast']) && $_SESSION['before_next_blast'] > time()) {
     $errors = 3; // RETRY LATER
     $html = '';
+    $stats = [];
 }
 else {
     // Commence le BLAST
@@ -326,9 +340,16 @@ else {
     $errors = blastControl($stats);
 
     // Réouvre la session (AVANT le débuffer, sinon header HTTP envoyés!)
+    // et empêche de relancer une requête avant 20 secondes pour les utilisateurs anonymes
+    // si jamais la requête a réussi
     session_start();
-    $_SESSION['before_next_blast'] = 0;
-    
+    if (!isUserLogged() && $errors === 0) {
+        $_SESSION['before_next_blast'] = time() + 20;
+    }
+    else {
+        $_SESSION['before_next_blast'] = 0;
+    }
+
     $html = ob_get_clean();
 }
 

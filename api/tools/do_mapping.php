@@ -54,7 +54,7 @@ if (isUserLogged()) {
         // Supprime les /../ du chemin
         $file = preg_replace("/\/\.\.\//", "", $file);
 
-        $path = $_SERVER['DOCUMENT_ROOT'] . '/fasta/map/' . $file;
+        $path = $_SERVER['DOCUMENT_ROOT'] . MAPPING_DIR . $file;
 
         // Si le fichier existe, on lance la création
         if (file_exists($path) && !is_dir($path)) {

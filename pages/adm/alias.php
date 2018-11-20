@@ -4,21 +4,21 @@ function importAliasController() : array {
     global $sql;
     $data = ['active_page' => 'alias_import'];
 
-    $files = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/map/*');
+    $files = glob($_SERVER['DOCUMENT_ROOT'] . MAPPING_DIR . '*');
 
     // If delete request
     if (isset($_POST['delete']) && is_string($_POST['delete'])) {
-        if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/fasta/map/' . $_POST['delete']) 
-            && !is_dir($_SERVER['DOCUMENT_ROOT'] . '/fasta/map/' . $_POST['delete'])) {
+        if (file_exists($_SERVER['DOCUMENT_ROOT'] . MAPPING_DIR . $_POST['delete']) 
+            && !is_dir($_SERVER['DOCUMENT_ROOT'] . MAPPING_DIR . $_POST['delete'])) {
 
-            unlink($_SERVER['DOCUMENT_ROOT'] . '/fasta/map/' . $_POST['delete']);
+            unlink($_SERVER['DOCUMENT_ROOT'] . MAPPING_DIR . $_POST['delete']);
             $data['file_deleted'] = true;
         }
         else {
             $data['file_not_found'] = true;
         }
 
-        $files = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/map/*');
+        $files = glob($_SERVER['DOCUMENT_ROOT'] . MAPPING_DIR . '*');
     }
 
     // If import request
@@ -35,11 +35,11 @@ function importAliasController() : array {
                 $data['already_exists'] = true;
             }
             else {
-                if (!move_uploaded_file($location, $_SERVER['DOCUMENT_ROOT'] . '/fasta/map/' . $name)) {
+                if (!move_uploaded_file($location, $_SERVER['DOCUMENT_ROOT'] . MAPPING_DIR . $name)) {
                     $data['upload_error'] = true;
                 }
     
-                $files = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/map/*');
+                $files = glob($_SERVER['DOCUMENT_ROOT'] . MAPPING_DIR . '*');
                 $data['upload_ok'] = true;
             }
         }
@@ -60,7 +60,7 @@ function buildAliasController() : array {
     global $sql;
     $data = ['active_page' => 'alias_build'];
 
-    $files = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/map/*');
+    $files = glob($_SERVER['DOCUMENT_ROOT'] . MAPPING_DIR . '*');
 
     $data['files'] = [];
     foreach ($files as $f) {

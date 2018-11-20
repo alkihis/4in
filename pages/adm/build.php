@@ -167,8 +167,8 @@ function buildBlastController() : array {
     global $sql;
     $data = ['active_page' => 'build_blast'];
 
-    $files['adn'] = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/adn/*');
-    $files['pro'] = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/pro/*');
+    $files['adn'] = glob($_SERVER['DOCUMENT_ROOT'] . FASTA_ADN_DIR . '*');
+    $files['pro'] = glob($_SERVER['DOCUMENT_ROOT'] . FASTA_PRO_DIR . '*');
 
     // Traitement si l'utilisateur a demandé de supprimer les bases BLAST
     if (isset($_POST['erase'])) {
@@ -182,14 +182,6 @@ function buildBlastController() : array {
     }
 
     // Traitement si l'utilisateur a demandé de construire la base de données
-    /* else if (isset($_POST['construct'])) {
-        readAllFastaFiles();
-
-        clearBlastDatabase();
-        makeAllBlastDB();
-
-        $data['construction'] = true;
-    } */
 
     $data['files'] = [];
     $data['files']['adn'] = [];
@@ -287,9 +279,9 @@ function readAllFastaFiles($delete = false) : void {
         mysqli_query($sql, "UPDATE GeneAssociations SET sequence_adn=NULL;");
         mysqli_query($sql, "UPDATE GeneAssociations SET sequence_pro=NULL;");
     }
-    
-    $adn = glob('fasta/adn/*');
-    $pro = glob('fasta/pro/*');
+
+    $adn = glob(FASTA_ADN_DIR . '*');
+    $pro = glob(FASTA_PRO_DIR . '*');
 
     set_time_limit(0);
 

@@ -3,7 +3,7 @@
 if (isUserLogged()) {
     session_write_close();
 
-    $q = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/map/*');
+    $q = glob($_SERVER['DOCUMENT_ROOT'] . MAPPING_DIR . '*');
     $new = [];
     foreach ($q as $adn) {
         $new[] = basename($adn);

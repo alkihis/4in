@@ -62,25 +62,27 @@ function importBlastController() : array {
     global $sql;
     $data = ['active_page' => 'import_blast'];
 
-    $files['adn'] = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/adn/*');
-    $files['pro'] = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/pro/*');
+    $files['adn'] = glob($_SERVER['DOCUMENT_ROOT'] . FASTA_ADN_DIR . '*');
+    $files['pro'] = glob($_SERVER['DOCUMENT_ROOT'] . FASTA_PRO_DIR . '*');
 
     // If delete request
     if (isset($_POST['delete'], $_POST['mode']) && is_string($_POST['delete']) && is_string($_POST['mode'])) {
         $mode = $_POST['mode'] === 'adn' ? 'adn' : 'pro';
 
-        if (file_exists($_SERVER['DOCUMENT_ROOT'] . "/fasta/$mode/" . $_POST['delete']) 
-            && !is_dir($_SERVER['DOCUMENT_ROOT'] . "/fasta/$mode/" . $_POST['delete'])) {
+        $direct = ($mode === 'pro' ? FASTA_PRO_DIR : FASTA_ADN_DIR);
 
-            unlink($_SERVER['DOCUMENT_ROOT'] . "/fasta/$mode/" . $_POST['delete']);
+        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $direct . $_POST['delete']) 
+            && !is_dir($_SERVER['DOCUMENT_ROOT'] . $direct . $_POST['delete'])) {
+
+            unlink($_SERVER['DOCUMENT_ROOT'] . $direct . $_POST['delete']);
             $data['file_deleted'] = true;
         }
         else {
             $data['file_not_found'] = true;
         }
 
-        $files['adn'] = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/adn/*');
-        $files['pro'] = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/pro/*');
+        $files['adn'] = glob($_SERVER['DOCUMENT_ROOT'] . FASTA_ADN_DIR . '*');
+        $files['pro'] = glob($_SERVER['DOCUMENT_ROOT'] . FASTA_PRO_DIR . '*');
     }
 
     // If import request
@@ -99,12 +101,12 @@ function importBlastController() : array {
                 $data['already_exists'] = true;
             }
             else {
-                if (!move_uploaded_file($location, $_SERVER['DOCUMENT_ROOT'] . "/fasta/$mode/" . $name)) {
+                if (!move_uploaded_file($location, $_SERVER['DOCUMENT_ROOT'] . ($mode === 'pro' ? FASTA_PRO_DIR : FASTA_ADN_DIR) . $name)) {
                     $data['upload_error'] = true;
                 }
     
-                $files['adn'] = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/adn/*');
-                $files['pro'] = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/pro/*');
+                $files['adn'] = glob($_SERVER['DOCUMENT_ROOT'] . FASTA_ADN_DIR . '*');
+                $files['pro'] = glob($_SERVER['DOCUMENT_ROOT'] . FASTA_PRO_DIR . '*');
                 $data['upload_ok'] = true;
             }
         }

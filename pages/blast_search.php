@@ -186,6 +186,7 @@ function searchBlastView(Controller $c) : void { ?>
                                     </select>
                                     <label>Gap penalities</label>
                                 </div>
+                                
                                 <div class="input-field col s6"> <!-- NOT FOR ALL BLAST EXCEPT BLASTN -->
                                     <select class="blast-select not-for-p not-for-x not-for-tn not-for-tx not-for-meg" 
                                         name="rewardvalues" id="rewardvalues" onchange="refreshBlastGapMatrix('n')">

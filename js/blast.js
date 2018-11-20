@@ -55,49 +55,50 @@ $(function() {
         // Définit ce qui se passe si la soumission s'est opérée avec succès
         xhr.addEventListener("load", function(event) {
             var json_text = event.target.responseText;
-            var json_ok = false;
 
             try {
                 // Tente d'obtenir les données téléchargées
                 var json = JSON.parse(json_text);
 
-                json_ok = true;
+                var er = Number(json.error);
 
-                if (Number(json.error) === 0) {
+                if (er === 0) {
                     placeholder_send.innerHTML = '<div class="divider-margin divider"></div>' + json.html;
                 }
+                else if (er === 5) {
+                    placeholder_send.innerHTML = '<div class="divider-margin divider"></div>' + json.stats.buffer;
+                    M.toast({html: "Result is very long. Some features will be disabled.", displayLength: 8000});
+                }
                 else {
-                    switch (Number(json.error)) {
+                    switch (er) {
                         case 1:
-                            M.toast({html: "BLAST is not available", displayLength: 8000});
                             placeholder_send.innerHTML = makeBlastError("BLAST is not currently available. Please try again later.");
                             break;
                         case 2:
                             M.toast({html: "Query is empty", displayLength: 8000});
                             placeholder_send.innerHTML = saved_blast;
+                            openBlastForm();
                             break;
                         case 3:
                             M.toast({html: "Please wait before a new request", displayLength: 8000});
                             placeholder_send.innerHTML = saved_blast;
+                            openBlastForm();
                             break;
                         case 4:
-                            M.toast({html: "Result is very long. Consider trimming your request.", displayLength: 8000});
-                            placeholder_send.innerHTML = makeBlastError("This result is too long.\
+                            placeholder_send.innerHTML = makeBlastError("Result is too long.\
                             Try again and divide your queries for a smaller result. You can also reduce the number of alignements.");
+                            break;
+                        case 6:
+                            placeholder_send.innerHTML = makeBlastError("Input file or query string is too big.\
+                            Maximum size is 200 kB / 200 000 characters.");
                             break;
                         default:
                             placeholder_send.innerHTML = makeBlastError("An unknown error occurred");
 
                     }
-
-                    throw "Error";
                 }
             } catch (e) {
-                if (!json_ok) {
-                    placeholder_send.innerHTML = makeBlastError("An server error occurred. Try again later.");
-                }
-
-                openBlastForm();
+                placeholder_send.innerHTML = makeBlastError("An server error occurred. Try again later.");
             }
 
             saved_blast = "";
