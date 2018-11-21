@@ -63,26 +63,6 @@ function loadFasta(string $filename, string $mode = 'adn') : void {
             $e = substr($line, 1);
             $current_id = trim(preg_split("/\s/", trim($e))[0]);
 
-            // ----------
-            // TO DISABLE
-            // ----------
-
-            if (strpos($current_id, "|") !== false) { // Si il contient des pipes, on récupère différemment
-                $id_avec_tiret_de_merde = explode("|", trim($current_id))[2];
-                $id_sans_tiret_de_merde = explode("-", trim($id_avec_tiret_de_merde))[0];
-
-                $current_id = trim($id_sans_tiret_de_merde);
-            }
-            else if (strpos($current_id, 'BGIBMG') !== false) {
-                $id_sans_tiret_de_merde = explode("-", trim($current_id))[0];
-
-                $current_id = trim($id_sans_tiret_de_merde);
-            }
-
-            // ----------
-            // TO DISABLE
-            // ----------
-
             $sequence = '';
         }
         else {

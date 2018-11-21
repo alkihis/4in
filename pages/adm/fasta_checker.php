@@ -1,13 +1,16 @@
 <?php
 
 function getFileFastaSampleData(string $filename) : ?array {
+    // Ouvre le fichier à analyser
     $h = fopen($filename, "r");
     global $sql;
 
+    // Si le fichier n'existe pas
     if (!$h) {
         return ['file' => basename($filename), 'id' => null];
     }
 
+    // Tant qu'on a pas trouvé un ID valide dans la base, on avance
     $end = true;
     while ($end && !feof($h)) {
         $line = fgets($h);
@@ -22,13 +25,14 @@ function getFileFastaSampleData(string $filename) : ?array {
 
             $id_e = mysqli_real_escape_string($sql, $id);
         
-            $q = mysqli_query($sql, "SELECT * FROM GeneAssociations WHERE gene_id='$id_e';");
+            $q = mysqli_query($sql, "SELECT * FROM GeneAssociations WHERE gene_id LIKE '$id_e%' OR alias='$id_e';");
             $end = !((bool)mysqli_num_rows($q));
         }
     }
 
     fclose($h);
 
+    // On a trouvé un ID qui existe, on le marque comme OK
     if ($id) {
         return ['file' => basename($filename), 'id' => $id, 'exists' => !$end];
     }
@@ -38,8 +42,8 @@ function getFileFastaSampleData(string $filename) : ?array {
 }
 
 function checkerController() : array {
-    $files['adn'] = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/adn/*');
-    $files['pro'] = glob($_SERVER['DOCUMENT_ROOT'] . '/fasta/pro/*');
+    $files['adn'] = glob($_SERVER['DOCUMENT_ROOT'] . FASTA_ADN_DIR . '*');
+    $files['pro'] = glob($_SERVER['DOCUMENT_ROOT'] . FASTA_PRO_DIR . '*');
 
     $data = ['active_page' => 'checker'];
 
@@ -81,11 +85,26 @@ function checkerView(array $data) : void { ?>
 
             <div class="card-panel light-blue darken-1 card-border white-text panel-settings">
                 <p>
-                    In order to use FASTA file to update sequences informations, the gene ID in the fasta 
+                    In order to use FASTA file to update sequences informations, the gene ID or the alias in the fasta 
                     sequence comment MUST be the first element of the comment line (after the &gt;), and be
-                    separated from other elements by a non-writable character (space, tabulation, form-feed...).<br>
-                    This tool can check if files are correctly formatted, and give example of ID provided in FASTA file.<br>
-                    Finally, the tool checks if a similar ID exists in the database.
+                    separated from other elements by a non-writable character (space, tabulation, form-feed...).
+                    This tool can check if files are correctly formatted, and give example of ID provided in FASTA file.<br><br>
+
+                    In the FASTA, if specified ID is the gene ID (not the alias!), comparaison will be lazy (if ID in the database
+                    begin by given ID in FASTA, sequence will be imported).<br> 
+                    If specified ID is the alias, comparaison will be
+                    <span class="underline">strict</span>, specified ID must be, character by character, equals to database alias.
+                    <br><br>
+                    <span class="underline">Example:</span><br>
+                    For:<br>
+                    Database: gene_id BM00000101-RA, alias NULL<br>
+                    FASTA: BM00000101<br>
+                    Sequence will be imported.<br><br>
+
+                    For:<br>
+                    Database: gene_id Cflo_AR_10, alias CFLO130301-TA<br>
+                    FASTA: CFLO130301<br>
+                    Sequence will <span class="underline">NOT</span> be imported.
                 </p>
             </div>
 
@@ -127,6 +146,10 @@ function checkerView(array $data) : void { ?>
                 echo '</p>';
             } ?>
 
+            <a class="btn extend btn-personal blue lighten-1 center-block" href="?check=true">
+                Check all uploaded files
+            </a>
+
             <form method="post" enctype="multipart/form-data" action="#">
                 <div class='card card-border' style="margin-top: 20px; margin-bottom: 20px;">
                     <div class="card-content">
@@ -142,22 +165,17 @@ function checkerView(array $data) : void { ?>
                                 </div>
                             </div>
                         </div>
+                        <button class="btn-flat btn-perso green-text right" type="submit" name="go">
+                            Check file
+                        </button>
                         <div class="clearb"></div>
                     </div>
                 </div>
-
-                <div class="col s6">
-                    <button class="btn btn-personal green lighten-1 center-block" type="submit" name="go">
-                        Check file in input
-                    </button>
-                </div>
             </form>
 
-            <div class="col s6">
+            <div class="col s12">
                 <form method="get" action="#">
-                    <button class="btn btn-personal blue lighten-2 center-block" type="submit" name="check">
-                        Check all uploaded files
-                    </button>
+                    
                 </form>
             </div>
 

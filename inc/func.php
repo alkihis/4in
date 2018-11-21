@@ -14,7 +14,7 @@ function connectBD() : void {
 
 /**
  * Return user's selected URL and page arguments
- * return [string $user_url, array<string> $user_arguments]
+ * return tuple<string *user_url*, array<string> *user_arguments*>
  *
  * @return array
  */

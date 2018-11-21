@@ -217,9 +217,13 @@ function importBlastView(array $data) : void { ?>
                 <p>
                     Import FASTA files for store sequence information in the database's genes.<br>
                     FASTA file must present, right after the &gt; in the beginning of a comment line, a gene ID
-                    registered in the database (not its alias!).<br> 
+                    registered in the database.<br> 
+                    
                     Additionnal informations can be present after the gene ID (one space is needed after the ID), 
-                    but it will not be saved.
+                    but it will not be saved.<br><br>
+                    
+                    See more infos for the required format of the FASTA file in
+                    <a class="white-text underline" href="/admin/checker">FASTA checker</a> page.
                 </p>
             </div>
 
