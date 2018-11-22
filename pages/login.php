@@ -8,7 +8,7 @@ function loginControl($args) : Controller {
     $returns['generate_form'] = true;
     $returns['already_logged'] = false;
 
-    if (isUserLogged()) {
+    if (isBasicUserLogged()) {
         if (isset($_GET['logout']) && is_string($_GET['logout']) && $_GET['logout'] === '1') {
             unlogUser();
             $returns['unlogged'] = true;

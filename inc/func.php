@@ -115,7 +115,7 @@ function getRoute(string $page_name, $page_arguments) : Controller {
 function tryLogIn() : void {
     global $sql;
 
-    if (!isUserLogged() && isset($_COOKIE['token'])) {
+    if (!isBasicUserLogged() && isset($_COOKIE['token'])) {
         // échappe le token
         $token = mysqli_real_escape_string($sql, $_COOKIE['token']);
 
@@ -205,6 +205,15 @@ function isContributorLogged() : bool {
  * @return boolean
  */
 function isUserLogged() : bool {
+    return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'] && $_SESSION['user']['rights'] >= 0;
+}
+
+/**
+ * Teste si l'utilisateur est connecté (classique)
+ *
+ * @return boolean
+ */
+function isBasicUserLogged() : bool {
     return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'];
 }
 
