@@ -1,5 +1,5 @@
 <nav>
-    <div class="nav-wrapper light-blue darken-1">
+    <div class="nav-wrapper nav-color">
         <a href="/home" class="brand-logo logo-main">
             <img alt="Site logo" src='/img/logo.png'>
             <span class="logo-text"><?= SITE_NAME ?></span>

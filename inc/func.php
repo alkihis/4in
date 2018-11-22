@@ -23,26 +23,28 @@ function getSelectedUrl() : array {
     $page_arguments = [];
     $ctrl = null;
 
-    if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] !== '/') { 
+    if (isset($_SERVER['REQUEST_URI'])) { 
         // Si la requête est définie et que on ne vise pas la racine (page d'accueil)
 
         // REQUEST_URI contient la query string GET, on l'enlève
         $request_without_query_string = explode('?', $_SERVER['REQUEST_URI'])[0];
 
-        // Redirection par Apache, stockée dans cette variable
-        // Possible par le .htaccess
-        $page_arguments = explode('/', $request_without_query_string);
-        $page_name = $page_arguments[1];
+        if ($request_without_query_string !== '/') {
+            // Redirection par Apache, stockée dans cette variable
+            // Possible par le .htaccess
+            $page_arguments = explode('/', $request_without_query_string);
+            $page_name = $page_arguments[1];
 
-        // Récupère les arguments après la page
-        // Équivaut à $page_arguments[2:] en Python
-        $page_arguments = array_slice($page_arguments, 2);
+            // Récupère les arguments après la page
+            // Équivaut à $page_arguments[2:] en Python
+            $page_arguments = array_slice($page_arguments, 2);
 
-        if (!array_key_exists($page_name, PAGES_REF) || preg_match("/^[0-9]+$/", $page_name)) {
-            // Si la page demandée n'existe pas
-            // ou si la page demandée est une page d'erreur
-            $page_name = '404';
-            $page_arguments = new PageNotFoundException;
+            if (!array_key_exists($page_name, PAGES_REF) || preg_match("/^[0-9]+$/", $page_name)) {
+                // Si la page demandée n'existe pas
+                // ou si la page demandée est une page d'erreur
+                $page_name = '404';
+                $page_arguments = new PageNotFoundException;
+            }
         }
     }
 
@@ -579,6 +581,32 @@ function initErrorLogging() {
             "Unable to open log file." . $e->getMessage() . ". Log date: " . date('Y-m-d') . "\n", 
             FILE_APPEND
         );
+    }
+}
+
+function initNightMode() {
+    $GLOBALS['night_mode'] = false;
+
+    if (isset($_COOKIE['night_mode']) && $_COOKIE['night_mode'] === '1') {
+        $GLOBALS['night_mode'] = true;
+
+        if (isset($_GET['night_mode'])) {
+            if ($_GET['night_mode'] === '0') {
+                $GLOBALS['night_mode'] = false;
+                setcookie('night_mode', '0', time() - 3600, '/', null, false, true);
+            }
+        }
+    }
+    else {
+        if (isset($_GET['night_mode'])) {
+            if ($_GET['night_mode'] === '1') {
+                $GLOBALS['night_mode'] = true;
+                setcookie('night_mode', '1', time() + 1600*24*3600, '/', null, false, true);
+            }
+            else {
+                setcookie('night_mode', '0', time() - 3600, '/', null, false, true);
+            }
+        }
     }
 }
 

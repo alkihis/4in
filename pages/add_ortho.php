@@ -133,7 +133,7 @@ function addOView(Controller $c) : void {
                 }
 
                 if (!empty($data['gene']->getPathways())) {
-                    $str[] = "<h4>Pathway</h4>" . implode('<br>', $data['gene']->getPathways()) . '<br>';
+                    $str[] = "<h4>Pathway</h4><div class='black-text'>" . implode('<br>', $data['gene']->getPathways()) . '</div><br>';
                 }
 
                 foreach ($str as $key => $s) { 

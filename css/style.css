@@ -16,7 +16,8 @@
 }
 
 .linear-nav-to-white {
-    background: linear-gradient(#0099e8, #ffffff);
+    transition: height .05s, margin-bottom .05s;
+    background-image: linear-gradient(#0099e8, #ffffff);
 }
 
 .top-float, .tiny-top-float {
@@ -464,12 +465,13 @@ div.sort {
 }
 
 .linkable-card {
-    transition: .3s;
+    transition: .3s; 
+    background-color: #fafafa;
 }
 
 .linkable-card:hover {
     cursor: pointer;
-    background-color: #ebeaf5 !important;
+    background-color: #ebeaf5;
 }
 
 .row .col.no-pad {
@@ -517,3 +519,22 @@ textarea.materialize-textarea{
 .center-force {
     text-align: center !important;
 }
+
+.nav-color {
+    background-color: #039be5;
+}
+
+.footer-color {
+    background-color: #42A5F5;
+}
+
+main.on-dark-mode {
+    transition: .3s;
+}
+
+.on-dark-mode .linear-nav-to-white {
+    height: 0;
+    margin-bottom: -10px;
+    
+    background-image: linear-gradient(#00344e, #1B2836);
+} 

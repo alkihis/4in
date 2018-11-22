@@ -57,7 +57,7 @@ function homeView(Controller $c) : void {
 
     ?>
     <div class="parallax-container parallax-home-page">
-        <div class="section no-pad-bot">
+        <div class="section no-pad-bot" style="position: relative; z-index: 1;">
             <div class="container">
                 <br><br>
                 <h1 class="header center header-main white-text">INSA Innate Immunity of INsect</h1>
@@ -70,7 +70,7 @@ function homeView(Controller $c) : void {
 
             </div>
         </div>
-        <div class="parallax" style='z-index: -1;'><img alt="Home image" src="/img/home/<?= $image ?>" style='filter: brightness(0.80)'></div>
+        <div class="parallax"><img alt="Home image" src="/img/home/<?= $image ?>" style='filter: brightness(0.80)'></div>
     </div>
 
     <div class="container">
@@ -169,7 +169,7 @@ function homeView(Controller $c) : void {
                     }
 
                     if (!empty($data['gene']->getPathways())) {
-                        $str[] = "<h5>Pathway</h5>" . implode('<br>', $data['gene']->getPathways()) . '<br>';
+                        $str[] = "<h5>Pathway</h5><div class='black-text'>" . implode('<br>', $data['gene']->getPathways()) . '</div><br>';
                     }
 
                     foreach ($str as $key => $s) { 
@@ -180,11 +180,11 @@ function homeView(Controller $c) : void {
                                 echo "<div class='col s12 no-pad center-force'>$s</div></div>";
                             }
                             else {
-                                echo "<div class='col s12 l6 no-pad center-force'><div style='width: 95%;'>$s</div></div>";
+                                echo "<div class='col s12 l6 no-pad center-force'><div style='width: 95%; margin: auto;'>$s</div></div>";
                             }
                         }
                         else {
-                            echo "<div class='col s12 l6 no-pad center-force'><div style='width: 95%;'>$s</div></div>";
+                            echo "<div class='col s12 l6 no-pad center-force'><div style='width: 95%;  margin: auto;'>$s</div></div>";
                             echo '</div>';
                         }
                     }

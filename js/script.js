@@ -18,6 +18,44 @@ $(document).ready(function () {
     }
 });
 
+function htmlToElement(html) {
+    var template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function isNightModeOn() {
+    return document.querySelectorAll('#dark-mode-css').length > 0;
+}
+
+function enableNightMode() {
+    if (!isNightModeOn()) {
+        document.querySelector('main').classList.add('on-dark-mode');
+
+        document.head.appendChild(htmlToElement('<link type="text/css" rel="stylesheet" id="dark-mode-css" href="/css/dark.css">'));
+
+
+        setTimeout(function() {
+            document.querySelector('main').classList.remove('on-dark-mode');
+        }, 500);
+    }
+}
+
+function disableNightMode() {
+    var nm = document.getElementById('dark-mode-css');
+
+    if (nm) {
+        document.querySelector('main').classList.add('on-dark-mode');
+
+        document.head.removeChild(nm);
+
+        setTimeout(function() {
+            document.querySelector('main').classList.remove('on-dark-mode');
+        }, 500);
+    }
+}
+
 function isPopupOpen() {
     return document.getElementsByClassName('popup-download')[0].classList.contains('open');
 }

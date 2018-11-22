@@ -44,7 +44,7 @@ function aboutView(Controller $c) : void {
             <h4 class="light-text">Team</h4>
                 <div class="col s12 l6">
                     <a href="http://bf2i.insa-lyon.fr/">
-                        <div class="card-panel linkable-card grey lighten-5 card-border">
+                        <div class="card-panel linkable-card card-border">
                             <div class="row valign-wrapper no-margin-bottom">
                                 <div class="col s2">
                                     <img alt="BF2i logo" src="/img/bf2i.jpg" class="circle responsive-img">
@@ -61,7 +61,7 @@ function aboutView(Controller $c) : void {
 
                 <div class="col s12 l6">
                     <a href="https://www.univ-lyon1.fr/">
-                        <div class="card-panel linkable-card grey lighten-5 card-border">
+                        <div class="card-panel linkable-card card-border">
                             <div class="row valign-wrapper no-margin-bottom">
                                 <div class="col s2">
                                     <img alt="UCBL logo" src="/img/ucbl.png" class="circle responsive-img">

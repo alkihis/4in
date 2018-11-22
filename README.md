@@ -231,7 +231,11 @@ Le mode de debug est géré par la constante `DEBUG_MODE` dans le fichier `inc/c
 Activé, le mode active l'affichage des erreurs PHP dans l'HTML (notice y compris), l'affichage des erreurs BLAST dans l'HTML (si l'utilisateur est connecté) et l'affichage du contenu des `Exception` dans les pages 500.
 Activer le mode de debug n'arrête PAS le logging dans les fichiers texte.
 
+# BLAST
 
+Pour vous servir du module BLAST, vous devrez dézipper les binaires de [BLAST+](ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) dans un dossier `ncbi` à la racine du site web. Les fichiers binaires `blastn`, `blastp`, etc... doivent donc se trouver dans `ncbi/bin/...`.
+
+Notez qu'un système UNIX est requis pour le fonctionnement de BLAST.
 
 # Licence
 

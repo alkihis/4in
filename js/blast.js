@@ -93,7 +93,7 @@ $(function() {
                             placeholder_send.innerHTML = makeBlastError("Input file or query string is too big.") +
                             '<p class="red-text flow-text medium-light-text">\
                                 Maximum size is:<br>\
-                                350 kB / 350 000 characters for nucleotide queries<br>\
+                                300 kB / 300 000 characters for nucleotide queries<br>\
                                 <span class="tiny-text">\
                                     &rsaquo; blastn<br>&rsaquo; blastx<br>&rsaquo; tblastx\
                                 </span><br><br>\

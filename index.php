@@ -16,6 +16,9 @@ require 'inc/Gene.php';
 // Démarre le logging dans les fichiers texte
 initErrorLogging();
 
+// Init night mode
+initNightMode();
+
 // Tente de connecter si un cookie est set
 tryLogIn();
 
@@ -41,6 +44,7 @@ $ctrl = getRoute(...$parms);
         <!--Import materialize.css-->
         <link type="text/css" rel="stylesheet" href="/css/materialize.min.css"  media="screen"/>
         <link type="text/css" rel="stylesheet" href="/css/style.css"/>
+        <?= ($GLOBALS['night_mode'] ? '<link type="text/css" rel="stylesheet" id="dark-mode-css" href="/css/dark.css"/>' : '') ?>
 
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>

@@ -173,12 +173,6 @@ function checkerView(array $data) : void { ?>
                 </div>
             </form>
 
-            <div class="col s12">
-                <form method="get" action="#">
-                    
-                </form>
-            </div>
-
             <div class="clearb"></div>
 
             <div class="divider divider-margin"></div>
@@ -187,6 +181,6 @@ function checkerView(array $data) : void { ?>
         </div>
     </div>
 
-    <?php showFastaFiles($data['files'], false); ?>
-    <?php
+    <?php 
+    showFastaFiles($data['files'], false);
 }

@@ -1,0 +1,181 @@
+h1, h2, h3, h4, h5, h6, p, pre, input, textarea, input#global_chip, table {
+    color: white;
+}
+
+table a {
+    color: #b6beff;
+}
+
+main {
+    background-color: #1B2836;
+}
+
+.purple-text {
+    color: #e268f8 !important
+}
+
+.black-text, .gene-info {
+    color: white !important;
+}
+
+.white-text.night {
+    color: black !important;
+}
+
+.white-text, .select-wrapper input.select-dropdown {
+    color: white !important;
+}
+
+.nav-color {
+    background-color: #00344e;
+}
+
+.footer-color {
+    background-color: rgb(27, 44, 58);
+}
+
+.parallax-contact-page {
+    background-image: linear-gradient(#00344e, #4d89de, #34abf0, #1B2836);
+}
+
+.linear-nav-to-white {
+    background-image: linear-gradient(#00344e, #1B2836);
+}
+.on-dark-mode .linear-nav-to-white {
+    background: linear-gradient(#0099e8, #ffffff);
+}
+
+.card, .card-panel, .linkable-card {
+    background-color: #1a2e40;
+    color: white;
+}
+
+.input-field .prefix {
+    color:white;
+}
+
+main.with-particle {
+    background-image: linear-gradient(#00344e, #192c3b);
+}
+
+.collapsible-header {
+    background-color: rgb(30, 34, 48);
+    border-bottom: 1px solid #1B2836;
+    color: white;
+}
+
+.collapsible {
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+
+    color: white;
+}
+
+.collapsible-body {
+    border-bottom: 1px solid #1B2836;
+    background-color: #202d3a;
+}
+
+.select-wrapper.disabled input.select-dropdown {
+    color: rgba(197, 197, 197, 0.76);
+}
+.select-wrapper .caret {
+    fill: rgb(233, 231, 231);
+}
+.select-wrapper.disabled .caret {
+    fill: rgba(184, 184, 184, 0.452);
+}
+.select-wrapper.disabled+label {
+    color: rgba(121, 120, 120, 0.42);
+}
+
+.divider:not(.contact-us) {
+    background-color: #565656;
+}
+
+.dropdown-content li {
+    color: rgba(0,0,0,0.87);
+}
+
+.dropdown-content li:hover, .dropdown-content li.active, .dropdown-content li.selected {
+    background-color: rgb(9, 33, 65) !important;
+}
+
+.dropdown-content li.selected{
+    background-color: rgb(40, 62, 94) !important;
+}
+
+.dropdown-content {
+    background-color: rgb(19, 21, 24) !important;
+}
+
+.dropdown-content li>a, .dropdown-content li>span {
+    color: white !important;
+}
+
+span.highlight {
+    color: wheat !important;
+}
+
+.modal, .modal-footer {
+    background-color: rgb(19, 25, 31);
+}
+
+.modal .modal-footer {
+    background-color: rgb(27, 35, 44);
+}
+
+.card-panel.light-blue.darken-1 {
+    background-color: #1a2e40 !important;
+}
+
+.sidenav {
+    background-color: rgb(19, 25, 31) !important;
+    color: white;
+}
+
+.sidenav li>a, .sidenav .subheader  {
+    color: white;
+}
+
+.sidenav li>a>i, .sidenav li>a>[class^="mdi-"], .sidenav li>a li>a>[class*="mdi-"], .sidenav li>a>i.material-icons {
+    color: white;
+}
+
+.sidenav li.active {
+    background-color: #273f65;
+}
+
+.collection .collection-item {
+    background-color: #242e40;
+    border-bottom: 1px solid #2e3652;
+}
+
+.collection {
+    border: 1px solid #282b52;
+}
+
+.collection .collection-item.avatar .title {
+    color: white;
+}
+
+table.striped>tbody>tr:nth-child(odd) {
+    background-color: rgba(43, 47, 60, 0.5);
+}
+
+#mod-content {
+    color: white;
+}
+
+.orthologues .specie {
+    color: #b6beff !important;
+}
+
+.linkable-card:hover {
+    background-color: #17171d;
+}
+
+.keyboard-focused .collapsible-header:focus {
+    background-color: inherit;
+}

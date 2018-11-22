@@ -141,7 +141,7 @@ function geneView(Controller $c) : void {
                 }
 
                 if (!empty($data['gene']->getPathways())) {
-                    $str[] = "<h4>Pathway</h4>" . implode('<br>', $data['gene']->getPathways()) . '<br>';
+                    $str[] = "<h4>Pathway</h4><div class='black-text'>" . implode('<br>', $data['gene']->getPathways()) . '</div><br>';
                 }
 
                 if ($data['gene']->getAdditionalInfos()) {
@@ -171,28 +171,30 @@ function geneView(Controller $c) : void {
 
             <div class="divider divider-header-margin"></div>
 
-            <?php
-            if (count($data['orthologues'])) {
-                echo "<h4>Homologous</h4>";
+            <div class='black-text orthologues'>
+                <?php
+                if (count($data['orthologues'])) {
+                    echo "<h4>Homologous</h4>";
 
-                $first = true;
-                foreach (array_keys($data['orthologues']) as $specie) {
-                    if ($first)
-                        $first = false;
-                    else
-                        echo ", ";
+                    $first = true;
+                    foreach (array_keys($data['orthologues']) as $specie) {
+                        if ($first)
+                            $first = false;
+                        else
+                            echo ", ";
 
-                    $text_specie = ($specie === $data['gene']->getSpecie() ? "$specie (self)" : $specie);
-                    echo "<span class='specie underline-hover blue-text text-darken-3 pointer' data-specie='$specie' 
-                    data-genes='" . implode(',', $data['orthologues'][$specie]) . 
-                    "' onclick='loadOrthologuesModal(this)'>$text_specie</span>";
+                        $text_specie = ($specie === $data['gene']->getSpecie() ? "$specie (self)" : $specie);
+                        echo "<span class='specie underline-hover blue-text text-darken-3 pointer' data-specie='$specie' 
+                        data-genes='" . implode(',', $data['orthologues'][$specie]) . 
+                        "' onclick='loadOrthologuesModal(this)'>$text_specie</span>";
+                    }
                 }
-            }
-            if (isUserLogged()) {
-                echo "<h6><a href='/add_o/{$data['gene']->getID()}' class='sub blue-text'>
-                    <i class='material-icons left'>add</i>Add homologous
-                </a></h6>";
-            }
+                if (isUserLogged()) {
+                    echo "<h6><a href='/add_o/{$data['gene']->getID()}' class='sub blue-text'>
+                        <i class='material-icons left'>add</i>Add homologous
+                    </a></h6>";
+                }
+            echo "</div>";
 
             if ($data['gene']->getSeqADN() || $data['gene']->getSeqProt()) {
                 echo '<div class="divider divider-margin divider-color" style="margin-bottom: 1.52rem;"></div>';

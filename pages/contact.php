@@ -53,7 +53,7 @@ function contactView(Controller $c) : void {
         <div class="section no-pad-bot">
             <div class="container">
                 <h1 class="header center  white-text">Contact Us</h1>
-                <div class="divider" style="margin-bottom: 20px;"></div>
+                <div class="divider contact-us" style="margin-bottom: 20px;"></div>
                 <div class="row center">
                     <p class='flow-text head-main-title white-text '>
                         Let us know what you're thinking about. 
@@ -88,7 +88,7 @@ function contactView(Controller $c) : void {
                         <label for="content">Content</label>
                     </div>
 
-                    <span class="left light-text" style="margin-top: 4px; margin-left: 10px;">
+                    <span class="left light-text black-text" style="margin-top: 4px; margin-left: 10px;">
                         Protected by <a target="_blank" href="https://www.google.com/recaptcha">ReCaptcha</a>
                     </span>
 
