@@ -28,7 +28,7 @@ function blastProgram() : string {
 }
 
 function chooseBDD(string $program) : string {
-    if (isUserLogged() || !LIMIT_GENOMES) {
+    if (isAdminLogged() || !LIMIT_GENOMES) {
         $suf = '_full';
     }
     else {
@@ -211,7 +211,7 @@ function blastControl(array &$stats) : int {
     session_write_close();
         
     // Définit la taille maximum du fichier d'entrée (en Ko)
-    $limit_of_fasta_file = ($program === 'blastp' || $program === 'tblastn' ? 100 : 350);
+    $limit_of_fasta_file = ($program === 'blastp' || $program === 'tblastn' ? 100 : 300);
 
     if (isset($_FILES['fasta_file']) && $_FILES['fasta_file']['size'] && !$_FILES['fasta_file']['error']) {
         $query_file = $_FILES['fasta_file']['tmp_name'];
@@ -337,7 +337,7 @@ function blastControl(array &$stats) : int {
 if (isset($_SESSION['before_next_blast']) && $_SESSION['before_next_blast'] > time()) {
     $errors = 3; // RETRY LATER
     $html = '';
-    $stats = [];
+    $stats = ['retry_after' => $_SESSION['before_next_blast'] - time()];
 }
 else {
     // Commence le BLAST
@@ -349,7 +349,7 @@ else {
     // Par défaut, empêche de relancer une requête pendant que l'ancienne tourne
     // pendant au moins 120 secondes
     // Sauf si l'utilisateur est connecté
-    if (!isUserLogged()) {
+    if (!isAdminLogged()) {
         $_SESSION['before_next_blast'] = time() + 120;
     }
     
@@ -361,7 +361,7 @@ else {
     // et empêche de relancer une requête avant 20 secondes pour les utilisateurs anonymes
     // si jamais la requête a réussi
     session_start();
-    if (!isUserLogged() && $errors === 0) {
+    if (!isAdminLogged() && $errors === 0) {
         $_SESSION['before_next_blast'] = time() + 20;
     }
     else {

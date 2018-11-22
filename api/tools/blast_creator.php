@@ -102,7 +102,7 @@ function clearBlastDatabase() : void {
     }
 }
 
-if (isUserLogged()) {
+if (isAdminLogged()) {
     session_write_close();
 
     if (isset($_POST['make'])) {

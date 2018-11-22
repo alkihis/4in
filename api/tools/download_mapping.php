@@ -20,7 +20,7 @@ function downloadMap() : string {
     return $str;
 }
 
-if (isUserLogged()) {
+if (isAdminLogged()) {
     session_write_close();
 
     $name = "mapping_" . date('Y_m_d'); 

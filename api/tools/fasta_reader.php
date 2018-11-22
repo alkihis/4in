@@ -77,7 +77,7 @@ function loadFasta(string $filename, string $mode = 'adn') : void {
     fclose($h);
 }
 
-if (isUserLogged()) {
+if (isAdminLogged()) {
     session_write_close();
 
     // On check si le fichier est défini

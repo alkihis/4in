@@ -23,7 +23,7 @@ function downloadFasta(string $mode) : string {
     return $str;
 }
 
-if (isUserLogged()) {
+if (isAdminLogged()) {
     session_write_close();
 
     $mode = (isset($_GET['mode']) && $_GET['mode'] === 'pro' ? 'pro' : 'dna');

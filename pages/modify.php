@@ -118,7 +118,7 @@ function modifyControl(array $args) : Controller {
         throw new PageNotFoundException("You must specify a gene to modify.");
     }
 
-    if (!isUserLogged()) {
+    if (!isAdminLogged()) {
         throw new ForbiddenPageException("Log in to modify genes.");
     }
 

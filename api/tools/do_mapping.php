@@ -45,7 +45,7 @@ function readBuildIndex(string $filename) : void {
     }
 }
 
-if (isUserLogged()) {
+if (isAdminLogged()) {
     session_write_close();
 
     if (isset($_POST['file']) && is_string($_POST['file'])) {

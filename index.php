@@ -28,7 +28,7 @@ $parms = getSelectedUrl();
 $maintenance_mode = false;
 
 // On vérifie si le site n'est pas en maintenance
-if (SITE_MAINTENANCE && $parms[0] !== 'login' && !isUserLogged()) {
+if (SITE_MAINTENANCE && $parms[0] !== 'login' && !isAdminLogged()) {
     $parms[0] = "503";
     $maintenance_mode = true;
 }

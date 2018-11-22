@@ -13,13 +13,13 @@
             <div class="col l3 s12">
                 <h5 class="white-text">Menu</h5>
                 <ul>
-                    <li><a class="white-text" href="/login<?= isUserLogged() ? "?logout=1" : '' ?>">
-                        Log<?= isUserLogged() ? "out" : 'in' ?>
+                    <li><a class="white-text" href="/login<?= isAdminLogged() ? "?logout=1" : '' ?>">
+                        Log<?= isAdminLogged() ? "out" : 'in' ?>
                     </a></li>
                     <li><a class="white-text" href="/search">Search</a></li>
                     <li><a class="white-text" href="/blast_search">BLAST</a></li>
                     <li><a class="white-text" href="/contact">Contact us</a></li>
-                    <?php if (isUserLogged()) { ?>
+                    <?php if (isAdminLogged()) { ?>
                         <li><a class="white-text" href="/admin">Administration</a></li>
                     <?php } ?>
                 </ul>

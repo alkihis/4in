@@ -248,7 +248,7 @@ function emptyTables() : void {
 }
 
 // Si l'utilisateur est connecté, on autorise
-if (isUserLogged()) {
+if (isAdminLogged()) {
     // On ferme la session parce qu'elle ne servira plus
     session_write_close();
 

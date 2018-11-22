@@ -81,7 +81,9 @@ $(function() {
                             openBlastForm();
                             break;
                         case 3:
-                            M.toast({html: "Please wait before a new request", displayLength: 8000});
+                            sec = json.stats.retry_after;
+                            M.toast({html: "Please wait " + sec + " second" + (sec > 1 ? 's' : '') + 
+                                " before a new request", displayLength: 8000});
                             placeholder_send.innerHTML = saved_blast;
                             openBlastForm();
                             break;

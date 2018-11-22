@@ -78,7 +78,7 @@ function downloadDatabase(array $assocs_species, bool $with_titles = true) : str
     return $str;
 }
 
-if (isUserLogged()) {
+if (isAdminLogged()) {
     session_write_close();
 
     $title = (isset($_GET['with_title']) && $_GET['with_title'] === '1');

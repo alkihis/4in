@@ -115,7 +115,7 @@ function getRoute(string $page_name, $page_arguments) : Controller {
 function tryLogIn() : void {
     global $sql;
 
-    if (!isUserLogged() && isset($_COOKIE['token'])) {
+    if (!isAdminLogged() && isset($_COOKIE['token'])) {
         // échappe le token
         $token = mysqli_real_escape_string($sql, $_COOKIE['token']);
 
@@ -187,7 +187,7 @@ function unlogUser() : void {
  *
  * @return boolean
  */
-function isUserLogged() : bool {
+function isAdminLogged() : bool {
     return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'];
 }
 
@@ -224,7 +224,7 @@ function getLinkForId(string $id, string $specie, ?string $alias = null) : strin
             $id = preg_replace("/Msex2\./", "Msex", $id);
         }
 
-        if (!isUserLogged()) {
+        if (!isAdminLogged()) {
             return '';
         }
 

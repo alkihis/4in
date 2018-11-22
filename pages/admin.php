@@ -12,7 +12,7 @@ require 'pages/adm/fasta_checker.php';
 require 'pages/adm/stats.php';
 
 function adminControl(array $args) : Controller {
-    if (!isUserLogged()) {
+    if (!isAdminLogged()) {
         throw new ForbiddenPageException();
     }
 

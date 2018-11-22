@@ -41,7 +41,7 @@ function searchById() : array {
                 // et affiche les résultats à la page
 
                 // Filtre les gènes protégés
-                if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
+                if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isAdminLogged()) {
                     // Si le génome est protégé, on l'insère pas dans le tableau
                     continue;
                 }

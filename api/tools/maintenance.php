@@ -1,6 +1,6 @@
 <?php
 
-if (isUserLogged()) {
+if (isAdminLogged()) {
     session_write_close();
 
     if (isset($_POST['status']) && is_string($_POST['status'])) {

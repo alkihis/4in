@@ -2,7 +2,7 @@
 
 // Page d'ajout de gene
 function addControl(array $args) : Controller {
-    if (!isUserLogged()) {
+    if (!isAdminLogged()) {
         throw new ForbiddenPageException;
     }
 

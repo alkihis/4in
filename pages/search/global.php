@@ -15,7 +15,7 @@ function searchAdvanced() : array {
 
     // Récuparation des espèces
     $r['form_data']['species'] = array_keys(SPECIE_TO_NAME);
-    if (LIMIT_GENOMES && !isUserLogged()) { 
+    if (LIMIT_GENOMES && !isAdminLogged()) { 
         // Si les espèces sont protégées et que l'utilisateur n'est pas connecté, on limite les espèces
         $r['form_data']['species'] = array_diff($r['form_data']['species'], getProtectedSpecies());
     }
@@ -163,7 +163,7 @@ function searchAdvanced() : array {
 
             if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
                 while($row = mysqli_fetch_assoc($q)) { // Il peut y avoir plusieurs occurences, on met ça dans une boucle
-                    if (LIMIT_GENOMES && !isUserLogged() && isProtectedSpecie($row['specie'])) {
+                    if (LIMIT_GENOMES && !isAdminLogged() && isProtectedSpecie($row['specie'])) {
                         continue;
                     }
 

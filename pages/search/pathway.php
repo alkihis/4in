@@ -53,7 +53,7 @@ function searchPathway() : array {
         if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère
             while($row = mysqli_fetch_assoc($q)) {
                 // Filtre les gènes protégés
-                if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
+                if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isAdminLogged()) {
                     // Si le génome est protégé, on l'insère pas dans le tableau
                     continue;
                 }

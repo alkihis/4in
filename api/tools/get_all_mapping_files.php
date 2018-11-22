@@ -1,6 +1,6 @@
 <?php
 
-if (isUserLogged()) {
+if (isAdminLogged()) {
     session_write_close();
 
     $q = glob($_SERVER['DOCUMENT_ROOT'] . MAPPING_DIR . '*');
