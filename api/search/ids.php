@@ -5,7 +5,7 @@ global $sql;
 
 $add = '';
 
-if (LIMIT_GENOMES && !isAdminLogged()) {
+if (LIMIT_GENOMES && !isUserLogged()) {
     $first = true;
 
     foreach (getProtectedSpecies() as $specie) {

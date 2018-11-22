@@ -28,7 +28,7 @@ function blastProgram() : string {
 }
 
 function chooseBDD(string $program) : string {
-    if (isAdminLogged() || !LIMIT_GENOMES) {
+    if (isUserLogged() || !LIMIT_GENOMES) {
         $suf = '_full';
     }
     else {

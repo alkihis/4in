@@ -115,7 +115,7 @@ function getRoute(string $page_name, $page_arguments) : Controller {
 function tryLogIn() : void {
     global $sql;
 
-    if (!isAdminLogged() && isset($_COOKIE['token'])) {
+    if (!isUserLogged() && isset($_COOKIE['token'])) {
         // échappe le token
         $token = mysqli_real_escape_string($sql, $_COOKIE['token']);
 
@@ -182,12 +182,29 @@ function unlogUser() : void {
 }
 
 /**
- * Teste si l'utilisateur est connecté
- * > Il n'y a pas de gestion de niveau, un utilisateur connecté EST admin. <
+ * Teste si l'administrateur est connecté
  *
  * @return boolean
  */
 function isAdminLogged() : bool {
+    return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'] && $_SESSION['user']['rights'] >= 2;
+}
+
+/**
+ * Teste si l'utilisateur est connecté (contributeur)
+ *
+ * @return boolean
+ */
+function isContributorLogged() : bool {
+    return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'] && $_SESSION['user']['rights'] >= 1;
+}
+
+/**
+ * Teste si l'utilisateur est connecté (classique)
+ *
+ * @return boolean
+ */
+function isUserLogged() : bool {
     return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'];
 }
 
@@ -224,7 +241,7 @@ function getLinkForId(string $id, string $specie, ?string $alias = null) : strin
             $id = preg_replace("/Msex2\./", "Msex", $id);
         }
 
-        if (!isAdminLogged()) {
+        if (!isUserLogged()) {
             return '';
         }
 

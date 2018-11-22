@@ -6,7 +6,7 @@ function addOControl(array $args) : Controller {
         throw new PageNotFoundException;
     }
 
-    if (!isAdminLogged()) {
+    if (!isContributorLogged()) {
         throw new ForbiddenPageException;
     }
 

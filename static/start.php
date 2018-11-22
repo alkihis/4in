@@ -20,7 +20,7 @@ function homeControl() : Controller {
 
     // sélection d'un gène aléatoire à présenter
     $protected = "";
-    if (LIMIT_GENOMES && !isAdminLogged() && !empty(getProtectedSpecies())) {
+    if (LIMIT_GENOMES && !isUserLogged() && !empty(getProtectedSpecies())) {
         $protected = " WHERE ";
 
         $fir = true;
@@ -89,7 +89,7 @@ function homeView(Controller $c) : void {
                     this database is centered around the genetic study of the rice weevil, also called Sitophilus oryzae.
                 </p>
                 
-                <div class="col s12 m<?= (isAdminLogged() ? '4' : '5') ?>">
+                <div class="col s12 m<?= (isContributorLogged() ? '4' : '5') ?>">
                     <div class="icon-block">
                         <h2 class="center">
                             <a href='/search'><i class="material-icons mat-title light-blue-text">search</i></a>
@@ -103,7 +103,7 @@ function homeView(Controller $c) : void {
                     </div>
                 </div>
 
-                <div class="col s12 m<?= (isAdminLogged() ? '4' : '5 offset-m2') ?>">
+                <div class="col s12 m<?= (isContributorLogged() ? '4' : '5 offset-m2') ?>">
                     <div class="icon-block">
                         <h2 class="center">
                             <a href='/blast_search'><i class="material-icons mat-title light-blue-text">sort</i></a>
@@ -117,7 +117,7 @@ function homeView(Controller $c) : void {
                     </div>
                 </div>
 
-                <?php if (isAdminLogged()) { ?>
+                <?php if (isContributorLogged()) { ?>
                     <div class="col s12 m4">
                         <div class="icon-block">
                             <h2 class="center">
@@ -136,7 +136,6 @@ function homeView(Controller $c) : void {
             <div class="divider divider-margin"></div>
             <div class="row">
                 <div class="col s12">
-                    <?php var_dump($_SESSION) ?>
                     <h4>Gene of the day <div class="right light-text"><?= $data['gene']->getSpecie() ?></div></h4>
                     <div class="clearb"></div>
                     <h5 class="center">

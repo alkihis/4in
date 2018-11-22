@@ -28,7 +28,7 @@ function geneControl(array $args) : Controller {
 
     // Le gene est récupéré : il faut vérifier si on a les droits de lecture (certaines
     // espèces ont des génomes non publiés) : Si l'utilisateur n'est pas connecté: affichage interdit
-    if (LIMIT_GENOMES && isProtectedSpecie($gene->getSpecie()) && !isAdminLogged()) {
+    if (LIMIT_GENOMES && isProtectedSpecie($gene->getSpecie()) && !isUserLogged()) {
         throw new ForbiddenPageException;
     }
 
@@ -60,7 +60,7 @@ function geneControl(array $args) : Controller {
     while ($row = mysqli_fetch_assoc($q)){
         $specie_en_cours = $row['specie'];
 
-        if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isAdminLogged()) {
+        if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
             // Si le génome est protégé, on l'insère pas dans le tableau
             continue;
         }
@@ -109,7 +109,7 @@ function geneView(Controller $c) : void {
             </a></h6>";
         }
 
-        if (isAdminLogged()) {
+        if (isContributorLogged()) {
             echo "<h6><a href='/modify/{$data['gene']->getID()}' class='sub green-text'>
                 <i class='material-icons left'>mode_edit</i>Edit
             </a></h6>";
@@ -189,7 +189,7 @@ function geneView(Controller $c) : void {
                         "' onclick='loadOrthologuesModal(this)'>$text_specie</span>";
                     }
                 }
-                if (isAdminLogged()) {
+                if (isContributorLogged()) {
                     echo "<h6><a href='/add_o/{$data['gene']->getID()}' class='sub blue-text'>
                         <i class='material-icons left'>add</i>Add homologous
                     </a></h6>";
