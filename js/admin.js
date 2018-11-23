@@ -566,3 +566,58 @@ function initAdminModalForSequenceDelete() {
         <input type="hidden" name="wipe_seq" value="true">
     `;
 }
+
+function verifyAllGenes() {
+    let comp = document.getElementById('output_verify');
+    let comp2 = document.getElementById('output_first_verify');
+
+    if (window.on_verify_work) {
+        return;
+    }
+
+    window.on_verify_work = true;
+
+    // Récupère tous les ID sous la forme {'id': null, 'id2': null, ...}
+    $.get('/api/search/ids.json', {}, async function(res) {
+        let promises = [];
+
+        let max = Object.keys(res).length;
+        let actual = 1;
+        let valid = 0;
+
+        comp2.innerText = String(max) + " genes to check. This may take a while.";
+        comp.innerText = "0% of genes completed";
+
+        for (let e in res) { // Pour chaque ID de gène
+            promises.push(
+                request({ // Requête pour le faire vérifier
+                    url: "/api/tools/verify_gene.php",
+                    method: 'POST',
+                    body: 'gene=' + encodeURIComponent(e)
+                }).then(function(d) { valid += (JSON.parse(d).success ? 1 : 0); }).catch(error => error)
+            );
+
+            // On attend max 50 promises
+            if (promises.length >= 50) {
+                await Promise.all(promises);
+
+                var cur = Math.floor(actual/max * 100);
+
+                comp.innerText = String(cur) + "% of genes completed";
+
+                promises = [];
+            }
+
+            actual++;
+        }
+
+        if (promises.length > 0) { // Si il en reste, on les attend
+            await Promise.all(promises);
+        }
+
+        comp.innerText = "Completed, " + String(valid) + " of " + String(max) + " genes with valid link";
+        comp2.innerText = '';
+
+        delete window.on_verify_work;
+    });
+}

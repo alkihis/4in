@@ -10,6 +10,7 @@ require 'pages/adm/alias.php';
 require 'pages/adm/fasta_converter.php';
 require 'pages/adm/fasta_checker.php';
 require 'pages/adm/stats.php';
+require 'pages/adm/verify.php';
 
 function adminControl(array $args) : Controller {
     if (!isAdminLogged()) {
@@ -81,6 +82,9 @@ function adminControl(array $args) : Controller {
     }
     else if ($args[0] === 'stats') {
         $page = statsController();
+    }
+    else if ($args[0] === 'verify') {
+        $page = verifyController();
     }
     else {
         throw new PageNotFoundException();
@@ -207,6 +211,9 @@ function adminView(Controller $c) : void {
             case 'stats':
                 statsView($d);
                 break;
+            case 'verify':
+                verifyView($d);
+                break;
         }
         ?>
     </div>
@@ -287,6 +294,9 @@ function adminView(Controller $c) : void {
         </li>
         <li <?= ($d['active_page'] === 'checker' ? 'class="active"' : '') ?>>
             <a class="waves-effect" href="/admin/checker"><i class="material-icons">check</i>FASTA checker</a>
+        </li>
+        <li <?= ($d['active_page'] === 'verify' ? 'class="active"' : '') ?>>
+            <a class="waves-effect" href="/admin/verify"><i class="material-icons">done_all</i>Verify gene links</a>
         </li>
     </ul>
 

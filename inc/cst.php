@@ -9,6 +9,32 @@ const MYSQL_SERVER = 'localhost';
 // Nom textuel du site
 const SITE_NAME = '4IN';
 
+// ---------------------
+// Niveaux de permission
+// ---------------------
+
+// Permissions minimales; Pas de visiblité des espèces protégées
+// Vérifiée avec la fonction isBasicUserLogged()
+const USER_PERM_BASIC = -1; 
+
+// Permissions minimales + visibilité des espèces protégées
+// Vérifiée avec la fonction isUserLogged()
+const USER_PERM_VISITOR = 0;
+
+// Permissions moyennes : Visibilité des espèces protégées + ajout de gène/orthologues autorisé
+// Vérifiée avec la fonction isContributorLogged()
+const USER_PERM_CONTRIBUTOR = 1;
+
+// Permissions administrateur : Espèces protégées + ajout de gène/orthologues + accès console d'administration
+// Vérifiée avec la fonction isAdminLogged()
+const USER_PERM_ADMINISTRATOR = 2;
+
+// Les fonctions de permissions sont avec "fallback" : si un admin est connecté, 
+// isBasicUserLogged(), isUserLogged(), isContributorLogged() et isAdminLogged() retourneront toutes vrai.
+// Pour tester les droits réels d'un utilisateur, utilisez $_SESSION['user']['rights'] === USER_PERM_*** 
+// Pour créer un utilisateur, toujours utiliser les constantes ci-dessus.
+// ---------------------
+
 // Emplacements (par rapport à DOCUMENT_ROOT)
 // Les slashs de début et de fin sont obligatoires
 const FASTA_ADN_DIR = '/assets/fasta/adn/';

@@ -6,7 +6,6 @@ if (isAdminLogged()) {
     if (isset($_POST['status']) && is_string($_POST['status'])) {
         $maintenance = ($_POST['status'] === 'maintenance');
 
-        var_dump($maintenance);
         saveMaintenanceStatus($maintenance);
     }
     else {

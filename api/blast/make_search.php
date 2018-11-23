@@ -371,6 +371,16 @@ else {
     $html = ob_get_clean();
 }
 
-header('Content-Type: application/json');
+if (isset($_POST['make_html']) && $_POST['make_html'] === "true") {
+    if (isset($stats['buffer'])) {
+        echo $stats['buffer'];
+    }
+    else {
+        echo $html;
+    }
+}
+else {
+    header('Content-Type: application/json');
 
-echo json_encode(['html' => $html, 'error' => $errors, 'stats' => $stats]);
+    echo json_encode(['html' => $html, 'error' => $errors, 'stats' => $stats]);
+}

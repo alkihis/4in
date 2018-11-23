@@ -187,7 +187,7 @@ function unlogUser() : void {
  * @return boolean
  */
 function isAdminLogged() : bool {
-    return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'] && $_SESSION['user']['rights'] >= 2;
+    return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'] && $_SESSION['user']['rights'] >= USER_PERM_ADMINISTRATOR;
 }
 
 /**
@@ -196,7 +196,7 @@ function isAdminLogged() : bool {
  * @return boolean
  */
 function isContributorLogged() : bool {
-    return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'] && $_SESSION['user']['rights'] >= 1;
+    return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'] && $_SESSION['user']['rights'] >= USER_PERM_CONTRIBUTOR;
 }
 
 /**
@@ -205,7 +205,7 @@ function isContributorLogged() : bool {
  * @return boolean
  */
 function isUserLogged() : bool {
-    return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'] && $_SESSION['user']['rights'] >= 0;
+    return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'] && $_SESSION['user']['rights'] >= USER_PERM_VISITOR;
 }
 
 /**
