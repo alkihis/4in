@@ -8,7 +8,7 @@
  * @param boolean $full
  * @return string
  */
-function getAllFastaSequences(string $mode = 'adn', bool $full) : string {
+function getAllFastaSequences(string $mode = 'adn', bool $full = false) : string {
     global $sql;
 
     $m = ($mode === 'adn' ? 'sequence_adn' : 'sequence_pro');
@@ -107,7 +107,7 @@ if (isAdminLogged()) {
 
     if (isset($_POST['make'])) {
         // Si jamais on est sur windows, on bloque
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { // Pas possible sur Windows
+        if (stripos(PHP_OS, 'WIN') === 0) { // Pas possible sur Windows
             header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
         } 
         else {

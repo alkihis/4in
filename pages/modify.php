@@ -84,19 +84,19 @@ function updateGeneByOrtho(Gene &$g, string $pathway, string $name, string $full
         $change = true;
     }
 
-    if ($name !== (string)$g->getName()) {
+    if ($name !== $g->getName()) {
         $query[] = "gene_name='" . mysqli_real_escape_string($sql, $name) . "'";
     }
-    if ($fullname !== (string)$g->getFullName()) {
+    if ($fullname !== $g->getFullName()) {
         $query[] = "fullname='" . mysqli_real_escape_string($sql, $fullname) . "'";
     }
-    if ($family !== (string)$g->getFamily()) {
+    if ($family !== $g->getFamily()) {
         $query[] = "family='" . mysqli_real_escape_string($sql, $family) . "'";
     }
-    if ($subfamily !== (string)$g->getSubFamily()) {
+    if ($subfamily !== $g->getSubFamily()) {
         $query[] = "subfamily='" . mysqli_real_escape_string($sql, $subfamily) . "'";
     }
-    if ($role !== (string)$g->getFunction()) {
+    if ($role !== $g->getFunction()) {
         $query[] = "func='" . mysqli_real_escape_string($sql, $role) . "'";
     }
 

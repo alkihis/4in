@@ -28,7 +28,7 @@ function blastProgram() : string {
 }
 
 function chooseBDD(string $program) : string {
-    if (isUserLogged() || !LIMIT_GENOMES) {
+    if (!LIMIT_GENOMES || isUserLogged()) {
         $suf = '_full';
     }
     else {
@@ -38,9 +38,8 @@ function chooseBDD(string $program) : string {
     if ($program === 'blastp' || $program === 'blastx') {
         return '-db base/pro_base' . $suf;
     }
-    else {
-        return '-db base/adn_base' . $suf;
-    }
+
+    return '-db base/adn_base' . $suf;
 }
 
 function constructParameters(string $program) : string {
@@ -77,7 +76,7 @@ function constructParameters(string $program) : string {
         }
     }
 
-    if (!preg_match("/^blastn/", $program)) { // Si jamais on est pas sur un blastn
+    if (0 !== strpos($program, "blastn")) { // Si jamais on est pas sur un blastn
         if (isset($_POST['matrix']) && is_string($_POST['matrix'])) {
             $mat = $_POST['matrix'];
 
@@ -86,13 +85,11 @@ function constructParameters(string $program) : string {
             }
         }
 
-        if ($program !== 'tblastx') {
-            if (isset($_POST['comp_based_stats']) && is_string($_POST['comp_based_stats'])) {
-                $mat = (int)$_POST['comp_based_stats'];
-    
-                if ($mat >= 0 && $mat <= 3) {
-                    $p .= " -comp_based_stats $mat ";
-                }
+        if ($program !== 'tblastx' && isset($_POST['comp_based_stats']) && is_string($_POST['comp_based_stats'])) {
+            $mat = (int)$_POST['comp_based_stats'];
+
+            if ($mat >= 0 && $mat <= 3) {
+                $p .= " -comp_based_stats $mat ";
             }
         }
     }
@@ -131,20 +128,18 @@ function constructParameters(string $program) : string {
     }
 
     if (isset($_POST['filter_low_complexity']) && is_string($_POST['filter_low_complexity'])) {
-        if (preg_match("/^blastn/", $program)) {
+        if (0 === strpos($program, "blastn")) {
             $p .= " -dust \"20 64 1\" ";
         }
         else {
             $p .= " -seg yes ";
         }
     }
+    else if (strpos($program, "blastn") === 0) {
+        $p .= " -dust no ";
+    }
     else {
-        if (preg_match("/^blastn/", $program)) {
-            $p .= " -dust no ";
-        }
-        else {
-            $p .= " -seg no ";
-        }
+        $p .= " -seg no ";
     }
 
     if (isset($_POST['soft_masking']) && is_string($_POST['soft_masking'])) {
@@ -361,7 +356,7 @@ else {
     // et empêche de relancer une requête avant 20 secondes pour les utilisateurs anonymes
     // si jamais la requête a réussi
     session_start();
-    if (!isAdminLogged() && $errors === 0) {
+    if ($errors === 0 && !isAdminLogged()) {
         $_SESSION['before_next_blast'] = time() + 20;
     }
     else {

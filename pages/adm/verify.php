@@ -1,9 +1,7 @@
 <?php
 
 function verifyController() : array {
-    $data = ['active_page' => 'verify'];
-
-    return $data;
+    return ['active_page' => 'verify'];
 }
 
 function verifyView(array $data) : void { ?>

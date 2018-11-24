@@ -81,7 +81,7 @@ $(function() {
                             openBlastForm();
                             break;
                         case 3:
-                            sec = json.stats.retry_after;
+                            var sec = json.stats.retry_after;
                             M.toast({html: "Please wait " + sec + " second" + (sec > 1 ? 's' : '') + 
                                 " before a new request", displayLength: 8000});
                             placeholder_send.innerHTML = saved_blast;
@@ -118,7 +118,7 @@ $(function() {
         });
     
         // Definit ce qui se passe en cas d'erreur
-        xhr.addEventListener("error", function(event) {
+        xhr.addEventListener("error", function() {
             placeholder_send.innerHTML = makeBlastError("An unknown error occurred");
             openBlastForm();
         });
@@ -212,7 +212,7 @@ function refreshBlastForm(mode) {
     document.getElementById('low_complex').checked = mode === 'meg' || mode === 'n';
 
     $('.blast-message:not(.show-for-' + mode + ')').slideUp(200);
-    $messages = $('.blast-message.show-for-' + mode);
+    var $messages = $('.blast-message.show-for-' + mode);
     if (! $messages.is(":visible")) {
         $messages.slideDown(200);
     }

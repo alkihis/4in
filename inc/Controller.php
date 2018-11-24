@@ -15,13 +15,13 @@ class Controller {
      *
      * @var string|null
      */
-    protected $page_title = null; // Page title;  If null: no title
+    protected $page_title; // Page title;  If null: no title
     /**
      * View function to call
      *
      * @var callable|null
      */
-    protected $view = null; // Callback function to call on invoke()
+    protected $view; // Callback function to call on invoke()
 
     /**
      * Initialise le controlleur avec les données (modèle).

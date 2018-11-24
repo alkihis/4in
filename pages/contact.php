@@ -25,19 +25,17 @@ function contactControl(array $args) : Controller {
         if (!$json['success']) {
             $data['duplicate'] = true;
         }
+        else if ($json['score'] >= 0.5) {
+            if ($mail) {
+                // send mail...
+                // todo
+
+                $data['no_mail'] = true;
+                $data['content'] = htmlspecialchars($mail);
+            }
+        }
         else {
-            if ($json['score'] >= 0.5) {
-                if ($mail) {
-                    // send mail...
-                    // todo
-        
-                    $data['no_mail'] = true;
-                    $data['content'] = htmlspecialchars($mail);
-                }
-            }
-            else {
-                $data['error_captcha'] = true;
-            }
+            $data['error_captcha'] = true;
         }
         
     }

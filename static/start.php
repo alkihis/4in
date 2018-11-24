@@ -9,12 +9,12 @@ function homeControl() : Controller {
         throw new ErrorException("No image is set");
     }
 
-    $number = mt_rand(0, count($imgs)-1);
+    $number = random_int(0, count($imgs)-1);
     $name = basename($imgs[$number]);
 
     global $sql;
 
-    $beginOfDay = strtotime("midnight", time());
+    $beginOfDay = strtotime("midnight");
 
     mt_srand($beginOfDay);
 
@@ -41,6 +41,7 @@ function homeControl() : Controller {
 
     $rows = mysqli_fetch_all($q, MYSQLI_ASSOC);
 
+    /** @noinspection RandomApiMigrationInspection */
     $random_gene = mt_rand(0, count($rows) - 1);
 
     // Reset de la seed
@@ -136,7 +137,7 @@ function homeView(Controller $c) : void {
             <div class="divider divider-margin"></div>
             <div class="row">
                 <div class="col s12">
-                    <h4>Gene of the day <div class="right light-text"><?= $data['gene']->getSpecie() ?></div></h4>
+                    <h4>Gene of the day <span class="block right light-text"><?= $data['gene']->getSpecie() ?></span></h4>
                     <div class="clearb"></div>
                     <h5 class="center">
                         <a target='_blank' href="/gene/<?= $data['gene']->getID() ?>"><?= $data['gene']->getID() ?></a>

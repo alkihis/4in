@@ -33,12 +33,11 @@ function getFileFastaSampleData(string $filename) : ?array {
     fclose($h);
 
     // On a trouvé un ID qui existe, on le marque comme OK
-    if ($id) {
+    if (isset($id) && $id) {
         return ['file' => basename($filename), 'id' => $id, 'exists' => !$end];
     }
-    else {
-        return ['file' => basename($filename), 'id' => null];
-    }
+
+    return ['file' => basename($filename), 'id' => null];
 }
 
 function checkerController() : array {

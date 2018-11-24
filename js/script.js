@@ -71,7 +71,7 @@ function hidePopup() {
 function initCheckboxes() {
     var number_checked = document.getElementById('count_popup');
 
-    $('.chk-srch').on('change', function(evt) {
+    $('.chk-srch').on('change', function() {
         var len = $('.chk-srch:checked').length;
         number_checked.innerText = len;
 
@@ -348,7 +348,6 @@ function addSpecie(spec) {
 }
 
 function refreshSelect(element) {
-    var instance = M.FormSelect.getInstance(element);
     var values = $(element).val();
     var change = false;
     var right_now = false;
@@ -405,7 +404,7 @@ function initScrollFireSegments() {
         topOffset: 0,
         bottomOffset: 0,
         // Fires once when element begins to come in from the bottom, with scroll
-        onScrollDown: function(elm, distance_scrolled) {
+        onScrollDown: function(elm) {
             // console.log('triggered', elm, elm.dataset, distance_scrolled);
             var seg = Number(elm.dataset.nextSegment);
             // Affiche les éléments situés en dessous de ce segment, puis supprime le segment

@@ -69,7 +69,7 @@ class Gene {
                 $this->pathways = $paths;
             }
 
-            $this->has_link = $row['linkable'] === '0' ? false : true;
+            $this->has_link = $row['linkable'] !== '0';
             $this->is_link = $row['linkable'] !== null;
 
             $this->alias = $row['alias'] ?? null;

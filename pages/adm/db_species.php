@@ -27,7 +27,7 @@ function databaseSpeciesController() : array {
                 $mod = true;
             }
 
-            if (!in_array($new_specie, $data['ord_species'])) { // Pas dans le tableau ordonné
+            if (!in_array($new_specie, $data['ord_species'], true)) { // Pas dans le tableau ordonné
                 $data['ord_species'][] = $new_specie;
                 $mod = true;
             }

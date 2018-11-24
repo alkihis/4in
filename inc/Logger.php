@@ -40,7 +40,7 @@ class Logger {
      *
      * @var Logger|null
      */
-    static public $instance = null;
+    static public $instance;
 
     public function __construct(string $location = "assets/log/", bool $write_on_error = false) {
         if (self::$instance !== null) {
@@ -94,13 +94,11 @@ class Logger {
                 file_put_contents($this->php_notice_location, $message . ($put_eol ? "\n" : ""), FILE_APPEND);
             }
         }
+        else if (!$this->write_on_error) {
+            $this->buffer .= $message . ($put_eol ? "\n" : "");
+        }
         else {
-            if (!$this->write_on_error) {
-                $this->buffer .= $message . ($put_eol ? "\n" : "");
-            }
-            else {
-                file_put_contents($this->location, $message . ($put_eol ? "\n" : ""), FILE_APPEND);
-            }
+            file_put_contents($this->location, $message . ($put_eol ? "\n" : ""), FILE_APPEND);
         }
     }
 

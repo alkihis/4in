@@ -28,10 +28,8 @@ function downloadDatabase(array $assocs_species, bool $with_titles = true) : str
         $current_gene = mysqli_query($sql, "SELECT specie, gene_id, addi FROM GeneAssociations WHERE id={$row['id']}");
 
         // Récupération de tous les gènes pour cet ID
-        $matched = [];
         $ids_for_species = [];
         while ($row2 = mysqli_fetch_assoc($current_gene)) {
-            $matched[] = $row2;
             $ids_for_species[$row2['specie']][] = ['id' => $row2['gene_id'], 'addi' => $row2['addi']];
         }
 

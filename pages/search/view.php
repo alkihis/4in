@@ -136,7 +136,7 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                         var dat = [
                             <?php if (isset($_GET['global'])) {
                                 $words = [];
-                                preg_match_all('/"(.*?)"/ium', $_GET['global'], $words);
+                                preg_match_all('/"(.*?)"/um', $_GET['global'], $words);
 
                                 if (!empty($words) && !empty($words[1])) {
                                     foreach ($words[1] as $e) {

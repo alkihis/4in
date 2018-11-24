@@ -76,7 +76,9 @@ function explodeFile(string $filename, bool $trim_first_line = false, bool $read
                 // Les espèces commencent à la 6ème case
 
                 $assocs_species = [];
-                for ($i = 6; $i < count($arr); $i++) {
+
+                $len = count($arr);
+                for ($i = 6; $i < $len; $i++) {
                     $cur_specie = trim($arr[$i]);
                     if (empty($cur_specie)) { // Si la case de texte est vide, on arrête là
                         break;

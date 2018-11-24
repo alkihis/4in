@@ -29,7 +29,7 @@ function speciesController() : array {
         $max = count($species);
 
         for ($i = 0; $i < $max; $i++) {
-            if (!in_array($species[$i], $data['all_species'])) {
+            if (!in_array($species[$i], $data['all_species'], true)) {
                 $data['ignored'][] = $species[$i];
                 unset($species[$i]);
             }
@@ -134,7 +134,7 @@ function speciesView(array $data) : void { ?>
 
                         <script>
                             document.getElementById('form_spec').onkeypress = function (e) {
-                                var key = e.charCode || e.keyCode || 0;     
+                                var key = e.charCode || e.keyCode || 0;
                                 if (key === 13) {
                                     e.preventDefault();
                                     addSpecie($('#new_specie').val());

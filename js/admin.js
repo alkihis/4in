@@ -31,7 +31,7 @@ $(document).ready(function () {
 });
 
 var preloader_bar = `<div class="progress">
-    <div class="determinate" id="progress-bar" style="width: 0%"></div>
+    <div class="determinate" id="progress-bar" style="width: 0"></div>
 </div>`;
 
 var preloader_circle = `<div class="preloader-wrapper active">
@@ -85,14 +85,14 @@ async function launchFastaBuild(files) {
                 url: '/api/tools/fasta_reader.php',
                 method: 'POST',
                 body: 'file=' +  encodeURIComponent(f) + '&mode=' + encodeURIComponent(mode)
-            }).then(function (e) {
+            }).then(function () {
                 success++;
                 current++;
                 // Actualiser la barre...
                 bar.style.width = String(Math.round((current / total) * 100)) + '%';
     
                 num.innerText = current;
-            }).catch(function (e) {
+            }).catch(function () {
                 current++;
                 // Actualiser la barre...
                 bar.style.width = String(Math.round((current / total) * 100)) + '%';
@@ -143,7 +143,7 @@ async function launchMakeBlast() {
         url: '/api/tools/blast_creator.php',
         method: 'POST',
         body: 'make=true'
-    }).catch(function (e) { ok = false; });
+    }).catch(function () { ok = false; });
 
     // Affiche un message signalant la fin
     modal.innerHTML = `<div class="modal-content">
@@ -199,7 +199,7 @@ async function launchDatabaseBuild(file, species, trim_first, read_first) {
 
             spec_text += "<br>";
         }
-    }).catch(function (e) {
+    }).catch(function () {
         ok = false;
     });
 
@@ -253,11 +253,11 @@ async function launchMapBuild(files) {
             url: '/api/tools/do_mapping.php',
             method: 'POST',
             body: 'file=' +  encodeURIComponent(f)
-        }).then(function (e) {
+        }).then(function () {
             success++;
-        }).catch(function (e) {
+        }).catch(function () {
 
-        }).finally(function (e) {
+        }).finally(function () {
             current++;
             // Actualiser la barre...
             bar.style.width = String(Math.round((current / total) * 100)) + '%';
@@ -506,7 +506,7 @@ function changeWebsiteAccess(ele) {
             ele.classList.remove('green-text');
             ele.classList.add('red-text');
         }
-    }).catch(function (e) { 
+    }).catch(function () {
         M.toast({html: "Modification failed."});
     });
 }

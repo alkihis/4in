@@ -63,7 +63,7 @@ function searchAdvanced() : array {
         // Recherche du nom dans la base de données
         // On éclate en fonction des ""
         $global = [];
-        preg_match_all('/"(.*?)"/ium', $_GET['global'], $global);
+        preg_match_all('/"(.*?)"/um', $_GET['global'], $global);
 
         if (!empty($global) && isset($global[1])) {
             $global = $global[1];
@@ -195,49 +195,49 @@ function makeAdvancedQuery(string $word, string $query) : string {
     $word = addcslashes($word, '%_');
 
     if (isset($_GET['names'])) {
-        if ($query != '') {
-            $query=$query . " OR g.gene_name LIKE '%$word%'";
+        if ($query !== '') {
+            $query .= " OR g.gene_name LIKE '%$word%'";
         }
         else {
-            $query=$query . "g.gene_name LIKE '%$word%'";
+            $query .= "g.gene_name LIKE '%$word%'";
         }
     }
     if (isset($_GET['fnames'])) {
-        if ($query != '') {
-            $query=$query . " OR g.fullname LIKE '%$word%'";
+        if ($query !== '') {
+            $query .= " OR g.fullname LIKE '%$word%'";
         }
         else {
-            $query=$query . "g.fullname LIKE '%$word%'";
+            $query .= "g.fullname LIKE '%$word%'";
         }
     }
     if (isset($_GET['ids'])) {
-        if ($query != '') {
-            $query=$query . " OR a.gene_id LIKE '$word%'";
+        if ($query !== '') {
+            $query .= " OR a.gene_id LIKE '$word%'";
         }
         else {
-            $query=$query . "a.gene_id LIKE '$word%'";
+            $query .= "a.gene_id LIKE '$word%'";
         }
     }
     if (isset($_GET['family'])) {
-        if ($query != '') {
+        if ($query !== '') {
             $query .= " OR ";
         }
 
         $query .= "g.family LIKE '$word%'";
     }
     if (isset($_GET['subfamily'])) {
-        if ($query != '') {
+        if ($query !== '') {
             $query .= " OR ";
         }
 
         $query .= "g.subfamily LIKE '$word%'";
     }
     if (isset($_GET['functions'])) {
-        if ($query != '') {
-            $query=$query . " OR g.func LIKE '$word%'";
+        if ($query !== '') {
+            $query .= " OR g.func LIKE '$word%'";
         }
         else {
-            $query=$query . "g.func LIKE '$word%'";
+            $query .= "g.func LIKE '$word%'";
         }
     }
     return $query;

@@ -161,7 +161,7 @@ textarea.materialize-textarea:focus:not([readonly]) {
 /* POPUP download */
 .popup-download {
     position: fixed;
-    bottom: 0px;
+    bottom: 0;
     transform: translateY(100px);
     height: 100px;
     width: 80%;
@@ -186,10 +186,6 @@ textarea.materialize-textarea:focus:not([readonly]) {
 
 .btn-perso:hover {
     background-color: rgba(0,0,0,0.1);
-}
-
-.margin-adv-search-left {
-    margin-left: 40px;
 }
 
 .divider-white {
@@ -448,7 +444,7 @@ div.sort {
 }
 
 .no-line-height {
-    line-height: 0%;
+    line-height: 0;
 }
 
 .collection-specie {

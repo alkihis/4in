@@ -4,7 +4,7 @@
 function searchById() : array {
     $r = [];
 
-    if (isset($_GET['id']) && is_string($_GET['id']) && strlen($_GET['id']) > 0) {
+    if (isset($_GET['id']) && is_string($_GET['id']) && $_GET['id'] !== '') {
         $r['form_data'] = [];
         $r['form_data']['id'] = htmlspecialchars($_GET['id'], ENT_QUOTES);
 
@@ -41,7 +41,7 @@ function searchById() : array {
                 // et affiche les résultats à la page
 
                 // Filtre les gènes protégés
-                if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
+                if (LIMIT_GENOMES && !isUserLogged() && isProtectedSpecie($row['specie'])) {
                     // Si le génome est protégé, on l'insère pas dans le tableau
                     continue;
                 }

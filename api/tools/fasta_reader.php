@@ -55,7 +55,7 @@ function loadFasta(string $filename, string $mode = 'adn') : void {
     while (!feof($h)) { // Si $h est valide et tant que le fichier n'est pas fini (feof signifie file-end-of-file)
         $line = fgets($h); // récupère une ligne du fichier
 
-        if ($line[0] === '>') { // Commentaire, on récupère l'ID concerné
+        if (strpos($line, '>') === 0) { // Commentaire, on récupère l'ID concerné
             if ($sequence !== '' && $current_id !== '') {
                 addLine($sequence, $current_id, $stmt_request);
             }

@@ -41,7 +41,7 @@ if (isset($_POST['ids']) && is_string($_POST['ids']) && $_POST['mode'] && is_str
             $row = mysqli_fetch_assoc($q);
             
             // Filtre les gènes protégés
-            if (LIMIT_GENOMES && isProtectedSpecie($row['specie']) && !isUserLogged()) {
+            if (LIMIT_GENOMES && !isUserLogged() && isProtectedSpecie($row['specie'])) {
                 // Si le génome est protégé, on l'insère pas dans le tableau
                 continue;
             }

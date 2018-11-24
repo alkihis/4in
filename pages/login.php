@@ -26,7 +26,7 @@ function loginControl($args) : Controller {
         $q = mysqli_query($sql, "SELECT passw FROM Users WHERE username='$login';");
 
         if (!$q) {
-            throw new Exception("Base de données utilisateur non fonctionnelle.");
+            throw new RuntimeException("Base de données utilisateur non fonctionnelle.");
         }
         if (mysqli_num_rows($q) > 0) { // Un utilisateur est trouvé
             $row = mysqli_fetch_assoc($q);
@@ -35,7 +35,7 @@ function loginControl($args) : Controller {
                 // Connexion réussie, connexion à faire
                 $q = mysqli_query($sql, "SELECT * FROM Users WHERE username='$login';");
                 if (!$q) {
-                    throw new Exception("Base de données utilisateur non fonctionnelle.");
+                    throw new RuntimeException("Base de données utilisateur non fonctionnelle.");
                 }
 
                 $row = mysqli_fetch_assoc($q);

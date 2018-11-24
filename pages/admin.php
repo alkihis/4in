@@ -1,16 +1,7 @@
 <?php
 
-require 'pages/adm/password.php';
-require 'pages/adm/reset_link.php';
 require 'pages/adm/build.php';
 require 'pages/adm/import.php';
-require 'pages/adm/species.php';
-require 'pages/adm/db_species.php';
-require 'pages/adm/alias.php';
-require 'pages/adm/fasta_converter.php';
-require 'pages/adm/fasta_checker.php';
-require 'pages/adm/stats.php';
-require 'pages/adm/verify.php';
 
 function adminControl(array $args) : Controller {
     if (!isAdminLogged()) {
@@ -24,7 +15,8 @@ function adminControl(array $args) : Controller {
         if (!isset($args[1])) {
             throw new PageNotFoundException();
         }
-        else if ($args[1] === 'genome') {
+
+        if ($args[1] === 'genome') {
             $page = importGenomeController();
         }
         else if ($args[1] === 'blast') {
@@ -38,7 +30,8 @@ function adminControl(array $args) : Controller {
         if (!isset($args[1])) {
             throw new PageNotFoundException();
         }
-        else if ($args[1] === 'genome') {
+
+        if ($args[1] === 'genome') {
             $page = buildGenomeController();
         }
         else if ($args[1] === 'blast') {
@@ -49,10 +42,12 @@ function adminControl(array $args) : Controller {
         }
     }
     else if ($args[0] === 'alias') {
+        require 'pages/adm/alias.php';
         if (!isset($args[1])) {
             throw new PageNotFoundException();
         }
-        else if ($args[1] === 'import') {
+
+        if ($args[1] === 'import') {
             $page = importAliasController();
         }
         else if ($args[1] === 'build') {
@@ -63,27 +58,36 @@ function adminControl(array $args) : Controller {
         }
     }
     else if ($args[0] === 'reset_link') {
+        require 'pages/adm/reset_link.php';
         $page = resetLinkController();
     }
     else if ($args[0] === 'password') {
+        require 'pages/adm/password.php';
         $page = passwordController();
     }
     else if ($args[0] === 'species') {
+        require 'pages/adm/species.php';
         $page = speciesController();
     }
     else if ($args[0] === 'db_species') {
+        require 'pages/adm/db_species.php';
         $page = databaseSpeciesController();
     }
     else if ($args[0] === 'converter') {
+        require 'pages/adm/fasta_converter.php';
         $page = converterController();
     }
     else if ($args[0] === 'checker') {
+        require 'pages/adm/fasta_checker.php';
         $page = checkerController();
     }
     else if ($args[0] === 'stats') {
+        require 'pages/adm/stats.php';
         $page = statsController();
     }
     else if ($args[0] === 'verify') {
+        require 'pages/adm/verify.php';
+
         $page = verifyController();
     }
     else {
@@ -467,10 +471,10 @@ function showMappingFiles(array $files, bool $with_delete_input) : void {
  * @param integer $number
  * @return string|null
  */
-function findName(array $base_file, array $files, string $location, string $basename, ?string $initial = null, int $number = 1) : ?string {
+function findName(array $base_file, array &$files, string $location, string $basename, ?string $initial = null, int $number = 1) : ?string {
     $initial = $initial ?? $basename;
 
-    $pos = array_search($basename, $base_file);
+    $pos = array_search($basename, $base_file, true);
 
     if ($pos !== false) { // L'élément existe dans les fichiers existants
         if (filesize($location) === filesize($files[$pos]) && md5_file($location) === md5_file($files[$pos])) {
@@ -488,11 +492,10 @@ function findName(array $base_file, array $files, string $location, string $base
 
             return findName($base_file, $files, $location, $new_name, $initial, $number + 1);
         }
-        else {
-            $new_name = $initial . '_' . $number;
 
-            return findName($base_file, $files, $location, $new_name, $initial, $number + 1);
-        }
+        $new_name = $initial . '_' . $number;
+
+        return findName($base_file, $files, $location, $new_name, $initial, $number + 1);
     }
 
     return $basename;
@@ -506,7 +509,7 @@ function findName(array $base_file, array $files, string $location, string $base
  * @param string $name
  * @return string|null
  */
-function findSafeName(array $files, string $location, string $name) : ?string {
+function findSafeName(array &$files, string $location, string $name) : ?string {
     $base_files = array_map('basename', $files);
     $basename = basename($name);
 

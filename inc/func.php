@@ -8,8 +8,9 @@ function connectBD() : void {
     if (mysqli_connect_errno()) {
         printf("Échec de la connexion : %s\n", mysqli_connect_error());
     }
-    else 
+    else {
         mysqli_query($sql, 'SET NAMES UTF8mb4'); // requete pour avoir les noms en UTF8mb4
+    }
 }
 
 /**
@@ -39,7 +40,7 @@ function getSelectedUrl() : array {
             // Équivaut à $page_arguments[2:] en Python
             $page_arguments = array_slice($page_arguments, 2);
 
-            if (!array_key_exists($page_name, PAGES_REF) || preg_match("/^[0-9]+$/", $page_name)) {
+            if (!array_key_exists($page_name, PAGES_REF) || preg_match("/^\d+$/", $page_name)) {
                 // Si la page demandée n'existe pas
                 // ou si la page demandée est une page d'erreur
                 $page_name = '404';
@@ -115,7 +116,7 @@ function getRoute(string $page_name, $page_arguments) : Controller {
 function tryLogIn() : void {
     global $sql;
 
-    if (!isBasicUserLogged() && isset($_COOKIE['token'])) {
+    if (isset($_COOKIE['token']) && !isBasicUserLogged()) {
         // échappe le token
         $token = mysqli_real_escape_string($sql, $_COOKIE['token']);
 
@@ -504,9 +505,8 @@ function constructNewOrthologue(int $original_sql_id, string $specie, string $id
     if (empty($specie)) {
         return 3;
     }
-    else {
-        $query .= "'$specie', ";
-    }
+
+    $query .= "'$specie', ";
 
     // Ajout de l'alias
     $a = mysqli_real_escape_string($sql, trim($alias));
@@ -531,9 +531,8 @@ function constructNewOrthologue(int $original_sql_id, string $specie, string $id
     if ($q) {
         return 0;
     }
-    else {
-        return 4;
-    }
+
+    return 4;
 }
 
 /**
@@ -616,22 +615,18 @@ function initNightMode() {
     if (isset($_COOKIE['night_mode']) && $_COOKIE['night_mode'] === '1') {
         $GLOBALS['night_mode'] = true;
 
-        if (isset($_GET['night_mode'])) {
-            if ($_GET['night_mode'] === '0') {
-                $GLOBALS['night_mode'] = false;
-                setcookie('night_mode', '0', time() - 3600, '/', null, false, true);
-            }
+        if (isset($_GET['night_mode']) && $_GET['night_mode'] === '0') {
+            $GLOBALS['night_mode'] = false;
+            setcookie('night_mode', '0', time() - 3600, '/', null, false, true);
         }
     }
-    else {
-        if (isset($_GET['night_mode'])) {
-            if ($_GET['night_mode'] === '1') {
-                $GLOBALS['night_mode'] = true;
-                setcookie('night_mode', '1', time() + 1600*24*3600, '/', null, false, true);
-            }
-            else {
-                setcookie('night_mode', '0', time() - 3600, '/', null, false, true);
-            }
+    else if (isset($_GET['night_mode'])) {
+        if ($_GET['night_mode'] === '1') {
+            $GLOBALS['night_mode'] = true;
+            setcookie('night_mode', '1', time() + 1600*24*3600, '/', null, false, true);
+        }
+        else {
+            setcookie('night_mode', '0', time() - 3600, '/', null, false, true);
         }
     }
 }
