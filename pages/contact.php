@@ -4,7 +4,8 @@ function contactControl(array $args) : Controller {
     $data = [];
 
     if (isset($_POST['content'], $_POST['token_rec']) && is_string($_POST['content']) && is_string($_POST['token_rec'])) {
-        $mail = trim($_POST['content']);
+        $mail = trim(filter_input(INPUT_POST, 'mail', FILTER_VALIDATE_EMAIL));
+        $content = trim($_POST['content']);
 
         // Vérification du token Recaptcha
         $token = $_POST['token_rec'];
@@ -25,19 +26,56 @@ function contactControl(array $args) : Controller {
         if (!$json['success']) {
             $data['duplicate'] = true;
         }
-        else if ($json['score'] >= 0.5) {
-            if ($mail) {
-                // send mail...
-                // todo
+        else if ($json['score'] >= THRESHOLD_RECAPTCHA) {
+            if ($content && strlen($content) >= 10) { // 10 chars mini pour le message
+                $data['content'] = $content;
 
-                $data['no_mail'] = true;
-                $data['content'] = htmlspecialchars($mail);
+                if ($mail) {
+                    $data['email_address'] = $mail;
+                } // Sauvegarde des données pour les réinjecter dans le formulaire si besoin
+
+                if (strlen($content) > MAX_LEN_MESSAGE) {
+                    $data['too_long'] = true;
+                }
+                else {
+                    if ($mail) {
+                        // Vérification du délai
+                        if (isset($_SESSION['contact_time_reset']) && $_SESSION['contact_time_reset'] > time()) {
+                            $data['too_recent'] = true;
+                            $data['remaining_time'] = $_SESSION['contact_time_reset'] - time();
+                        }
+                        else { // Si toutes les conditions ont été réunies, on peut envoyer le message
+                            global $sql;
+                            $content = mysqli_real_escape_string($sql, $content);
+                            $mail = mysqli_real_escape_string($sql, $mail);
+
+                            $_SESSION['contact_time_reset'] = time() + TIME_BEFORE_NEW_MESSAGE;
+
+                            $q = mysqli_query($sql, "INSERT INTO Messages (content, sender) VALUES ('$content', '$mail');");
+
+                            if ($q) {
+                                $data['sended'] = true;
+                                $data['content'] = null;
+                            }
+                            else {
+                                Logger::write(mysqli_error($sql));
+
+                                $data['fail_send'] = true;
+                            }
+                        }
+                    }
+                    else {
+                        $data['mail_invalid'] = true;
+                    }
+                }
+            }
+            else {
+                $data['no_content'] = true;
             }
         }
         else {
             $data['error_captcha'] = true;
         }
-        
     }
 
     return new Controller($data, 'Contact us');
@@ -67,22 +105,41 @@ function contactView(Controller $c) : void {
             <h2 class="header light-text" style="margin-top: 10px;">Send an e-mail</h2>
             <form method="post" action="#">
                 <div class="row">
-                    <?php if (isset($data['no_mail'])) { ?>
-                        <h6 class="red-text">This service is not ready yet. Please be patient.</h6>
+                    <?php if (isset($data['too_long'])) { ?>
+                        <h6 class="red-text">Your message is too long. Maximum length is <?= MAX_LEN_MESSAGE ?> characters.</h6>
                     <?php } 
+                    if (isset($data['too_recent'])) { ?>
+                        <h6 class="red-text">Please wait 
+                        <span id="remaining_time"><?= $data['remaining_time'] ?></span>
+                        second<span id="seconds_s"><?= $data['remaining_time'] > 1 ? 's' : '' ?></span> 
+                        before sending a new message.</h6>
+                    <?php }
+                    if (isset($data['fail_send'])) { ?>
+                        <h6 class="red-text">Unable to send message. Please renew your request.</h6>
+                    <?php }
+                    if (isset($data['mail_invalid'])) { ?>
+                        <h6 class="red-text">Your e-mail address is invalid.</h6>
+                    <?php }
+                    if (isset($data['no_content'])) { ?>
+                        <h6 class="red-text">Your message may have at least 10 characters.</h6>
+                    <?php }
                     if (isset($data['duplicate'])) { ?>
                         <h6 class="red-text">You may have tried to send an e-mail twice. Please renew your request.</h6>
                     <?php }
                     if (isset($data['error_captcha'])) { ?>
                         <h6 class="red-text">You seem to have automated behaviour. Try again later.</h6>
+                    <?php } 
+                    if (isset($data['sended'])) { ?>
+                        <h6 class="green-text">Your message has been successfully sended.</h6>
                     <?php } ?>
                     <div class="input-field col s12">
-                        <input type='email' class="validate" id='mail' name="mail" required>
+                        <input type='email' class="validate" id='mail' name="mail" required
+                        value="<?= htmlspecialchars($data['email_address'] ?? "", ENT_QUOTES) ?>">
                         <label for="mail">Your e-mail address</label>
                     </div>
                     <div class="input-field col s12">
-                        <textarea class="materialize-textarea" placeholder="Write here your message" 
-                        id="content" name="content" required><?= $data['content'] ?? '' ?></textarea>
+                        <textarea class="materialize-textarea" placeholder="Write your message" maxlength="<?= MAX_LEN_MESSAGE ?>"
+                        id="content" name="content" required><?= htmlspecialchars($data['content'] ?? '') ?></textarea>
                         <label for="content">Content</label>
                     </div>
 
@@ -128,6 +185,36 @@ function contactView(Controller $c) : void {
             grecaptcha.execute('6LcHAnkUAAAAABcAGti5NQsg2iX3Lt6g-0_bYTA-', {action: 'homepage'}).then(function(token) {
                 document.querySelector('input[name=token_rec]').value = token;
             });
+        });
+    </script>
+
+    <script>
+        $(function() {
+            var d = document.getElementById('remaining_time');
+            var s = document.getElementById('seconds_s');
+
+            function refreshTimer(count) {
+                if (count <= 0) {
+                    $(d.parentElement).slideUp(200, function() {
+                        $(this).remove();
+                    });
+                } 
+                else {
+                    if (count === 1) {
+                        s.innerText = "";
+                    }
+                    
+                    d.innerText = count;
+
+                    setTimeout(function() {
+                        refreshTimer(count - 1);
+                    }, 1000);
+                }
+            }
+
+            if (d) {
+                refreshTimer(Number(d.innerText));
+            }
         });
     </script>
 

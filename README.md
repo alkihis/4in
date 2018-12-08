@@ -14,7 +14,7 @@ Les versions requises sont les suivantes:
 - MySQL/MariaDB
 - Apache 2.4 recommandé
     - mod_headers
-    - mod_rewite
+    - mod_rewrite
     - AllowOverride All
 - Bash (système UNIX requis)
 

@@ -90,11 +90,26 @@ function adminControl(array $args) : Controller {
 
         $page = verifyController();
     }
+    else if ($args[0] === 'messages') {
+        require 'pages/adm/messages.php';
+
+        $page = messagesController();
+    }
     else {
         throw new PageNotFoundException();
     }
 
-    return new Controller($page, 'Admin console');
+    $unread = 0;
+    global $sql;
+
+    $q = $sql->query("SELECT seen FROM Messages WHERE seen=0");
+
+    if ($q) {
+        $unread = $q->num_rows;
+        $q->free();
+    }
+
+    return new Controller([$page, $unread], 'Admin console');
 }
 
 function homePageController() : array {
@@ -102,7 +117,10 @@ function homePageController() : array {
 }
 
 function adminView(Controller $c) : void {
-    $d = $c->getData();
+    [$d, $unread] = $c->getData();
+
+    $container_on = ($d['container'] ?? true);
+    $gradient_on = ($d['gradient'] ?? true);
 
     ?>
     <!-- Modal for confirmation -->
@@ -158,8 +176,9 @@ function adminView(Controller $c) : void {
         <div class="modal not-dismissible" id="modal-admin"></div>
     </div>
 
-    <div class="linear-nav-to-white tiny-top-float"></div>
-    <div class="container">
+    <?= ($gradient_on ? '<div class="linear-nav-to-white tiny-top-float"></div>' : '') ?>
+    
+    <?= ($container_on ? '<div class="container">' : '') ?>
         <div class="row no-margin-bottom">
             <div class="col s12">
                 <!-- Button for sidenav show in mobile -->
@@ -218,9 +237,12 @@ function adminView(Controller $c) : void {
             case 'verify':
                 verifyView($d);
                 break;
+            case 'messages':
+                messagesView($d);
+                break;
         }
         ?>
-    </div>
+    <?= ($container_on ? '</div>' : '') ?>
 
     <script src="/js/admin.js"></script>
     <script src="/js/Sortable.min.js"></script>
@@ -290,6 +312,12 @@ function adminView(Controller $c) : void {
         <li><div class="divider"></div></li>
 
         <li><a class="subheader">Tools</a></li>
+        <li <?= ($d['active_page'] === 'messages' ? 'class="active"' : '') ?>>
+            <a class="waves-effect" href="/admin/messages"><i class="material-icons"><?= ($unread ? 'mail' : 'drafts') ?></i>Messages
+            <?php if ($unread) { ?>
+                <span class="new badge yellow darken-4" data-badge-caption="new"><?= $unread ?></span>
+            <?php } ?></a>
+        </li>
         <li <?= ($d['active_page'] === 'stats' ? 'class="active"' : '') ?>>
             <a class="waves-effect" href="/admin/stats"><i class="material-icons">show_chart</i>Statistics</a>
         </li>

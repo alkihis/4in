@@ -39,3 +39,11 @@ CREATE TABLE Users (
     token TEXT DEFAULT NULL,
     PRIMARY KEY (id_user)
 );
+
+CREATE TABLE Messages (
+    id_message INT NOT NULL AUTO_INCREMENT,
+    content TEXT NOT NULL,
+    sender VARCHAR(255) NOT NULL,
+    seen BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (id_message)
+)

@@ -49,14 +49,23 @@ const DEBUG_MODE = true;
 // Protected genomes : hide species defined in PROTECTED_SPECIES
 const LIMIT_GENOMES = true;
 
+// _----- PAGE DE CONTACT -----_
+// Seuil (entre 0 et 1) pour lequel on admet qu'un utilisateur du ReCaptcha n'est pas un robot
+const THRESHOLD_RECAPTCHA = 0.5;
+// Temps d'attente entre deux messages (en secondes)
+const TIME_BEFORE_NEW_MESSAGE = 120;
+// Limite de caractères (ISO-8859-1) d'un message de contact
+const MAX_LEN_MESSAGE = 5000;
+// _----- -----_
+
 // Link save : Checker for link validity
 // First %s goes for specie acronym, second one for gene_id (or alias, if exists)
 const LINK_CHECKER = "http://bf2i200.insa-lyon.fr:4555/%s/NEW-IMAGE?type=GENE&object=%s";
 
 // Link to external database. First one is used for "Protected species", second is used for other species
 const LINK_PROTECTED_SPECIE = 'http://bf2i200.insa-lyon.fr:3555/%s/NEW-IMAGE?type=GENE&object=%s';
-// const LINK_GENERAL = 'http://arthropodacyc.cycadsys.org/%s/NEW-IMAGE?type=GENE&object=%s'; // < Does not work ?
-const LINK_GENERAL = 'http://bf2i200.insa-lyon.fr:4555/%s/NEW-IMAGE?type=GENE&object=%s';
+const LINK_GENERAL = 'http://arthropodacyc.cycadsys.org/%s/NEW-IMAGE?type=GENE&object=%s';
+// const LINK_GENERAL = 'http://bf2i200.insa-lyon.fr:4555/%s/NEW-IMAGE?type=GENE&object=%s';
 
 // Définition des pages disponibles sur le site web
 // nom_page => [
