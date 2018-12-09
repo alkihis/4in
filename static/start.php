@@ -39,7 +39,7 @@ function homeControl() : Controller {
 
     $q = mysqli_query($sql, "SELECT gene_id FROM GeneAssociations $protected");
 
-    $rows = mysqli_fetch_all($q, MYSQLI_ASSOC);
+    $rows = mysqli_fetch_all($q, MYSQLI_ASSOC); // Récupération de toutes les lignes en même temps
 
     /** @noinspection RandomApiMigrationInspection */
     $random_gene = mt_rand(0, count($rows) - 1);

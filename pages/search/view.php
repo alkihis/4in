@@ -74,7 +74,7 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                             <?php 
                             // Génération des options du select en fonction des pathways dans la base de données
                             foreach ($form_data['select'] as $option) {
-                                $md5 = md5($option);
+                                $md5 = htmlspecialchars($option, ENT_QUOTES);
                                 $option = htmlspecialchars($option);
                                 echo "<option value='$md5'>$option</option>";
                             }
@@ -134,22 +134,23 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
 
                     <script>
                         var dat = [
-                            <?php if (isset($_GET['global'])) {
+                            <?php if (isset($_GET['global'])) { // Si jamais on a déjà des keywords définis
                                 $words = [];
                                 preg_match_all('/"(.*?)"/um', $_GET['global'], $words);
+                                // On les récupère
 
                                 if (!empty($words) && !empty($words[1])) {
-                                    foreach ($words[1] as $e) {
+                                    foreach ($words[1] as $e) { // Pour chaque mot défini
                                         if ($e === "") continue;
     
                                         $t = addcslashes($e, "'");
-                                        echo "{tag: '$t'},";
+                                        echo "{tag: '$t'},"; // On écrit les tags dispos dans le tableau d'initialisation
                                     }
                                 }
                             } ?>
                         ];
 
-                        $(function () {initGlobalSearchForm(dat);});
+                        $(function () { initGlobalSearchForm(dat); });
                     </script>
 
                     <div style="margin-left: 10px; margin-bottom: 15px;">
@@ -181,17 +182,27 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                             <span>Roles</span>
                         </label>
                     </div>
+                <?php }
+                
+                if ($mode !== 'pathway') { ?>
+                    <label class="col s12 l2 left tooltipped" data-tooltip="Entered query must exactly match field data">
+                        <input type="checkbox" value='1' <?= (isset($_GET['exact_query']) ? 'checked' : '') ?> 
+                            name="exact_query">
+                        <span>Exact query</span>
+                    </label>
                 <?php } ?>
 
-                <?php if (!isset($form_data['no_search_btn']) || !$form_data['no_search_btn']) { ?>
-                    <button type='submit' id='submit_btn' class='btn-flat btn-perso right blue-text'>Search</button>
-                <?php } ?>
+                <button type='submit' id='submit_btn' class='btn-flat btn-perso right blue-text'>Search</button>
                 <div class='clearb'></div>
             </form>
         </div>
     </div>
     </div>
     </div>
+
+    <script>
+        $(function() {$('.tooltipped').tooltip();});
+    </script>
     <?php
 }
 

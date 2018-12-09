@@ -75,6 +75,7 @@ function searchAdvanced() : array {
         // Remet la chaîne global à zéro pour supprimer les mots vides/invalides
         // lors du traitement
         $_GET['global'] = "";
+        $exact_keyword_query = (isset($_GET['exact_query']) && $_GET['exact_query'] === '1');
 
         // Traitement des mots clés
         foreach ($global as $word) {
@@ -83,7 +84,7 @@ function searchAdvanced() : array {
             if ($word === "" || strlen($word) < 2)
                 continue;
 
-            $query = makeAdvancedQuery($word, $query);
+            $query = makeAdvancedQuery($word, $query, $exact_keyword_query);
             $_GET['global'] .= "\"$word\" ";
         }
         
@@ -189,56 +190,58 @@ function searchAdvanced() : array {
     return $r;
 }
 
-function makeAdvancedQuery(string $word, string $query) : string {
+function makeAdvancedQuery(string $word, string $query, bool $exact_word = false) : string {
     global $sql;
     $word = mysqli_real_escape_string($sql, $word);
     $word = addcslashes($word, '%_');
 
+    $getQuery = function (string $word, bool $exact_word, bool $percent_on_beginning = false) : string {
+        return ($exact_word ? " = '$word'" :
+            (" LIKE '" . ($percent_on_beginning ? '%' : '') . "$word%'")
+        );
+    };
+
     if (isset($_GET['names'])) {
         if ($query !== '') {
-            $query .= " OR g.gene_name LIKE '%$word%'";
+            $query .= " OR ";
         }
-        else {
-            $query .= "g.gene_name LIKE '%$word%'";
-        }
+
+        $query .= "g.gene_name " . $getQuery($word, $exact_word, true);
     }
     if (isset($_GET['fnames'])) {
         if ($query !== '') {
-            $query .= " OR g.fullname LIKE '%$word%'";
+            $query .= " OR ";
         }
-        else {
-            $query .= "g.fullname LIKE '%$word%'";
-        }
+
+        $query .= "g.fullname " . $getQuery($word, $exact_word, true);
     }
     if (isset($_GET['ids'])) {
         if ($query !== '') {
-            $query .= " OR a.gene_id LIKE '$word%'";
+            $query .= " OR ";
         }
-        else {
-            $query .= "a.gene_id LIKE '$word%'";
-        }
+
+        $query .= "a.gene_id " . $getQuery($word, $exact_word);
     }
     if (isset($_GET['family'])) {
         if ($query !== '') {
             $query .= " OR ";
         }
 
-        $query .= "g.family LIKE '$word%'";
+        $query .= "g.family " . $getQuery($word, $exact_word);
     }
     if (isset($_GET['subfamily'])) {
         if ($query !== '') {
             $query .= " OR ";
         }
 
-        $query .= "g.subfamily LIKE '$word%'";
+        $query .= "g.subfamily " . $getQuery($word, $exact_word);
     }
     if (isset($_GET['functions'])) {
         if ($query !== '') {
-            $query .= " OR g.func LIKE '$word%'";
+            $query .= " OR ";
         }
-        else {
-            $query .= "g.func LIKE '$word%'";
-        }
+
+        $query .= "g.func " . $getQuery($word, $exact_word);
     }
     return $query;
 }

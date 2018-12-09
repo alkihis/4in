@@ -41,7 +41,7 @@ function searchPathway() : array {
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
         JOIN Pathways pa ON pa.id=g.id
-        WHERE MD5(pa.pathway)='$pathway'
+        WHERE pa.pathway='$pathway'
         GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie");
 
         if (!$q) {
@@ -60,9 +60,6 @@ function searchPathway() : array {
 
                 $r['results'][] = new Gene($row);
             } 
-            // results empêche la génération du formulaire de recherche,
-            // et affiche les résultats à la page
-
             $q->free();
         }
     }

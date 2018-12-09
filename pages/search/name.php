@@ -11,6 +11,8 @@ function searchByName() : array {
         global $sql;
         // Recherche du nom dans la base de données
         $name = mysqli_real_escape_string($sql, $_GET['name']);
+        $exact_keyword_query = (isset($_GET['exact_query']) && $_GET['exact_query'] === '1');
+        $like_q = ($exact_keyword_query ? "='$name'" : "LIKE '$name%'");
 
         $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.linkable, a.alias,
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
@@ -26,7 +28,7 @@ function searchByName() : array {
             END) as is_seq_pro
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
-        WHERE g.gene_name LIKE '$name%'
+        WHERE g.gene_name $like_q
         GROUP BY a.gene_id, g.id ORDER BY g.gene_name, g.id, a.specie");
 
         if (!$q) {

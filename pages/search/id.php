@@ -11,6 +11,8 @@ function searchById() : array {
         global $sql;
         // Recherche de l'identifiant dans la base de données
         $id = mysqli_real_escape_string($sql, $_GET['id']);
+        $exact_keyword_query = (isset($_GET['exact_query']) && $_GET['exact_query'] === '1');
+        $like_q = ($exact_keyword_query ? "='$id'" : "LIKE '$id%'");
 
         $q = mysqli_query($sql, "SELECT g.*, a.gene_id, a.specie, a.linkable, a.alias,
             (SELECT GROUP_CONCAT(DISTINCT p.pathway SEPARATOR ',')
@@ -26,7 +28,7 @@ function searchById() : array {
             END) as is_seq_pro
         FROM GeneAssociations a 
         JOIN Gene g ON a.id=g.id
-        WHERE a.gene_id LIKE '$id%'
+        WHERE a.gene_id $like_q
         GROUP BY a.gene_id, g.id ORDER BY g.id, a.specie");
 
         if (!$q) {

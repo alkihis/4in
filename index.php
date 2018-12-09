@@ -55,7 +55,7 @@ $ctrl = getRoute(...$parms);
         <script src="/js/jquery-3.3.1.min.js"></script>
 
         <title>
-            <?= $ctrl->getTitle() ?? SITE_NAME ?>
+            <?= ($ctrl->getTitle() ? $ctrl->getTitle() . ' - ' : '') . SITE_NAME ?>
         </title>
     </head>
 
