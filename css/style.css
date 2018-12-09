@@ -611,10 +611,36 @@ main.on-dark-mode {
     font-weight: 300;
 }
 
+.message-seen {
+    background-color: #6c8da0;
+}
+
+.message-not-seen {
+    background-color: #0277bd;
+}
+
 .show-if-only-child {
     display: none;
 }
 
 .show-if-only-child:only-child {
     display: block;
+}
+
+span.badge {
+    min-width: 1.7rem;
+}
+
+i.material-icons.custom-margin {
+    margin-right: 3px;
+}
+
+.message-animation {
+    animation: bk-color-change ease .8s;
+}
+
+@keyframes bk-color-change {
+    0% { background-color: #0277bd; }
+    50% { background-color: #89a9bb; }
+    100% { background-color: #0277bd; }
 }

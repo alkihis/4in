@@ -99,15 +99,7 @@ function adminControl(array $args) : Controller {
         throw new PageNotFoundException();
     }
 
-    $unread = 0;
-    global $sql;
-
-    $q = $sql->query("SELECT seen FROM Messages WHERE seen=0");
-
-    if ($q) {
-        $unread = $q->num_rows;
-        $q->free();
-    }
+    $unread = getUnreadMessages();
 
     return new Controller([$page, $unread], 'Admin console');
 }
@@ -296,17 +288,17 @@ function adminView(Controller $c) : void {
         <li><div class="divider"></div></li>
 
         <li><a class="subheader">Manage</a></li>
+        <li <?= ($d['active_page'] === 'messages' ? 'class="active"' : '') ?>>
+            <a class="waves-effect" href="/admin/messages"><i class="material-icons glob-count-icon"><?= ($unread ? 'mail' : 'drafts') ?></i>Messages
+            <?php if ($unread) { ?>
+                <span class="new badge glob-count yellow darken-4" data-badge-caption=''><?= $unread ?></span>
+            <?php } ?></a>
+        </li>
         <li <?= ($d['active_page'] === 'db_species' ? 'class="active"' : '') ?>>
             <a class="waves-effect" href="/admin/db_species"><i class="material-icons">bug_report</i>Database species</a>
         </li>
         <li <?= ($d['active_page'] === 'species' ? 'class="active"' : '') ?>>
             <a class="waves-effect" href="/admin/species"><i class="material-icons">lock</i>Protected species</a>
-        </li>
-        <li <?= ($d['active_page'] === 'messages' ? 'class="active"' : '') ?>>
-            <a class="waves-effect" href="/admin/messages"><i class="material-icons"><?= ($unread ? 'mail' : 'drafts') ?></i>Messages
-            <?php if ($unread) { ?>
-                <span class="new badge yellow darken-4"><?= $unread ?></span>
-            <?php } ?></a>
         </li>
         <li <?= ($d['active_page'] === 'reset' ? 'class="active"' : '') ?>>
             <a class="waves-effect" href="/admin/reset_link"><i class="material-icons">refresh</i>Reset link status</a>

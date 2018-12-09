@@ -631,4 +631,17 @@ function initNightMode() {
     }
 }
 
+function getUnreadMessages() : int {
+    global $sql;
+
+    $q = $sql->query("SELECT seen FROM Messages WHERE seen=0");
+
+    if ($q) {
+        return $q->num_rows;
+        $q->free();
+    }
+
+    return 0;
+}
+
 connectBD();

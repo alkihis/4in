@@ -22,7 +22,7 @@ function messagesView(array $data) : void { ?>
     <style>
         main {
             position: relative;
-            min-height: 500px;
+            min-height: 600px;
         }
     </style>
     <div class="row messages-container">
@@ -34,7 +34,7 @@ function messagesView(array $data) : void { ?>
                     <span class="remove-conversation"><i class="material-icons left red-text">delete_sweep</i></span>
                     <span class="sender"><?= htmlspecialchars($sender['sender']) ?></span>
                     <?php if ($sender['new'] > 0) { ?>
-                        <span class="new badge yellow darken-4"><?= $sender['new'] ?></span>
+                        <span class="new badge yellow darken-4" data-badge-caption=''><?= $sender['new'] ?></span>
                     <?php } ?>
                 </div>
             <?php } ?>

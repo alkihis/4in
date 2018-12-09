@@ -23,17 +23,17 @@ function contactControl(array $args) : Controller {
         // Décode la réponse du Captcha
         $json = json_decode($return, true);
 
-        if (!$json['success']) {
-            $data['duplicate'] = true;
-        }
-        else if ($json['score'] >= THRESHOLD_RECAPTCHA) {
-            if ($content && strlen($content) >= 10) { // 10 chars mini pour le message
-                $data['content'] = $content;
+        if ($content && strlen($content) >= 10) { // 10 chars mini pour le message
+            $data['content'] = $content;
 
-                if ($mail) {
-                    $data['email_address'] = $mail;
-                } // Sauvegarde des données pour les réinjecter dans le formulaire si besoin
+            if ($mail) {
+                $data['email_address'] = $mail;
+            } // Sauvegarde des données pour les réinjecter dans le formulaire si besoin
 
+            if (!$json['success']) {
+                $data['duplicate'] = true;
+            }
+            else if ($json['score'] >= THRESHOLD_RECAPTCHA) {
                 if (strlen($content) > MAX_LEN_MESSAGE) {
                     $data['too_long'] = true;
                 }
@@ -51,18 +51,18 @@ function contactControl(array $args) : Controller {
                             global $sql;
                             $content = mysqli_real_escape_string($sql, $content);
                             $mail = mysqli_real_escape_string($sql, $mail);
-
+    
                             $_SESSION['contact_time_reset'] = time() + TIME_BEFORE_NEW_MESSAGE;
-
+    
                             $q = mysqli_query($sql, "INSERT INTO Messages (content, sender) VALUES ('$content', '$mail');");
-
+    
                             if ($q) {
                                 $data['sended'] = true;
                                 $data['content'] = null;
                             }
                             else {
                                 Logger::write(mysqli_error($sql));
-
+    
                                 $data['fail_send'] = true;
                             }
                         }
@@ -73,11 +73,11 @@ function contactControl(array $args) : Controller {
                 }
             }
             else {
-                $data['no_content'] = true;
+                $data['error_captcha'] = true;
             }
         }
         else {
-            $data['error_captcha'] = true;
+            $data['no_content'] = true;
         }
     }
 
@@ -130,7 +130,7 @@ function contactView(Controller $c) : void {
                         <h6 class="red-text">Your message may have at least 10 characters.</h6>
                     <?php }
                     if (isset($data['duplicate'])) { ?>
-                        <h6 class="red-text">You may have tried to send an e-mail twice. Please renew your request.</h6>
+                        <h6 class="red-text">Your query may had been in timeout. Please renew your request.</h6>
                     <?php }
                     if (isset($data['error_captcha'])) { ?>
                         <h6 class="red-text">You seem to have automated behaviour. Try again later.</h6>

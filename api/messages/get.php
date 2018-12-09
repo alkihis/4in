@@ -39,6 +39,7 @@ if (isAdminLogged()) {
             $count = 10;
         }
 
+        $original = $_GET['sender'];
         $sender = mysqli_real_escape_string($sql, $_GET['sender']);
 
         $q = mysqli_query($sql, "SELECT id_message, content, seen, send_date
@@ -55,11 +56,12 @@ if (isAdminLogged()) {
                     'content' => $row['content'], 
                     'id' => (int)$row['id_message'], 
                     'seen' => (bool)$row['seen'],
+                    'sender' => $original,
                     'date' => $date
                 ];
             }
 
-            mysqli_query($sql, "UPDATE Messages SET seen=1 WHERE sender='$sender' ORDER BY id_message DESC LIMIT $count;");
+            mysqli_query($sql, "UPDATE Messages SET seen=1 WHERE sender='$sender' $max_id ORDER BY id_message DESC LIMIT $count;");
         }
 
         echo json_encode($messages);

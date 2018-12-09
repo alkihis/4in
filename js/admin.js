@@ -622,7 +622,7 @@ function verifyAllGenes() {
     });
 }
 
-function constructMessageCard(content, id, seen, date) {
+function constructMessageCard(content, id, seen, date, sender) {
     let d = new Date(date);
     let date_str = String(d.getFullYear()) + "-" + String(d.getMonth() >= 9 ? d.getMonth() + 1 : "0" + String(d.getMonth() + 1)) +
         "-" + String(d.getDate() > 9 ? d.getDate() : "0" + String(d.getDate())); 
@@ -630,9 +630,15 @@ function constructMessageCard(content, id, seen, date) {
     date_str += " at ";
     date_str += String(d.getHours()) + ":" + String(d.getMinutes() > 9 ? d.getMinutes() : "0" + String(d.getMinutes()));
 
-    return `<div class='message-card card-panel ${(seen ? 'light-blue darken-3' : 'purple lighten-1')}
+    return `<div class='message-card card-panel ${(seen ? 'message-seen' : 'message-not-seen message-animation')}
         white-text card-border' data-id="${id}">
-        <div class="message-content">${escapeHtml(content)}</div>
+        <div class="message-content" style="margin-bottom: 3px">${escapeHtml(content)}</div>
+        <a href="mailto:${escapeHtml(sender)}?subject=About your message posted on 4IN database&body=${
+            encodeURIComponent("\n\n-------------\n\n" + date_str + ", " + sender + " has written:\n" + content)
+        }" 
+            class="very-tiny-text left orange-text text-lighten-3 underline-hover">
+            Reply
+        </a>
         <div class="very-tiny-text right">
             <span class="remove-message-btn red-att-text underline-hover pointer">Remove</span> &middot; Sent ${date_str}
         </div>
@@ -646,10 +652,31 @@ function removeConversationDefinitively(element, sender) {
     )
     .then(() => {
         $(element).slideUp(200, function() {
+            let $global_c = $('.glob-count');
+            let $to_remove = $(this).find('.badge');
+            
+            if ($to_remove.length > 0 && $global_c.length > 0) { 
+                // On met à jour les compteurs globaux
+
+                let to_remove = Number($to_remove.html());
+                let global_count = Number($global_c.html());
+
+                if (global_count) {
+                    let new_count = global_count - to_remove;
+
+                    if (new_count) {
+                        $global_c.html(global_count - to_remove);
+                    }
+                    else {
+                        $global_c.remove();
+                        $('.glob-count-icon').html('drafts'); // On met à jour l'icône
+                    }
+                }
+            }
+
             $(this).remove();
             clearMessageContainer();
         });
-        M.toast({html: "Conversation removed successfully", displayLength: 6000});
     })
     .fail(() => {
         M.toast({html: "Unable to remove this conversation", displayLength: 6000});
@@ -691,6 +718,14 @@ function removeMessageDefinitively(element, id) {
     .then(() => {
         $(element).slideUp(200, function() {
             $(this).remove();
+
+            if ($('.message-card').length === 0) {
+                let conv = document.querySelector('.conversation.active');
+
+                if (conv) {
+                    removeConversationDefinitively(conv, conv.dataset.sender);
+                }
+            }
         });
         M.toast({html: "Message removed successfully", displayLength: 6000});
     })
@@ -746,23 +781,62 @@ function loadConversation(element, sender, max_id = 0) {
     count = 10;
 
     $.get('/api/messages/get.json', {sender, max_id, count}, function(data) {
-        if (loader) {
+        if (loader) { // On supprime le preloader si jamais il est présent
             $(loader).remove();
         }
 
         if (data) {
-            strs = "";
-            min_id = NaN;
+            let strs = "";
+            let min_id = NaN;
+            let actual_c = document.querySelector('.conversation[data-sender="' + sender + '"] .badge');
+            let $global_c = $('.glob-count');
+            let actual_count = 0;
+            let to_remove = 0;
+
+            if (actual_c) {
+                actual_count = Number(actual_c.innerHTML);
+            }
 
             for (let msg of data) {
-                if (isNaN(min_id)) {
+                if (isNaN(min_id)) { // Mise à jour de l'ID minimal
                     min_id = msg.id;
                 }
                 else if (msg.id < min_id) {
                     min_id = msg.id;
                 }
 
-                strs += constructMessageCard(msg.content, msg.id, msg.seen, msg.date);
+                // Construction de la carte du message
+                strs += constructMessageCard(msg.content, msg.id, msg.seen, msg.date, msg.sender);
+
+                if (!msg.seen) { // Si jamais le message est pas vu, on va diminuer le compteur de non-lus
+                    actual_count--;
+                    to_remove++;
+                }
+            }
+
+            if (actual_c) { // Si jamais un compteur de non lus est présent, on veut l'actualiser
+                if (actual_count <= 0) { // Si jamais on arrive à 0 non lus, on supprime le badge
+                    $(actual_c).remove();
+                }
+                else {
+                    actual_c.innerHTML = actual_count;
+                }
+
+                if ($global_c.length > 0) { // On met à jour les compteurs globaux de la même manière
+                    let global_count = Number($global_c.html());
+
+                    if (global_count) {
+                        let new_count = global_count - to_remove;
+
+                        if (new_count) {
+                            $global_c.html(global_count - to_remove);
+                        }
+                        else {
+                            $global_c.remove();
+                            $('.glob-count-icon').html('drafts'); // On met à jour l'icône
+                        }
+                    }
+                }
             }
 
             conv_block.insertAdjacentHTML('beforeend', strs);
