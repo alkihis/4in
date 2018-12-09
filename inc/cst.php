@@ -56,6 +56,8 @@ const THRESHOLD_RECAPTCHA = 0.5;
 const TIME_BEFORE_NEW_MESSAGE = 120;
 // Limite de caractères (ISO-8859-1) d'un message de contact
 const MAX_LEN_MESSAGE = 5000;
+// Limite de caractères (ISO-8859-1) d'un e-mail
+const MAX_LEN_EMAIL = 70;
 // _----- -----_
 
 // Link save : Checker for link validity

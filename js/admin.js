@@ -621,3 +621,170 @@ function verifyAllGenes() {
         delete window.on_verify_work;
     });
 }
+
+function constructMessageCard(content, id, seen, date) {
+    let d = new Date(date);
+    let date_str = String(d.getFullYear()) + "-" + String(d.getMonth() >= 9 ? d.getMonth() + 1 : "0" + String(d.getMonth() + 1)) +
+        "-" + String(d.getDate() > 9 ? d.getDate() : "0" + String(d.getDate())); 
+
+    date_str += " at ";
+    date_str += String(d.getHours()) + ":" + String(d.getMinutes() > 9 ? d.getMinutes() : "0" + String(d.getMinutes()));
+
+    return `<div class='message-card card-panel ${(seen ? 'light-blue darken-3' : 'purple lighten-1')}
+        white-text card-border' data-id="${id}">
+        <div class="message-content">${escapeHtml(content)}</div>
+        <div class="very-tiny-text right">
+            <span class="remove-message-btn red-att-text underline-hover pointer">Remove</span> &middot; Sent ${date_str}
+        </div>
+    </div>`;
+}
+
+function removeConversationDefinitively(element, sender) {
+    $.post(
+        '/api/messages/delete.json', 
+        { sender }
+    )
+    .then(() => {
+        $(element).slideUp(200, function() {
+            $(this).remove();
+            clearMessageContainer();
+        });
+        M.toast({html: "Conversation removed successfully", displayLength: 6000});
+    })
+    .fail(() => {
+        M.toast({html: "Unable to remove this conversation", displayLength: 6000});
+    });
+}
+
+function removeConversation(element) {
+    let sender = element.dataset.sender;
+    let modal = document.getElementById('modal_wipe');
+
+    modal.innerHTML = `<div class="modal-content">
+        <h4>Delete this conversation ?</h4>
+        <p>
+            All messages linked to this conversation will be permanently removed.
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="waves-effect blue-text btn-flat modal-close">
+            Cancel
+        </a>
+
+        <a href="#!" id="remove_def" class="waves-effect red-text btn-flat modal-close">
+            Delete
+        </a>
+    </div>`;
+
+    document.getElementById('remove_def').onclick = () => {
+        removeConversationDefinitively(element, sender);
+    }
+
+    $(modal).modal('open');
+}
+
+function removeMessageDefinitively(element, id) {
+    $.post(
+        '/api/messages/delete.json', 
+        { id }
+    )
+    .then(() => {
+        $(element).slideUp(200, function() {
+            $(this).remove();
+        });
+        M.toast({html: "Message removed successfully", displayLength: 6000});
+    })
+    .fail(() => {
+        M.toast({html: "Unable to remove this message", displayLength: 6000});
+    });
+}
+
+function removeMessage(element) {
+    let id = element.dataset.id;
+    let modal = document.getElementById('modal_wipe');
+
+    modal.innerHTML = `<div class="modal-content">
+        <h4>Delete this message ?</h4>
+        <p>
+            Message will be permanently removed.
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="waves-effect blue-text btn-flat modal-close">
+            Cancel
+        </a>
+
+        <a href="#!" id="remove_def" class="waves-effect red-text btn-flat modal-close">
+            Delete
+        </a>
+    </div>`;
+
+    document.getElementById('remove_def').onclick = () => {
+        removeMessageDefinitively(element, id);
+    }
+
+    $(modal).modal('open');
+}
+
+function clearMessageContainer() {
+    $('.message-card').remove();
+    $('#preloader-message').remove();
+}
+
+function loadConversation(element, sender, max_id = 0) {
+    let conv_block = document.getElementsByClassName('messages-placeholder')[0];
+    if (max_id === 0) {
+        clearMessageContainer();
+        conv_block.innerHTML += "<div class='center' id='preloader-message' style='margin-top: 20px'>" + preloader_circle + "</div>";
+    }
+
+    $('.side-messages .conversation').removeClass('active');
+    element.classList.add('active');
+
+    let loader = document.getElementById('preloader-message');
+
+    count = 10;
+
+    $.get('/api/messages/get.json', {sender, max_id, count}, function(data) {
+        if (loader) {
+            $(loader).remove();
+        }
+
+        if (data) {
+            strs = "";
+            min_id = NaN;
+
+            for (let msg of data) {
+                if (isNaN(min_id)) {
+                    min_id = msg.id;
+                }
+                else if (msg.id < min_id) {
+                    min_id = msg.id;
+                }
+
+                strs += constructMessageCard(msg.content, msg.id, msg.seen, msg.date);
+            }
+
+            conv_block.insertAdjacentHTML('beforeend', strs);
+
+            if (!isNaN(min_id) && data.length === count) {
+                conv_block.insertAdjacentHTML('beforeend', `
+                    <button class="btn-flat btn-perso green-text center-block" id="preloader-message">Load older</button>
+                `);
+
+                loader = document.getElementById('preloader-message');
+
+                loader.onclick = function() {
+                    this.innerHTML = "<div class='center' id='preloader-message' style='margin-top: 20px'>" + preloader_circle + "</div>";
+
+                    if (min_id > 0)
+                        loadConversation(element, sender, min_id);
+                };
+            }
+
+            $('.remove-message-btn').on('click', function() {
+                removeMessage(this.parentElement.parentElement);
+            });
+        }
+    });
+}

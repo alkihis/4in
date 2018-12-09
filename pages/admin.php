@@ -315,7 +315,7 @@ function adminView(Controller $c) : void {
         <li <?= ($d['active_page'] === 'messages' ? 'class="active"' : '') ?>>
             <a class="waves-effect" href="/admin/messages"><i class="material-icons"><?= ($unread ? 'mail' : 'drafts') ?></i>Messages
             <?php if ($unread) { ?>
-                <span class="new badge yellow darken-4" data-badge-caption="new"><?= $unread ?></span>
+                <span class="new badge yellow darken-4"><?= $unread ?></span>
             <?php } ?></a>
         </li>
         <li <?= ($d['active_page'] === 'stats' ? 'class="active"' : '') ?>>

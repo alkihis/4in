@@ -37,6 +37,9 @@ function contactControl(array $args) : Controller {
                 if (strlen($content) > MAX_LEN_MESSAGE) {
                     $data['too_long'] = true;
                 }
+                else if (strlen($mail) > MAX_LEN_EMAIL) {
+                    $data['too_long_mail'] = true;
+                }
                 else {
                     if ($mail) {
                         // Vérification du délai
@@ -107,6 +110,9 @@ function contactView(Controller $c) : void {
                 <div class="row">
                     <?php if (isset($data['too_long'])) { ?>
                         <h6 class="red-text">Your message is too long. Maximum length is <?= MAX_LEN_MESSAGE ?> characters.</h6>
+                    <?php } 
+                    if (isset($data['too_long_mail'])) { ?>
+                        <h6 class="red-text">Your e-mail address is too long. Maximum length is <?= MAX_LEN_EMAIL ?> characters.</h6>
                     <?php } 
                     if (isset($data['too_recent'])) { ?>
                         <h6 class="red-text">Please wait 

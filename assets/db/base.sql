@@ -45,5 +45,6 @@ CREATE TABLE Messages (
     content TEXT NOT NULL,
     sender VARCHAR(255) NOT NULL,
     seen BOOLEAN NOT NULL DEFAULT FALSE,
+    send_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id_message)
 )
