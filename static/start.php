@@ -86,7 +86,7 @@ function homeView(Controller $c) : void {
                 <?php } ?>
 
                 <p class='flow-text text-justify head-main-title'>
-                    Developed in order to facilitate access to the data harvested from different species of insects,
+                    Developed in order to ease access to the data harvested from different species of insects,
                     this database is centered around the genetic study of the rice weevil, also called Sitophilus oryzae.
                 </p>
                 
@@ -127,7 +127,7 @@ function homeView(Controller $c) : void {
                             <h5 class="center">Add gene</h5>
 
                             <p class="light text-justify">
-                                Add manually a gene into the database by writing all its specifications.
+                                Manually add a gene into the database by writing all its specifications.
                             </p>
                         </div>
                     </div>

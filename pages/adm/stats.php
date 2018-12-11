@@ -87,7 +87,7 @@ function statsView(array $data) : void { ?>
         <div class="col s12">
             <div class="card-panel light-blue darken-1 card-border white-text panel-settings">
                 <p>
-                    Find here some statistics about currently built database.
+                    You can find statistics about the currently built database here.
                 </p>
             </div>
         </div>

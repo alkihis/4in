@@ -81,14 +81,14 @@ function buildGenomeView(array $data) : void { ?>
                                 <label>
                                     <input type="checkbox" id="first_line_is_text" 
                                         onchange="(this.checked ? true : $('#read_from_first').prop('checked', false)); $('#read_from_first').prop('disabled', !this.checked);" />
-                                    <span>First line contains colomn name</span>
+                                    <span>First line contains column name</span>
                                 </label>
                             </p>
 
                             <p>
                                 <label>
                                     <input type="checkbox" id="read_from_first" disabled />
-                                    <span>Read specie name from first line</span>
+                                    <span>Read species name from first line</span>
                                 </label>
                             </p>
                         </div>

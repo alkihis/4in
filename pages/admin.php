@@ -122,7 +122,7 @@ function adminView(Controller $c) : void {
             <div class="modal-content">
                 <h4 id="build_header">Build database from selected file ?</h4>
                 <p id="build_text">
-                    Building will start by clearing the current database, then try to import the selected file.
+                    Building will start by clearing the current database, and then try to import the selected file.
                 </p>
             </div>
             <div class="modal-footer">
@@ -342,9 +342,9 @@ function homePageView(array $data) : void { ?>
         <div class="col s12">
             <div class="card-panel light-blue darken-1 card-border white-text panel-settings">
                 <p>
-                    Administration console lets you manage the database, FASTA and mapping files stored on this server.<br>
+                    The administration console lets you manage the database, FASTA and mapping files stored on this server.<br>
                     Through this interface, you can edit the protected species, change the administrator password, check the validity of a FASTA
-                    file with current data in the database or modify a FASTA file using a simple convertor.<br><br>
+                    file compared to the data currently in the database or modify a FASTA file using a simple convertor.<br><br>
 
                     For the first configuration of this website, you must import your first base TSV file using the "Import genome file"
                     utility.<br>

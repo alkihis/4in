@@ -316,7 +316,7 @@ function addSpecie(spec) {
     spec = spec.trim();
 
     if (spec.match(/'"<>&/) || spec === "") {
-        M.toast({html: 'Entered specie name is invalid', displayLength: 6000});
+        M.toast({html: 'Entered species name is invalid', displayLength: 6000});
         return;
     }
 

@@ -17,7 +17,7 @@ function forbiddenView(Controller $c) : void {
                     <h2 class='header lighter-text red-att-text'>403 <span class='tiny-text'>Forbidden</span></h2>
                     <div class='divider divider-white'></div>
                     <p class='white-text text-justify'>
-                        You're trying to reach a page that requires specific authorizations.<br>
+                        You're trying to reach a page that requires specific authorization.<br>
                         Please log in or try again later.<br><br>
                     </p>
                     <p class='flow-text center'>
