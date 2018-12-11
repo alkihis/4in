@@ -28,8 +28,7 @@ function messagesView(array $data) : void { ?>
     <div class="row messages-container">
         <div class="col s3 side-messages">
             <?php foreach ($data['conversations'] as $sender) { ?>
-                <div class="conversation" data-sender="<?= htmlspecialchars($sender['sender']) ?>" 
-                    onclick="loadConversation(this, '<?= htmlspecialchars($sender['sender']) ?>')">
+                <div class="conversation" data-sender="<?= htmlspecialchars($sender['sender']) ?>" onclick="loadConversation(this)">
 
                     <span class="sender"><?= htmlspecialchars($sender['sender']) ?></span>
 

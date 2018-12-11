@@ -155,9 +155,7 @@ $(function() {
                 closeBlastForm();
                 
                 // Attend que le formulaire soit caché avant de lancer la requête
-                setTimeout(function() {
-                    sendData();
-                }, 400);
+                setTimeout(sendData, 400);
             }
         }
     });

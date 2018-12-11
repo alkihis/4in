@@ -766,7 +766,9 @@ function clearMessageContainer() {
     $('#preloader-message').remove();
 }
 
-function loadConversation(element, sender, max_id = 0) {
+function loadConversation(element, max_id = 0) {
+    let sender = element.dataset.sender;
+
     let conv_block = document.getElementsByClassName('messages-placeholder')[0];
     if (max_id === 0) {
         clearMessageContainer();
@@ -852,7 +854,7 @@ function loadConversation(element, sender, max_id = 0) {
                     this.innerHTML = "<div class='center' id='preloader-message' style='margin-top: 20px'>" + preloader_circle + "</div>";
 
                     if (min_id > 0)
-                        loadConversation(element, sender, min_id);
+                        loadConversation(element, min_id);
                 };
             }
 
