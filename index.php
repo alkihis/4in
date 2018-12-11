@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * 4IN (Interactive database for Innate Immunity of INsect)
+ * October-december 2018
+ * version 1.00~r1-linux
+ * 
+ * PHP 7.1+, 7.3 ready
+ * needs Apache2 server, mod_rewrite, mod_headers, .htaccess file enabled
+ * 
+ * Developed by
+ * Louis BERANGER       <louis.beranger@etu.univ-lyon1.fr>
+ * Waël ZAMOUM          <wael.zamoum@etu.univ-lyon1.fr>
+ * Aymeric BONNAMOUR    <aymeric.bonnamour@etu.univ-lyon1.fr>
+ * 
+ */
+
 // Active l'affichage des erreurs sur le site web quand PHP en rencontre une
 ini_set('display_errors', 'on');
 
@@ -39,9 +54,17 @@ $ctrl = getRoute(...$parms);
 ?><!DOCTYPE html>
 <html lang="en">
     <head>
-        <!--Import Google Icon Font-->
+        <!-- 
+            Developed by
+            * Louis BERANGER
+            * Waël ZAMOUM
+            * Aymeric BONNAMOUR
+            students at Claude Bernard Lyon 1 University
+
+            October 2018
+        -->
+
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <!--Import materialize.css-->
         <link type="text/css" rel="stylesheet" href="/css/materialize.min.css"  media="screen"/>
         <link type="text/css" rel="stylesheet" href="/css/style.css"/>
         <?= ($GLOBALS['night_mode'] ? '<link type="text/css" rel="stylesheet" id="dark-mode-css" href="/css/dark.css"/>' : '') ?>
