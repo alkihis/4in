@@ -93,8 +93,8 @@ function aliasImportView(array $data) : void { ?>
                 <p>
                     Gene alias are used in case of gene ID in this database is different in another database.<br>
                     The generated link to ArthropodaCyc will use defined alias instead.<br>
-                    Alias file <span class="underline">MUST</span> have 2 colomns, separated by a tabulation (first colomn
-                    is at the beginning of the line), the <span class="underline">first</span> colomn must present 
+                    Alias file <span class="underline">MUST</span> have 2 columns, separated by a tabulation (first column
+                    is at the beginning of the line), the <span class="underline">first</span> column must present 
                     <span class="underline">gene ID registered in this database</span>, second one must be
                     <span class="underline">gene ID of the external database</span>.
                 </p>
@@ -168,8 +168,8 @@ function aliasBuildView(array $data) : void { ?>
                     Import first mapping files using "Import mapping files" utility. After this operation,
                     you can synchronize mapping txt files and SQL database using this page. It will register
                     alias in gene ID entries.<br>
-                    Remember that if you reset or re-import the database, you must do this operation again.<br><br>
-                    You can also delete all existing alias to be sure to start from scratch 
+                    Remember that if you reset or re-import the database, you will need to run this operation again.<br><br>
+                    You can also delete all currently existing alias to make sure to start from scratch 
                     (it will <span class='underline'>NOT</span> delete uploaded files).<br>
                     After any operation, it is recommanded to reset link status (see in side-navigation menu).
                 </p>

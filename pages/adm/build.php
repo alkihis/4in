@@ -40,7 +40,7 @@ function buildGenomeView(array $data) : void { ?>
             <div class="card-panel light-blue darken-1 card-border white-text panel-settings">
                 <p>
                     Import first database file using "Import genome file" utility. After this operation,
-                    you can build genome database by choosing file to use to construct and clicking
+                    you can build the genome database by choosing which file to use to construct and clicking
                     "build database".<br>
                     It will <span class='underline'>NOT</span> delete uploaded database files.
                 </p>

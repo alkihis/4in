@@ -70,7 +70,7 @@ function addView(Controller $c) : void {
                 <div class="section">
                     <div class="light text-justify flow-text">
                         Check your new gene <a target="_blank" href="/gene/<?= $data['creation'][1] ?>">here</a>.<br>
-                        You can go to this page to create homologous.
+                        You can go to this page to create other homologous genes.
                     </div>
                 </div>
                 <?php
@@ -100,7 +100,7 @@ function addView(Controller $c) : void {
                 <h4 class="light-text" style="margin-top: 5px;">Specie is empty</h4>
                 <div class="section">
                     <div class="light text-justify flow-text red-text">
-                        Specie can't be empty.
+                        Species can't be empty.
                     </div>
                 </div>
                 <?php
@@ -132,7 +132,7 @@ function addView(Controller $c) : void {
                 <div class="light text-justify flow-text">
                     <h4 class="light-text" style="margin-top: 15px;">Common gene specifications</h4>
                     <h6 class="light-text" style="margin-bottom: 20px;">
-                        All homologous of this gene will share this specifications.
+                        All homologous of this gene will share these specifications.
                     </h6>
 
                     <div class="input-field col s12">
@@ -216,7 +216,7 @@ function addView(Controller $c) : void {
 
                     <h4 class="light-text">Unique details</h4>
                     <h6 class="light-text" style="margin-bottom: 20px;">
-                        Possible homologous of this gene will not share this details.
+                        Possible homologous of this gene will not share these details.
                     </h6>
                     
                     <div class="input-field col s12">

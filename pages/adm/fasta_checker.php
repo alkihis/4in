@@ -89,9 +89,9 @@ function checkerView(array $data) : void { ?>
                     separated from other elements by a non-writable character (space, tabulation, form-feed...).
                     This tool can check if files are correctly formatted, and give example of ID provided in FASTA file.<br><br>
 
-                    In the FASTA, if specified ID is the gene ID (not the alias!), comparaison will be lazy (if ID in the database
+                    In the FASTA, if specified ID is the gene ID (not the alias!), comparison will be lazy (if ID in the database
                     begin by given ID in FASTA, sequence will be imported).<br> 
-                    If specified ID is the alias, comparaison will be
+                    If specified ID is the alias, comparison will be
                     <span class="underline">strict</span>, specified ID must be, character by character, equals to database alias.
                     <br><br>
                     <span class="underline">Example:</span><br>
