@@ -231,54 +231,55 @@ function generateSearchResultsArray(array $res) : void { ?>
     <div class='container'>
         <div class='row'>
             <div class='col s12'>
-                <h3>
+                <!-- <h3>
                     Search results
-                </h3>
+                </h3> -->
                 <?php if (empty($res)) { ?>
-                <h4 class='red-text header'>No results</h4>
+                    <h4 class='red-text h45 medium-light-text header'>No gene has matched your search</h4>
+                    <h6 class='black-text medium-light-text header' style="margin-bottom: 50px;">Please check search terms.</h6>
                 <?php } else { ?>
-                <h6><?= count($res) ?> result<?= count($res) > 1 ? 's' : '' ?></h6>
+                    <h5 class="medium-light-text"><?= count($res) ?> result<?= count($res) > 1 ? 's' : '' ?></h5>
 
-                <div class='download-results col s12'>
-                    <div class='col s6'>
-                        <a href='#!' class='btn-flat btn-perso purple-text right' 
-                            onclick="downloadCheckedSequences('adn', true);">
-                            <i class='material-icons left'>file_download</i>FASTA sequences (DNA)
-                        </a>
-                    </div>
+                    <div class='download-results col s12'>
+                        <div class='col s6'>
+                            <a href='#!' class='btn-flat btn-perso purple-text right' 
+                                onclick="downloadCheckedSequences('adn', true);">
+                                <i class='material-icons left'>file_download</i>FASTA sequences (DNA)
+                            </a>
+                        </div>
 
-                    <div class='col s6'>
-                        <a href='#!' class='btn-flat btn-perso blue-text left' 
-                            onclick="downloadCheckedSequences('pro', true);">
-                            <i class='material-icons left'>file_download</i>FASTA sequences (Protein)
-                        </a>
+                        <div class='col s6'>
+                            <a href='#!' class='btn-flat btn-perso blue-text left' 
+                                onclick="downloadCheckedSequences('pro', true);">
+                                <i class='material-icons left'>file_download</i>FASTA sequences (Protein)
+                            </a>
+                        </div>
+                        
+                        <div class='clearb'></div>
                     </div>
-                    
-                    <div class='clearb'></div>
-                </div>
-                <table id='search_table'>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th class='pointer sortable'>Gene ID</th>
-                            <th class='pointer sortable'>Name</th>
-                            <th class='pointer sortable'>Role</th>
-                            <th class='pointer sortable'>Pathway</th>
-                            <th class='pointer sortable'>Fullname</th>
-                            <th class='pointer sortable'>Family</th>
-                            <th class='pointer sortable'>Subfamily</th>
-                            <th class='pointer sortable'>Specie</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody_sort">
-                        <?php  
-                        foreach ($res as $key => $gene) {
-                            generateArrayLine($gene, $key, 100);
-                        }
-                        ?>
-                    </tbody>
-                </table>
+                    <table id='search_table'>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th class='pointer sortable'>Gene ID</th>
+                                <th class='pointer sortable'>Name</th>
+                                <th class='pointer sortable'>Role</th>
+                                <th class='pointer sortable'>Pathway</th>
+                                <th class='pointer sortable'>Fullname</th>
+                                <th class='pointer sortable'>Family</th>
+                                <th class='pointer sortable'>Subfamily</th>
+                                <th class='pointer sortable'>Specie</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody_sort">
+                            <?php  
+                            foreach ($res as $key => $gene) {
+                                generateArrayLine($gene, $key, 100);
+                            }
+                            ?>
+                        </tbody>
+                    </table>
                 <?php } ?>
             </div>
         </div>

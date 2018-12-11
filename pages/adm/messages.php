@@ -31,14 +31,18 @@ function messagesView(array $data) : void { ?>
                 <div class="conversation" data-sender="<?= htmlspecialchars($sender['sender']) ?>" 
                     onclick="loadConversation(this, '<?= htmlspecialchars($sender['sender']) ?>')">
 
-                    <span class="remove-conversation"><i class="material-icons left red-text">delete_sweep</i></span>
                     <span class="sender"><?= htmlspecialchars($sender['sender']) ?></span>
+
                     <?php if ($sender['new'] > 0) { ?>
                         <span class="new badge yellow darken-4" data-badge-caption=''><?= $sender['new'] ?></span>
                     <?php } ?>
+
+                    <span title="Delete" class="remove-conversation">
+                        <i class="material-icons right red-text text-lighten-2">delete_sweep</i>
+                    </span>
                 </div>
             <?php } ?>
-            <div class="center show-if-only-child message-none" style="margin-top: 215px;">
+            <div class="center show-if-only-child message-none" style="margin-top: 265px;">
                 No conversation
             </div>
         </div>

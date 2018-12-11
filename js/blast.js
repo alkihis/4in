@@ -1,5 +1,5 @@
 var BLAST_ERROR_MSG = "<h4 class='red-text'>An error occurred. Check request informations.</h4>";
-var BLAST_PRELOADER = '<div class="center" style="margin-top: 50px">\
+var BLAST_PRELOADER = '<div class="center" style="margin-top: 50px; margin-bottom: 90px;">\
     <div class="preloader-wrapper active">\
         <div class="spinner-layer spinner-blue">\
             <div class="circle-clipper left"><div class="circle"></div></div>\
@@ -25,6 +25,8 @@ var BLAST_PRELOADER = '<div class="center" style="margin-top: 50px">\
     <h5 class="light-text">Search in progress</h5>\
     <h6 class="light-text">This page will be updated when BLAST request is complete</h6>\
 </div>';
+
+var already_running = false;
 
 function closeBlastForm() {
     $('#blue_gradient').slideUp(300);
@@ -115,12 +117,14 @@ $(function() {
             }
 
             saved_blast = "";
+            already_running = false;
         });
     
         // Definit ce qui se passe en cas d'erreur
         xhr.addEventListener("error", function() {
             placeholder_send.innerHTML = makeBlastError("An unknown error occurred");
             openBlastForm();
+            already_running = false;
         });
     
         // Configure la requête
@@ -139,16 +143,22 @@ $(function() {
     form.addEventListener("submit", function (event) {
         event.preventDefault();
 
-        if (checkBlastForm()) {
-            saved_blast = placeholder_send.innerHTML;
-            placeholder_send.innerHTML = '<div class="divider-margin divider"></div>' + BLAST_PRELOADER;
-
-            closeBlastForm();
-            
-            // Attend que le formulaire soit caché avant de lancer la requête
-            setTimeout(function() {
-                sendData();
-            }, 400);
+        if (already_running) {
+            M.toast({html: "One request is already loading. Please wait until current request is over.", displayLength: 8000});
+        }
+        else {
+            if (checkBlastForm()) {
+                saved_blast = placeholder_send.innerHTML;
+                placeholder_send.innerHTML = '<div class="divider-margin divider"></div>' + BLAST_PRELOADER;
+                already_running = true;
+    
+                closeBlastForm();
+                
+                // Attend que le formulaire soit caché avant de lancer la requête
+                setTimeout(function() {
+                    sendData();
+                }, 400);
+            }
         }
     });
 });

@@ -33,6 +33,31 @@
                 </ul>
             </div>
         </div>
+        <div class="row">
+            <div class="col s12">
+                <div class="footer-logo">
+                    <a href="http://www.inra.fr/" target="_blank">
+                        <img src="/img/footer/inra.png" alt="INRA logo">
+                    </a>
+                </div>
+                <div class="footer-logo">
+                    <a href="http://insa-lyon.fr/" target="_blank">
+                        <img src="/img/footer/insa.png" alt="INSA logo">
+                    </a>
+                </div>
+                <div class="footer-logo">
+                    <a href="http://bf2i.insa-lyon.fr/" target="_blank">
+                        <img src="/img/footer/bf2i.png" alt="BF2I logo">
+                    </a>
+                </div>
+                <div class="footer-logo">
+                    <a href="http://universite-lyon.fr/" target="_blank">
+                        <img src="/img/footer/univlyon.png" alt="University of Lyon logo">
+                    </a>
+                </div>
+                
+            </div>
+        </div>
     </div>
     <div class="footer-copyright" style='min-height: unset;'>
     </div>

@@ -605,7 +605,7 @@ main.on-dark-mode {
 
 .message-none {
     text-align: center;
-    margin-top: 200px;
+    margin-top: 250px;
     color: rgba(41, 122, 197, 0.479);
     font-size: x-large;
     font-weight: 300;
@@ -635,6 +635,19 @@ i.material-icons.custom-margin {
     margin-right: 3px;
 }
 
+.remove-conversation * {
+    transition-timing-function: ease;
+    transition-duration: .5s !important;
+    opacity: 0; 
+    height: 0;
+    overflow: hidden;
+}
+
+.conversation:hover .remove-conversation *, .conversation.active .remove-conversation * {
+    opacity: 1;
+    height: auto;
+}
+
 .message-animation {
     animation: bk-color-change ease .8s;
 }
@@ -643,4 +656,28 @@ i.material-icons.custom-margin {
     0% { background-color: #0277bd; }
     50% { background-color: #89a9bb; }
     100% { background-color: #0277bd; }
+}
+
+.footer-logo {
+    display: inline-block;
+    float: left;
+    margin-right: 40px;
+    margin-bottom: 20px;
+}
+
+.footer-logo img {
+    max-width: 200px;
+    max-height: 100%;
+}
+
+#placeholder_blast {
+    padding-bottom: 50px;
+}
+
+#placeholder_blast:empty {
+    display: none;
+}
+
+.h45 {
+    font-size: 2.10rem;
 }
