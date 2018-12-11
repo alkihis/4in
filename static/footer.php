@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="col l6 s12">
-                <h5 class="white-text">INSA Innate Immunity of Insect database</h5>
+                <h5 class="white-text">Interactive database for Insect Innate Immunity</h5>
                 <p class="grey-text text-lighten-4">
                     Developed in order to facilitate access to the data harvested from different species of 
                     insects inside INSA's BF2i laboratory, 
@@ -55,7 +55,6 @@
                         <img src="/img/footer/univlyon.png" alt="University of Lyon logo">
                     </a>
                 </div>
-                
             </div>
         </div>
     </div>

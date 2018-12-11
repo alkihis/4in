@@ -1,6 +1,6 @@
-# NC3I
+# 4IN
 
-Ceci est un petit guide de développement pour créer rapidement une page web à destination de NC3I, la base de données de gènes
+Ceci est un petit guide de développement pour créer rapidement une page web à destination de 4IN, la base de données de gènes
 de l'immunité des insectes.
 L'intégralité des pages web "classiques" doivent passer via index.php, qui chargera votre nouvelle page.
 La redirection automatique est réalisée en fond par Apache, serveur web.
@@ -10,7 +10,7 @@ La redirection automatique est réalisée en fond par Apache, serveur web.
 Ce site web utilise PHP comme langage serveur, ainsi que d'autres modules.
 
 Les versions requises sont les suivantes:
-- PHP 7.1 minimum, 7.2 recommandé
+- PHP 7.1 minimum, 7.2 recommandé, compatible 7.3
 - MySQL/MariaDB
 - Apache 2.4 recommandé
     - mod_headers
@@ -236,6 +236,11 @@ Activer le mode de debug n'arrête PAS le logging dans les fichiers texte.
 Pour vous servir du module BLAST, vous devrez dézipper les binaires de [BLAST+](ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) dans un dossier `ncbi` à la racine du site web. Les fichiers binaires `blastn`, `blastp`, etc... doivent donc se trouver dans `ncbi/bin/...`.
 
 Notez qu'un système UNIX est requis pour le fonctionnement de BLAST.
+
+# Détails additionnels
+
+### Images de la page d'accueil
+Vous pouvez rajouter des images s'affichant sur la page d'accueil en collant des fichiers .jpg (JPEG) dans le dossier `img/home/`.
 
 # Licence
 

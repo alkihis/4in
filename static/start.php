@@ -61,7 +61,7 @@ function homeView(Controller $c) : void {
         <div class="section no-pad-bot" style="position: relative; z-index: 1;">
             <div class="container">
                 <br><br>
-                <h1 class="header center header-main white-text">Interactive Innate Immunity of INsect</h1>
+                <h1 class="header center header-main white-text"><?= SITE_NAME ?></h1>
                 <div class="row center">
                     <p class='flow-text head-main-title white-text border-head'>
                         A database for insects' innate immunity genes. 
