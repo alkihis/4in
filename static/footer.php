@@ -6,8 +6,8 @@
                 <p class="grey-text text-lighten-4">
                     Developed in order to facilitate access to the data harvested from different species of 
                     insects inside INSA's BF2i laboratory, 
-                    this database is centered around the genetic study of the rice weevil.<br>
-                    Learn more about our <a class="underline white-text" href="/about">team</a>.
+                    This database is centered around the genetic study of the rice weevil.<br>
+                    Learn more about our team <a class="underline white-text" href="/about">here</a>.
                 </p>
             </div>
             <div class="col l3 s12">

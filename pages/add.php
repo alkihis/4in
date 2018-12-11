@@ -100,7 +100,7 @@ function addView(Controller $c) : void {
                 <h4 class="light-text" style="margin-top: 5px;">Specie is empty</h4>
                 <div class="section">
                     <div class="light text-justify flow-text red-text">
-                        Specie can't be empty.
+                        Species can't be empty.
                     </div>
                 </div>
                 <?php

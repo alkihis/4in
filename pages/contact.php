@@ -166,7 +166,7 @@ function contactView(Controller $c) : void {
             <h2 class="header light-text" style="margin-top: 10px;">Call</h2>
             <div class="row">
                 <p class="flow-text">
-                    You can be in touch with us by calling BF2i laboratory (UMR0203: Biologie Fonctionnelle Insectes et Interactions), at 
+                    You can get in touch with us by calling the BF2i laboratory (UMR0203: Biologie Fonctionnelle Insectes et Interactions), using
                     this number : <a class="underline-hover" href="tel:+33472438356">+33 4 72 43 83 56</a> (France).
                 </p>
             </div>
@@ -178,8 +178,8 @@ function contactView(Controller $c) : void {
             <h2 class="header light-text" style="margin-top: 10px;">More infos</h2>
             <div class="row">
                 <p class="flow-text">
-                    You shall find more informations about us by consulting our <a href="/team" class="underline-hover">team</a>, 
-                    or by visiting <a href="http://bf2i.insa-lyon.fr/" class="underline-hover">BF2i website</a>.
+                    You can find more informations about our team <a href="/about" class="underline-hover">here</a>, 
+                    or by visiting the <a href="http://bf2i.insa-lyon.fr/" class="underline-hover">BF2i website</a>.
                 </p>
             </div>
         </div>

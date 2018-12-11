@@ -25,7 +25,7 @@ function resetLinkView(array $data) : void { ?>
         <div class="col s12">
             <div class="card-panel light-blue darken-1 card-border white-text panel-settings">
                 <p>
-                    Reset link status will erase information who remember if links to external database are broken or not
+                    Reset link status will erase the information about whether links to external database are functionnal or not
                     for a specific gene ID.<br>
                     In case of optimisation, the website will check once -when first accessing to specific gene page- if the gene ID
                     exists in ArthropodaCyc Database.<br>

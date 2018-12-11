@@ -135,10 +135,10 @@ function importGenomeView(array $data) : void { ?>
             <div class="card-panel light-blue darken-1 card-border white-text panel-settings">
                 <p>
                     Database file is a tabulated version of an Excel document.<br>
-                    Name of the colomns can be present in the file, 
+                    Name of the columns can be present in the file, 
                     but you must specify it before launch build process.<br>
                     If a gene has multiple pathways, they must be separated by a pipe (|).<br><br>
-                    <span class="underline">Colomn order should be ordered as [one slash: one tabulation]</span> :<br>
+                    <span class="underline">Column order should be ordered as [one slash: one tabulation]</span> :<br>
                     Name / Role / Pathway / Fullname / Family / SubFamily / <?= implode(' / ', $data['ord_species']) ?> <br>
                     <span class="very-tiny-text no-line-height">
                         Species can be added and their order changed in "Database species" module.
@@ -146,7 +146,7 @@ function importGenomeView(array $data) : void { ?>
                     </span>
                     <br><br>
 
-                    <span class="underline">Gene ID information by specie MUST be formatted as</span> :<br>
+                    <span class="underline">Gene ID information by species MUST be formatted as</span> :<br>
                     ({GENE_ID}, ...), ({OTHER_GENE_ID}, ...)
                 </p>
             </div>

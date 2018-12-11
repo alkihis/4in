@@ -43,7 +43,7 @@ function aboutView(Controller $c) : void {
             <div class="col s12">
             <h4 class="light-text">Team</h4>
                 <div class="col s12 l6">
-                    <a href="http://bf2i.insa-lyon.fr/">
+                    <a href="http://bf2i.insa-lyon.fr/" target="_blank">
                         <div class="card-panel linkable-card card-border">
                             <div class="row valign-wrapper no-margin-bottom">
                                 <div class="col s2">
@@ -60,7 +60,7 @@ function aboutView(Controller $c) : void {
                 </div>
 
                 <div class="col s12 l6">
-                    <a href="https://www.univ-lyon1.fr/">
+                    <a href="https://www.univ-lyon1.fr/" target="_blank">
                         <div class="card-panel linkable-card card-border">
                             <div class="row valign-wrapper no-margin-bottom">
                                 <div class="col s2">
@@ -68,7 +68,7 @@ function aboutView(Controller $c) : void {
                                 </div>
                                 <div class="col s10">
                                     <span class="black-text">
-                                        Designers and conceptors of this website are in Lyon 1 Claude Bernard University.
+                                        Designers and conceptors of this website are from Lyon 1 Claude Bernard University.
                                     </span>
                                 </div>
                             </div>
@@ -77,6 +77,46 @@ function aboutView(Controller $c) : void {
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col s12">
+            <h4 class="light-text">Partners</h4>
+                <div class="col s12 l6">
+                    <a href="https://www.insa-lyon.fr/" target="_blank">
+                        <div class="card-panel linkable-card card-border">
+                            <div class="row valign-wrapper no-margin-bottom">
+                                <div class="col s2">
+                                    <img alt="INSA logo" src="/img/team/insa.png" class="circle responsive-img">
+                                </div>
+                                <div class="col s10">
+                                    <span class="black-text">
+                                        An engineering school in Lyon.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col s12 l6">
+                    <a href="http://www.inra.fr/" target="_blank">
+                        <div class="card-panel linkable-card card-border">
+                            <div class="row valign-wrapper no-margin-bottom">
+                                <div class="col s2">
+                                    <img alt="INRA logo" src="/img/team/inra.jpg" class="circle responsive-img">
+                                </div>
+                                <div class="col s10">
+                                    <span class="black-text">
+                                        French national institute of agronomy research.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <div class='row'>
             <div class="col s12">
                 <h4 class="light-text">Species</h4>

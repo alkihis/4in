@@ -86,7 +86,7 @@ function showSearchHome(array $data) : void {
                         </h5>
 
                         <p class="light text-justify">
-                            Find every gene bearing the same name across all our database's species.
+                            Find every gene with the same name across all our database's species.
                         </p>
                     </div>
                 </div>
@@ -101,7 +101,7 @@ function showSearchHome(array $data) : void {
                         </h5>
 
                         <p class="light text-justify">
-                            Check quickly the details of a specific gene with an identifier search.
+                            Access details of a specific gene with an identifier search.
                         </p>
                     </div>
                 </div>
@@ -132,9 +132,9 @@ function showSearchHome(array $data) : void {
                         </h5>
 
                         <p class="light text-justify">
-                            Combine your criterias using keywords to search in names, IDs, families and genes roles
+                            Combine your criterias using keywords to search by names, IDs, families and genes roles
                             at the same time, filter your search with specific pathways and species to find 
-                            what you want.
+                            the associated genes.
                         </p>
                     </div>
                 </div>

@@ -155,16 +155,16 @@ function databaseSpeciesView(array $data) : void { ?>
                     <div class="card-content">
                         <h6>Add new specie</h6>
                         <p>
-                            New specie will automatically be inserted at the end of the ordered specie table,
-                            and association between specie and its alias will be registered.<br>
-                            Specie name and alias are both case-sensitive, please be careful !
+                            New species will automatically be inserted at the end of the ordered species table,
+                            and association between species and its alias will be registered.<br>
+                            Species name and alias are both case-sensitive, please be careful !
                         </p>
 
                         <div class="clearb" style="margin-top: 10px;"></div>
 
                         <div class='input-field col s7'>
                             <input type="text" name="new_specie" id='new_specie' autocomplete="off" required>
-                            <label for="new_specie">New specie</label>
+                            <label for="new_specie">New species</label>
                         </div>
                         <div class="input-field col s5">
                             <input type='text' id='specie_alias' name='specie_alias' autocomplete="off">
@@ -193,7 +193,7 @@ function databaseSpeciesView(array $data) : void { ?>
 
                         <div id="ordered_s">
                             <p>
-                                Drag and drop to order. Order goes from top to bottom.
+                                Drag and drop to reorder species. Order reads from top to bottom.
                             </p>
 
                             <div class="clearb" style="margin-top: 20px;"></div>

@@ -387,7 +387,7 @@ function modifyView(Controller $c) : void {
             </a>
 
             <a class="btn-flat btn-perso orange-text left center fit-content" href="/gene/<?= $data['gene']->getID() ?>">
-                <i class="material-icons left">arrow_back</i>Return to gene page
+                <i class="material-icons left">arrow_back</i>Back to gene page
             </a>
 
             <div class="clearb" style="margin-bottom: 30px;"></div>

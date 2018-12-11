@@ -58,7 +58,7 @@ function addOView(Controller $c) : void {
                 <div class="section">
                     <div class="light text-justify flow-text">
                         Check your new gene <a target="_blank" href="/gene/<?= $data['creation'][1] ?>">here</a>.<br>
-                        You are free to re-use this form again to create another homologous.
+                        You are free to re-use this form again to add another homologous gene.
                     </div>
                 </div>
                 <?php
@@ -68,7 +68,7 @@ function addOView(Controller $c) : void {
                 <h4 class="light-text" style="margin-top: 5px;">ID is empty</h4>
                 <div class="section">
                     <div class="light text-justify flow-text red-text">
-                        You can't create a gene with empty ID.
+                        You can't create a gene without an ID.
                     </div>
                 </div>
                 <?php
@@ -88,7 +88,7 @@ function addOView(Controller $c) : void {
                 <h4 class="light-text" style="margin-top: 5px;">Specie is empty</h4>
                 <div class="section">
                     <div class="light text-justify flow-text red-text">
-                        Specie can't be empty.
+                        Species field can't be empty.
                     </div>
                 </div>
                 <?php
@@ -98,7 +98,7 @@ function addOView(Controller $c) : void {
                 <h4 class="light-text" style="margin-top: 5px;">Unable to add gene</h4>
                 <div class="section">
                     <div class="light text-justify flow-text red-text">
-                        An unknown error occurred.
+                        An unknown error has occurred.
                     </div>
                 </div>
                 <?php
@@ -156,7 +156,7 @@ function addOView(Controller $c) : void {
                 ?>
                 <div class="divider divider-margin"></div>
 
-                <h4 class="light-text">New homologous</h4>
+                <h4 class="light-text">New homologous gene</h4>
                 
                 <form class="row" action="#" method="post">
                     <div class="input-field col s12">

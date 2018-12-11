@@ -122,7 +122,7 @@ function adminView(Controller $c) : void {
             <div class="modal-content">
                 <h4 id="build_header">Build database from selected file ?</h4>
                 <p id="build_text">
-                    Building will clear current database, then try to import selected file.
+                    Building will start by clearing the current database, then try to import the selected file.
                 </p>
             </div>
             <div class="modal-footer">
@@ -143,7 +143,7 @@ function adminView(Controller $c) : void {
             <div class="modal-content">
                 <h4 id="wipe_header">Wipe genome database ?</h4>
                 <p id="wipe_text">
-                    All data in database will be lost and you will need to import a tabulated file again to
+                    All data in the database will be lost and you will need to import a tabulated file again to
                     restore informations.
                 </p>
             </div>
@@ -342,13 +342,13 @@ function homePageView(array $data) : void { ?>
         <div class="col s12">
             <div class="card-panel light-blue darken-1 card-border white-text panel-settings">
                 <p>
-                    Administration console let you manage database, FASTA and mapping files stored in this server.<br>
-                    This interface can edit protected species, change administrator password, check the validity of a FASTA
-                    file with present data in the database or modify a FASTA file using a simple convertor.<br><br>
+                    Administration console lets you manage the database, FASTA and mapping files stored on this server.<br>
+                    Through this interface, you can edit the protected species, change the administrator password, check the validity of a FASTA
+                    file with current data in the database or modify a FASTA file using a simple convertor.<br><br>
 
-                    For the first configuration of this website, you must import first base TSV file using "Import genome file"
+                    For the first configuration of this website, you must import your first base TSV file using the "Import genome file"
                     utility.<br>
-                    After, you're free to import mapping files and sequences in FASTA format, and add it to the built database
+                    Afterwards, you're free to import mapping files and sequences in FASTA format, and add it to the built database
                     with "Build alias mapping" or "Build BLAST database" modules.
                 </p>
             </div>
