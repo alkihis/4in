@@ -219,6 +219,27 @@ function isBasicUserLogged() : bool {
 }
 
 /**
+ * Get user log level
+ *
+ * @return integer
+ */
+function getLoggedUserLevel() : int {
+    if (isBasicUserLogged()) {
+        if (isUserLogged()) {
+            if (isContributorLogged()) {
+                if (isAdminLogged()) {
+                    return USER_PERM_ADMINISTRATOR;
+                }
+                return USER_PERM_CONTRIBUTOR;
+            }
+            return USER_PERM_VISITOR;
+        }
+        return USER_PERM_BASIC;
+    }
+    return USER_PERM_UNLOGGED;
+}
+
+/**
  * Récupère le lien associé à l'ID ou l'alias lié.
  * Même si l'alias est passé, l'ID DOIT être passé (pas null).
  * 

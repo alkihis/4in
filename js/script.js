@@ -207,10 +207,7 @@ function sortTable(idTable, interval_for_view) {
 
                 initSegments(tbod, interval_for_view);
             });
-
         });
-
-    
 }
 
 function resetSegments(element) {

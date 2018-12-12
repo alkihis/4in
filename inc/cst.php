@@ -11,9 +11,17 @@ const SITE_NAME = '4IN';
 // Nom long du site
 const SITE_LONG_NAME = 'Insect Innate Immunity Interactive database';
 
+// Charge la configuration initiale:
+// Construit la base SQL si besoin,
+// tous les visiteurs sont administrateurs
+const INITIAL_CONFIGURATION = false;
+
 // ---------------------
 // Niveaux de permission
 // ---------------------
+
+// Aucune permission, non connecté
+const USER_PERM_UNLOGGED = -2;
 
 // Permissions minimales; Pas de visiblité des espèces protégées
 // Vérifiée avec la fonction isBasicUserLogged()
@@ -35,6 +43,19 @@ const USER_PERM_ADMINISTRATOR = 2;
 // isBasicUserLogged(), isUserLogged(), isContributorLogged() et isAdminLogged() retourneront toutes vrai.
 // Pour tester les droits réels d'un utilisateur, utilisez $_SESSION['user']['rights'] === USER_PERM_*** 
 // Pour créer un utilisateur, toujours utiliser les constantes ci-dessus.
+// ---------------------
+
+// ------------------------
+// Limitations de recherche
+// ------------------------
+// Limiter les résultats de recherche
+const LIMIT_SEARCH_RESULTS = true;
+
+// Nombre de résultats maximum en limitant
+const LIMIT_SEARCH_NUMBER = 2000;
+
+// Niveau pour lequel la recherche n'est plus limitée
+const LIMIT_SEARCH_LEVEL = USER_PERM_VISITOR;
 // ---------------------
 
 // Emplacements (par rapport à DOCUMENT_ROOT)
@@ -61,6 +82,8 @@ const MAX_LEN_MESSAGE = 5000;
 // Limite de caractères (ISO-8859-1) d'un e-mail
 const MAX_LEN_EMAIL = 70;
 // _----- -----_
+
+const REGEX_USERNAME = "/^[A-Za-z]{1}[A-Za-z0-9_-]{3,31}$/";
 
 // Link save : Checker for link validity
 // First %s goes for specie acronym, second one for gene_id (or alias, if exists)

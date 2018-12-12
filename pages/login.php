@@ -39,7 +39,7 @@ function loginControl($args) : Controller {
                 }
 
                 $row = mysqli_fetch_assoc($q);
-                logUser($row, (bool)($_POST['stay_logged'] ?? null)); // Enregistre l'utilisateur dans la session
+                logUser($row, (bool)($_POST['stay_logged'] ?? false)); // Enregistre l'utilisateur dans la session
 
                 $returns['successful_connection'] = true;
                 $returns['generate_form'] = false;
@@ -80,8 +80,8 @@ function loginView(Controller $c) : void {
                     else if (isset($data['successful_connection'])) {
                         echo '<h6 class="green-text">You have successfully logged in.</h6>
                         <h6 class="center" style="margin-bottom: 30px;">
-                            <a href="/home">Home</a> · <a href="/admin">Admin console</a>
-                        </h6>';
+                            <a href="/home">Home</a> ' . (isAdminLogged() ? '· <a href="/admin">Admin console</a>' : '') .
+                        '</h6>';
                     }
                     else if ($data['already_logged']) {
                         echo '<h6 class="red-text" style="margin-bottom: 30px;">You seem to be already logged.</h6>';

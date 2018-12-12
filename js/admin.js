@@ -864,3 +864,87 @@ function loadConversation(element, max_id = 0) {
         }
     });
 }
+
+function loadDeleteUserModal(id) {
+    let modal = document.getElementById('modal_wipe');
+
+    modal.innerHTML = `<div class="modal-content">
+        <h4 id="wipe_header">Delete user ?</h4>
+        <p>
+            User can't be restored.
+        </p>
+    </div>
+    <div class="modal-footer">
+        <form method="post" action="#">
+            <a href="#!" class="waves-effect blue-text btn-flat modal-close">
+                Cancel
+            </a>
+        
+            <input type="hidden" name="delete_user" value="${id}">
+            <a href="#!" onclick="this.parentElement.submit()" 
+                class="waves-effect red-text btn-flat modal-close">
+                Delete
+            </a>
+        </form>
+    </div>`;
+
+    $(modal).modal('open');
+}
+
+function loadEditUserModal(username, id, level) {
+    let modal = document.getElementById('modal-admin');
+
+    let select = `<select name="user_level">`;
+    level = Number(level);
+
+    function textForLevel(i) {
+        return i === -1 ? 'Basic user' :
+               i === 0 ? 'Trusted user' :
+               i === 1 ? 'Contributor' :
+               'Administrator';
+    }
+
+    for (let i = -1; i <= 2; i++) {
+        select += `<option value='${i}' ${level === i ? 'selected' : ''}>${textForLevel(i)}</option>`;
+    }
+
+    select += "</select>";
+
+    modal.innerHTML = `<form method="post" action="#">
+    <div class="modal-content">
+        <h4 id="wipe_header">Properties of ${escapeHtml(username)}</h4>
+        <h6 class="red-text modal-close" onclick="loadDeleteUserModal(${id})">Delete this user</h6>
+
+        <div class="row">
+            <div class="divider divider-margin"></div>
+            <p>
+                Modify user right level
+            </p>
+            <div class="col s12 input-field">
+                ${select}
+            </div>
+            <div class="clearb"></div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="waves-effect blue-text btn-flat modal-close">
+            Cancel
+        </a>
+    
+        <input type="hidden" name="change_level_user" value="${id}">
+        <a href="#!" onclick="this.parentElement.parentElement.submit()" 
+            class="waves-effect green-text btn-flat modal-close">
+            Update
+        </a>
+    </div>
+    </form>`;
+
+    $(modal).modal('open');
+    $('select').formSelect();
+}
+
+function initUserEditFeatures() {
+    $('.edit-user').on('click', function() {
+        loadEditUserModal(this.dataset.username, this.dataset.id, this.dataset.level);
+    });
+}

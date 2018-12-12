@@ -11,6 +11,8 @@ function searchByName() : array {
         global $sql;
         // Recherche du nom dans la base de données
         $name = mysqli_real_escape_string($sql, $_GET['name']);
+        $name = addcslashes($name, '_%');
+
         $exact_keyword_query = (isset($_GET['exact_query']) && $_GET['exact_query'] === '1');
         $like_q = ($exact_keyword_query ? "='$name'" : "LIKE '$name%'");
 

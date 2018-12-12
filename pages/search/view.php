@@ -227,18 +227,31 @@ function constructSelectAdv(string $mode, array $options, array $form_data) {
     }
 }
 
-function generateSearchResultsArray(array $res) : void { ?>
+function generateSearchResultsArray(array $res) : void { 
+    $max_res = null;
+
+    // Si jamais on doit limiter, on initialise $max_res
+    if (LIMIT_SEARCH_RESULTS && getLoggedUserLevel() < LIMIT_SEARCH_LEVEL) {
+        if (count($res) > LIMIT_SEARCH_NUMBER) {
+            $max_res = LIMIT_SEARCH_NUMBER;
+        }
+    }
+    
+    ?>
     <div class='container'>
         <div class='row'>
             <div class='col s12'>
-                <!-- <h3>
-                    Search results
-                </h3> -->
-                <?php if (empty($res)) { ?>
+                <?php 
+                if ($max_res) {
+                    echo "<h5 class='red-text'>Your search has too many hits.</h5>";
+                    echo "<h6>Data may have been truncated. Please refine your search.</h6>";
+                }
+                
+                if (empty($res)) { ?>
                     <h4 class='red-text h45 medium-light-text header'>No gene has matched your search</h4>
                     <h6 class='black-text medium-light-text header' style="margin-bottom: 50px;">Please check search terms.</h6>
                 <?php } else { ?>
-                    <h5 class="medium-light-text"><?= count($res) ?> result<?= count($res) > 1 ? 's' : '' ?></h5>
+                    <h5 class="medium-light-text"><?= $max_res ?? count($res) ?> result<?= ($max_res ?? count($res)) > 1 ? 's' : '' ?></h5>
 
                     <div class='download-results col s12'>
                         <div class='col s6'>
@@ -274,8 +287,21 @@ function generateSearchResultsArray(array $res) : void { ?>
                         </thead>
                         <tbody id="tbody_sort">
                             <?php  
-                            foreach ($res as $key => $gene) {
-                                generateArrayLine($gene, $key, 100);
+                            if ($max_res) {
+                                $max_res = LIMIT_SEARCH_NUMBER;
+                                $count = count($res);
+                                if ($max_res > $count) {
+                                    $max_res = $count;
+                                }
+
+                                for ($i = 0; $i < $max_res; $i++) {
+                                    generateArrayLine($res[$i], $i, 100);
+                                }
+                            }
+                            else {
+                                foreach ($res as $key => $gene) {
+                                    generateArrayLine($gene, $key, 100);
+                                }
                             }
                             ?>
                         </tbody>

@@ -11,6 +11,8 @@ function searchById() : array {
         global $sql;
         // Recherche de l'identifiant dans la base de données
         $id = mysqli_real_escape_string($sql, $_GET['id']);
+        $id = addcslashes($id, '_%');
+
         $exact_keyword_query = (isset($_GET['exact_query']) && $_GET['exact_query'] === '1');
         $like_q = ($exact_keyword_query ? "='$id'" : "LIKE '$id%'");
 
