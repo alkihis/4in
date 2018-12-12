@@ -1,5 +1,7 @@
 $(document).ready(function () {
-    $('.parallax').parallax();
+    $('.jarallax').jarallax({
+        speed: 0.15,
+    });
 
     $('.dropdown-trigger').dropdown({
         coverTrigger: false,

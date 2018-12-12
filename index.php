@@ -99,5 +99,6 @@ $ctrl = getRoute(...$parms);
         <!--JavaScript at end of body for optimized loading-->
         <script src="/js/materialize.min.js"></script>
         <script src="/js/script.js"></script>
+        <script src="/js/jarallax.min.js"></script>
     </body>
 </html>

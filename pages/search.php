@@ -63,8 +63,8 @@ function searchHomePage() : array {
 
 function showSearchHome(array $data) : void {
     ?>
-    <div class="parallax-container parallax-search-page">
-        <div class="parallax"><img alt="Home image" src="/img/mol_search.jpg"></div>
+    <div class="jarallax parallax-search-page">
+        <img alt="Home image" src="/img/mol_search.jpg" class="jarallax-img">
     </div>
 
     <div class="container">
