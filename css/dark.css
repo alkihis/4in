@@ -179,3 +179,39 @@ table.striped>tbody>tr:nth-child(odd) {
 .keyboard-focused .collapsible-header:focus {
     background-color: inherit;
 }
+
+.side-messages {
+    border-right: #354b65 1px solid;
+}
+
+.side-messages .conversation {
+    background-color: rgba(49, 68, 90, 0.45098039215686275);
+    border-bottom: rgb(17, 41, 58) 1px solid;
+    color: rgb(130, 187, 241);
+}
+
+.side-messages .conversation.active {
+    background-color: #34518e;
+}
+
+.side-messages .conversation:hover {
+    color: rgb(167, 213, 255);
+}
+
+.side-messages .conversation.active:hover {
+    color: rgb(255, 255, 255);
+}
+
+.message-none {
+    color: rgba(41, 122, 197, 0.479);
+}
+
+@keyframes bk-color-change {
+    0% { background-color: #0277bd; }
+    50% { background-color: #1a2e40; }
+    100% { background-color: #0277bd; }
+}
+
+tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.212);
+}

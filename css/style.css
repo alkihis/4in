@@ -615,7 +615,7 @@ main.on-dark-mode {
     background-color: #6c8da0;
 }
 
-.message-not-seen {
+.card-panel.message-not-seen {
     background-color: #0277bd;
 }
 

@@ -13,7 +13,7 @@ const SITE_LONG_NAME = 'Insect Innate Immunity Interactive database';
 
 // Charge la configuration initiale:
 // Construit la base SQL,
-// les visiteur devient administrateur
+// le visiteur devient administrateur
 // Après activation à true, allez sur {site.address.com}/initial
 // pour débuter
 const INITIAL_CONFIGURATION = false;
