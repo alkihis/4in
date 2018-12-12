@@ -8,6 +8,8 @@ const MYSQL_SERVER = 'localhost';
 
 // Nom textuel du site
 const SITE_NAME = '4IN';
+// Nom long du site
+const SITE_LONG_NAME = 'Insect Innate Immunity Interactive database';
 
 // ---------------------
 // Niveaux de permission
