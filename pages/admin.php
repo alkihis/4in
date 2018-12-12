@@ -335,9 +335,6 @@ function adminView(Controller $c) : void {
         <li <?= ($d['active_page'] === 'checker' ? 'class="active"' : '') ?>>
             <a class="waves-effect" href="/admin/checker"><i class="material-icons">check</i>FASTA checker</a>
         </li>
-        <li <?= ($d['active_page'] === 'verify' ? 'class="active"' : '') ?>>
-            <a class="waves-effect" href="/admin/verify"><i class="material-icons">done_all</i>Verify gene links</a>
-        </li>
     </ul>
 
     <style>

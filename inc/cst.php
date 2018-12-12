@@ -12,8 +12,10 @@ const SITE_NAME = '4IN';
 const SITE_LONG_NAME = 'Insect Innate Immunity Interactive database';
 
 // Charge la configuration initiale:
-// Construit la base SQL si besoin,
-// tous les visiteurs sont administrateurs
+// Construit la base SQL,
+// les visiteur devient administrateur
+// Après activation à true, allez sur {site.address.com}/initial
+// pour débuter
 const INITIAL_CONFIGURATION = false;
 
 // ---------------------
@@ -113,6 +115,7 @@ const PAGES_REF = [
     'add_o' => ['file' => 'pages/add_ortho.php', 'view' => 'addOView', 'controller' => 'addOControl'],
     'admin' => ['file' => 'pages/admin.php', 'view' => 'adminView', 'controller' => 'adminControl'],
     'contact' => ['file' => 'pages/contact.php', 'view' => 'contactView', 'controller' => 'contactControl'],
+    'initial' => ['file' => 'pages/initial.php', 'view' => 'iView', 'controller' => 'iControl'],
     '404' => ['file' => 'static/404.php', 'view' => 'notFoundView', 'controller' => 'notFoundControl'],
     '403' => ['file' => 'static/403.php', 'view' => 'forbiddenView', 'controller' => 'forbiddenControl'],
     '500' => ['file' => 'static/500.php', 'view' => 'serverErrorView', 'controller' => 'serverErrorControl'],

@@ -239,8 +239,38 @@ Notez qu'un système UNIX est requis pour le fonctionnement de BLAST.
 
 # Détails additionnels
 
+### Console d'administration
+Arborescence sous `/admin`
+- import
+  - genome
+  - blast
+- build
+  - genome
+  - blast
+- alias
+  - import
+  - build
+- messages
+- db_species
+- species
+- reset_link
+- password
+- stats
+- checker
+- converter
+- verify
+- create_user
+- manage_user
+
 ### Images de la page d'accueil
 Vous pouvez rajouter des images s'affichant sur la page d'accueil en collant des fichiers .jpg (JPEG) dans le dossier `img/home/`.
+
+### Mode nuit
+Un mode nuit est pseudo implémenté. 
+
+Vous pouvez l'activer/désactiver temporairement en appelant `enableNightMode()` / `disableNightMode()` depuis la console JavaScript.
+
+L'activation permanente est possible en ajoutant la query string `?night_mode=1` à n'importe quelle page. La désactivation se réalise en affectant 0 au paramètre `night_mode` de la query string.
 
 # Licence
 
