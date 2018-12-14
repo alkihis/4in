@@ -23,6 +23,7 @@ const INITIAL_CONFIGURATION = false;
 // ---------------------
 
 // Aucune permission, non connecté
+// Présent pour des raisons techniques, n'a aucune valeur
 const USER_PERM_UNLOGGED = -2;
 
 // Permissions minimales; Pas de visiblité des espèces protégées
@@ -58,6 +59,9 @@ const LIMIT_SEARCH_NUMBER = 2000;
 
 // Niveau pour lequel la recherche n'est plus limitée
 const LIMIT_SEARCH_LEVEL = USER_PERM_VISITOR;
+
+// Niveau pour lequel la recherche des "Miscellaneous informations" est possible
+const LIMIT_SEARCH_ADDITIONNAL = USER_PERM_VISITOR;
 // ---------------------
 
 // Emplacements (par rapport à DOCUMENT_ROOT)

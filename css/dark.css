@@ -31,7 +31,8 @@ main {
 }
 
 .footer-color {
-    background-color: rgb(27, 44, 58);
+    background-color: #daedff;
+    background-image: linear-gradient(#1b2c3a, #304f69, #7da7c9, #daedff);
 }
 
 .parallax-contact-page {

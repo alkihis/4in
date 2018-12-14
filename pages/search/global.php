@@ -94,6 +94,49 @@ function searchAdvanced() : array {
             $query = "($query)";
         }
 
+        // ___ADDI KEYWORDS TREATEMENT__
+        if (!empty($_GET['addi'] && getLoggedUserLevel() >= LIMIT_SEARCH_ADDITIONNAL)) { // Autorise la recherche par mot additionnel
+            // Recherche du mot dans la base de données
+            // On éclate en fonction des ""
+            $addi = [];
+            preg_match_all('/"(.*?)"/um', $_GET['addi'], $addi);
+
+            if (!empty($addi) && isset($addi[1])) {
+                $addi = $addi[1];
+            }
+            else {
+                $addi = [];
+            }
+
+            // Remet la chaîne global à zéro pour supprimer les mots vides/invalides
+            // lors du traitement
+            $GLOBALS['addi_array'] = [];
+            $like_reg = ($exact_keyword_query ? '' : '[^,]*');
+            $tmp_query = "";
+            $final_addi = [];
+
+            // Traitement des mots clés
+            foreach ($addi as $word) {
+                $word = trim($word);
+
+                if ($word === "" || strlen($word) < 2)
+                    continue;
+
+                $final_addi[] = "(" . preg_quote(mysqli_real_escape_string($sql, $word)) . "$like_reg)";
+
+                $GLOBALS['addi_array'][] = $word;
+            }
+
+            $tmp_query = "[[:<:]](" . implode('|', $final_addi) . ")[[:>:]]";
+
+            if ($query) {
+                $query .= " AND ";
+            }
+
+            $query .= " (addi REGEXP '$tmp_query') ";
+
+        }
+
         // ___ PATHWAYS TREATEMENT ____
         if (!empty($selected_pathways)) {
             $path_q = '';
@@ -159,7 +202,7 @@ function searchAdvanced() : array {
             $q = mysqli_query($sql, $finalquery);
 
             if (!$q) {
-                throw new UnexpectedValueException("SQL request failed");
+                throw new UnexpectedValueException("SQL request failed :" . mysqli_error($sql));
             }
 
             if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère

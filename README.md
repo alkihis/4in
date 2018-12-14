@@ -237,6 +237,32 @@ Pour vous servir du module BLAST, vous devrez dézipper les binaires de [BLAST+]
 
 Notez qu'un système UNIX est requis pour le fonctionnement de BLAST.
 
+# Fonctionnalités
+
+## Recherche avancée
+La recherche avancée combine tous les modes de recherche possible du site web.
+Un critère de recherche est nécessaire au minimum pour la lancer.
+
+Les critères disponibles pour rechercher des gènes sont:
+- Voie métabolique
+- Espèce
+- Mots clés, comprenant :
+  - Nom
+  - Nom complet
+  - Fonction
+  - Identifiant
+  - Famille
+  - Sous-famille
+- Pour les utilisateurs ayant les droits, une recherche sur les détails additionnels (marqués entre parenthèses dans le fichier source TSV) est possible. Cette recherche est limitée en raison de la nécessité d'utiliser une expression régulière pour rechercher dans ce champ. Prenez garde à limiter les recherches avec lui, celles-ci sont consommatrices pour le serveur SQL et les résultats peu lisibles, ce champ n'apparaissant pas dans le tableau de résultat de recherche
+
+## BLAST
+Un BLAST peut être effectué sur les séquences présentes sur le site.
+
+La base de données BLAST doit être préalablement être construite depuis la console d'administration pour fonctionner.
+Pour les utilisateurs n'ayant pas les droits, les espèces dont le génome n'est pas public (considérées comme "protégées" dans l'interface d'administration) ne sont pas recherchées par BLAST.
+
+Tous les paramètres classiques de BLAST sont disponibles depuis le formulaire de requête.
+
 # Détails additionnels
 
 ### Console d'administration

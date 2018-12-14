@@ -437,11 +437,36 @@ function searchFormMake(form) {
         form.global.value = str;
     }
 
+    // Chip additionnelles
+    instance = document.getElementById('chip_container_addi');
+    if (instance) {
+        instance = M.Chips.getInstance(instance);
+        str = "";
+    
+        for (var i = 0; i < instance.chipsData.length; i++) {
+            if (i > 0) {
+                str += " ";
+            }
+            // Entoure le texte de guillemets doubles ""
+            str += '"' + instance.chipsData[i].tag + '"'; 
+        } 
+    
+        var form_val = form.addi_chip.value.trim();
+    
+        if (form_val !== "") {
+            form.addi.value = str + ' "' + form_val + '"';
+        }
+        else {
+            form.addi.value = str;
+        }
+    }
+
     return true;
 }
 
 function checkChips(insts) {
     var e = insts[0];
+
     for (var i = 0; i < e.chipsData.length; i++) {
         e.chipsData[i].tag = e.chipsData[i].tag.trim();
 
@@ -452,7 +477,7 @@ function checkChips(insts) {
     } 
 }
 
-function initGlobalSearchForm(dat) {
+function initGlobalSearchForm(dat, addi) {
     var elems = document.querySelectorAll('.chips-autocomplete');
 
     var id_loading = "loading_block_form";
@@ -487,6 +512,15 @@ function initGlobalSearchForm(dat) {
     }).always(function() {
         $('#' + id_loading).slideUp(150, function() { $(this).remove() });
     });
+
+    // Chip additionnelles
+    var e = document.querySelectorAll('.chips.addi');
+    if (e) {
+        var ist = M.Chips.init(e, {
+            data: addi,
+            onChipAdd: function() { checkChips(ist) }
+        });
+    }
 
     $('#submit_form').on('submit', function() {
         return searchFormMake(this);
