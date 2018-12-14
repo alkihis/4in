@@ -75,6 +75,7 @@ function searchAdvanced() : array {
         // Remet la chaîne global à zéro pour supprimer les mots vides/invalides
         // lors du traitement
         $_GET['global'] = "";
+        $global_array = [];
         $exact_keyword_query = (isset($_GET['exact_query']) && $_GET['exact_query'] === '1');
 
         // Traitement des mots clés
@@ -85,7 +86,14 @@ function searchAdvanced() : array {
                 continue;
 
             $query = makeAdvancedQuery($word, $query, $exact_keyword_query);
-            $_GET['global'] .= "\"$word\" ";
+            $global_array[] = $word;
+        }
+
+        // Construction de la chaîne JavaScript à injecter pour l'initialisation des
+        // chips
+        $r['form_data']['global_string'] = [];
+        foreach ($global_array as $e) { // Pour chaque mot défini
+            $r['form_data']['global_string'][] = ['tag' => $e]; // On écrit les tags dispos dans le tableau d'initialisation
         }
         
         if ($query) { 
@@ -110,7 +118,7 @@ function searchAdvanced() : array {
 
             // Remet la chaîne global à zéro pour supprimer les mots vides/invalides
             // lors du traitement
-            $GLOBALS['addi_array'] = [];
+            $addi_array = [];
             $like_reg = ($exact_keyword_query ? '' : '[^,]*');
             $tmp_query = "";
             $final_addi = [];
@@ -122,9 +130,9 @@ function searchAdvanced() : array {
                 if ($word === "" || strlen($word) < 2)
                     continue;
 
-                $final_addi[] = "(" . preg_quote(mysqli_real_escape_string($sql, $word)) . "$like_reg)";
+                $final_addi[] = "(" . mysqli_real_escape_string($sql, preg_quote($word)) . "$like_reg)";
 
-                $GLOBALS['addi_array'][] = $word;
+                $addi_array[] = $word;
             }
 
             $tmp_query = "[[:<:]](" . implode('|', $final_addi) . ")[[:>:]]";
@@ -135,6 +143,12 @@ function searchAdvanced() : array {
 
             $query .= " (addi REGEXP '$tmp_query') ";
 
+            // Construction de la chaîne JavaScript à injecter pour l'initialisation des
+            // chips
+            $r['form_data']['addi_string'] = [];
+            foreach ($addi_array as $e) { // Pour chaque mot défini
+                $r['form_data']['addi_string'][] = ['tag' => $e]; // On écrit les tags dispos dans le tableau d'initialisation
+            }
         }
 
         // ___ PATHWAYS TREATEMENT ____

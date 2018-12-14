@@ -119,6 +119,16 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                     <div class="clearb"></div>
                     <div class="divider divider-margin"></div>
 
+                    <?php if (getLoggedUserLevel() >= LIMIT_SEARCH_ADDITIONNAL) { ?>
+                        <div class="very-tiny-text">Miscellaneous informations</div>
+                        <div class='col s12 chips addi' id="chip_container_addi" style="margin-bottom: 20px; margin-top: 10px;">
+                            <input type='text' style="width: 100% !important" autocomplete='off' name="addi_chip" id="addi_chip">
+                        </div>
+                        <input type='hidden' name="addi" id="addi">
+                    <?php } ?>
+
+                    <div class="clearb"></div>
+
                     <div class="very-tiny-text">Keywords</div>
 
                     <div class="col s12 red-text tiny-text" id='loading_block_form' style="display: none;">
@@ -162,44 +172,20 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                         </label>
                     </div>
 
-                    <?php if (getLoggedUserLevel() >= LIMIT_SEARCH_ADDITIONNAL) { ?>
-                        <div class="very-tiny-text">Miscellaneous informations</div>
-                        <div class='col s12 chips addi' id="chip_container_addi" style="margin-bottom: 20px; margin-top: 10px;">
-                            <input type='text' style="width: 100% !important" autocomplete='off' name="addi_chip" id="addi_chip">
-                        </div>
-                        <input type='hidden' name="addi" id="addi">
-                    <?php } ?>
-
-                    <div class="clearb"></div>
-
+                    <span id="global_str_init" class="hide"><?= (isset($form_data['global_string']) ? 
+                        json_encode($form_data['global_string']) : 
+                        "" ) 
+                    ?></span>
+                    <span id="addi_str_init" class="hide"><?= (isset($form_data['addi_string']) ? 
+                        json_encode($form_data['addi_string']) : 
+                        "" ) 
+                    ?></span>
                     <script>
-                        var dat = [
-                            <?php if (isset($_GET['global'])) { // Si jamais on a déjà des keywords définis
-                                $words = [];
-                                preg_match_all('/"(.*?)"/um', $_GET['global'], $words);
-                                // On les récupère
-
-                                if (!empty($words) && !empty($words[1])) {
-                                    foreach ($words[1] as $e) { // Pour chaque mot défini
-                                        if ($e === "") continue;
-    
-                                        $t = addcslashes($e, "'");
-                                        echo "{tag: '$t'},"; // On écrit les tags dispos dans le tableau d'initialisation
-                                    }
-                                }
-                            } ?>
-                        ];
-
-                        var addi = [
-                            <?php if (isset($GLOBALS['addi_array'])) { // Si jamais on a déjà des keywords définis
-                                foreach ($GLOBALS['addi_array'] as $e) { // Pour chaque mot défini
-                                    $t = addcslashes($e, "'");
-                                    echo "{tag: '$t'},"; // On écrit les tags dispos dans le tableau d'initialisation
-                                }
-                            } ?>
-                        ];
-
-                        $(function () { initGlobalSearchForm(dat, addi); });
+                        $(function () { 
+                            var dat = JSON.parse(document.getElementById('global_str_init').innerHTML);
+                            var addi = JSON.parse(document.getElementById('addi_str_init').innerHTML);
+                            initGlobalSearchForm(dat, addi); 
+                        });
                     </script>
                 <?php }
                 
