@@ -119,16 +119,6 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                     <div class="clearb"></div>
                     <div class="divider divider-margin"></div>
 
-                    <?php if (getLoggedUserLevel() >= LIMIT_SEARCH_ADDITIONNAL) { ?>
-                        <div class="very-tiny-text">Miscellaneous informations</div>
-                        <div class='col s12 chips addi' id="chip_container_addi" style="margin-bottom: 20px; margin-top: 10px;">
-                            <input type='text' style="width: 100% !important" autocomplete='off' name="addi_chip" id="addi_chip">
-                        </div>
-                        <input type='hidden' name="addi" id="addi">
-                    <?php } ?>
-
-                    <div class="clearb"></div>
-
                     <div class="very-tiny-text">Keywords</div>
 
                     <div class="col s12 red-text tiny-text" id='loading_block_form' style="display: none;">
@@ -172,13 +162,36 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                         </label>
                     </div>
 
+                    <?php if (getLoggedUserLevel() >= LIMIT_SEARCH_ADDITIONNAL) { ?>
+                        <div class="clearb"></div>
+                        <div class="divider divider-margin"></div>
+                        <div class="block_for_additionnal" <?= (empty($form_data['addi_string']) ? 'style="display: none;"' : "") ?>>
+                            <div class="very-tiny-text">Miscellaneous informations</div>
+                            <div class='col s12 chips addi' id="chip_container_addi" style="margin-bottom: 20px; margin-top: 10px;">
+                                <input type='text' style="width: 100% !important" autocomplete='off' name="addi_chip" id="addi_chip">
+                            </div>
+                            <input type='hidden' name="addi" id="addi">
+                        </div>
+                        <div id="show_block_additionnal" class="col s12" onclick="$('.block_for_additionnal').slideDown(200); $(this).slideUp(150);"
+                            <?= (!empty($form_data['addi_string']) ? 'style="display: none;"' : "") ?>>
+                            <div class="btn-flat btn-perso orange-text center-block center">
+                                <i class="material-icons left">unfold_more</i>Search in miscellaneous infos
+                            </div>
+                        </div>
+
+                        <div class="clearb"></div>
+                        <div class="divider divider-margin"></div>
+                    <?php } ?>
+
+                    <div class="clearb"></div>
+
                     <span id="global_str_init" class="hide"><?= (isset($form_data['global_string']) ? 
                         json_encode($form_data['global_string']) : 
-                        "" ) 
+                        "[]" ) 
                     ?></span>
                     <span id="addi_str_init" class="hide"><?= (isset($form_data['addi_string']) ? 
                         json_encode($form_data['addi_string']) : 
-                        "" ) 
+                        "[]" ) 
                     ?></span>
                     <script>
                         $(function () { 
