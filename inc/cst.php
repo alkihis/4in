@@ -65,7 +65,7 @@ const LIMIT_SEARCH_NUMBER = 2000;
 const LIMIT_SEARCH_LEVEL = USER_PERM_VISITOR;
 
 // Niveau pour lequel la recherche des "Miscellaneous informations" est possible
-const LIMIT_SEARCH_ADDITIONNAL = USER_PERM_UNREACHABLE;
+const LIMIT_SEARCH_ADDITIONNAL = USER_PERM_ADMINISTRATOR;
 // ---------------------
 
 // Emplacements (par rapport à DOCUMENT_ROOT)
