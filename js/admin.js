@@ -49,17 +49,17 @@ var preloader_circle = `<div class="preloader-wrapper active">
 </div>`;
 
 async function launchFastaBuild(files) {
-    var total = files.adn.length + files.pro.length;
-    var success = 0;
-    var current = 1;
+    const total = files.adn.length + files.pro.length;
+    let success = 0;
+    let current = 1;
 
-    var modal = document.getElementById('modal-admin');
+    let modal = document.getElementById('modal-admin');
 
     // Obligatoire pour conserver les attributs
     $(modal).modal({
         dismissible: false
     });
-    var inst = M.Modal.getInstance(modal);
+    let inst = M.Modal.getInstance(modal);
     inst.open();
 
     modal.innerHTML = `<div class="modal-content">
@@ -76,11 +76,11 @@ async function launchFastaBuild(files) {
         
     </div>`;
 
-    var bar = document.getElementById('progress-bar');
-    var num = document.getElementById('file_number');
+    let bar = document.getElementById('progress-bar');
+    let num = document.getElementById('file_number');
 
-    for (var mode in files) {
-        for (var f of files[mode]) {
+    for (const mode in files) {
+        for (const f of files[mode]) {
             await request({
                 url: '/api/tools/fasta_reader.php',
                 method: 'POST',
@@ -115,13 +115,13 @@ async function launchFastaBuild(files) {
 }
 
 async function launchMakeBlast() {
-    var modal = document.getElementById('modal-admin');
+    let modal = document.getElementById('modal-admin');
 
     // Obligatoire pour conserver les attributs
     $(modal).modal({
         dismissible: false
     });
-    var inst = M.Modal.getInstance(modal);
+    let inst = M.Modal.getInstance(modal);
     inst.open();
     
     modal.innerHTML = `<div class="modal-content">
@@ -137,7 +137,7 @@ async function launchMakeBlast() {
         
     </div>`;
 
-    var ok = true;
+    let ok = true;
 
     await request({
         url: '/api/tools/blast_creator.php',
@@ -159,13 +159,13 @@ async function launchMakeBlast() {
 }
 
 async function launchDatabaseBuild(file, species, trim_first, read_first) {
-    var modal = document.getElementById('modal-admin');
+    let modal = document.getElementById('modal-admin');
 
     // Obligatoire pour conserver les attributs
     $(modal).modal({
         dismissible: false
     });
-    var inst = M.Modal.getInstance(modal);
+    let inst = M.Modal.getInstance(modal);
     inst.open();
 
     modal.innerHTML = `<div class="modal-content">
@@ -182,8 +182,8 @@ async function launchDatabaseBuild(file, species, trim_first, read_first) {
         
     </div>`;
 
-    var ok = true;
-    var spec_text = "";
+    let ok = true;
+    let spec_text = "";
 
     await request({
         url: '/api/tools/database_creator.php',
@@ -193,7 +193,7 @@ async function launchDatabaseBuild(file, species, trim_first, read_first) {
     }).then(function (data) {
         var json = JSON.parse(data);
 
-        for (var specie in json) {
+        for (const specie in json) {
             spec_text += String(json[specie].count) + " genes from " + specie + " (" + (json[specie].name === null ? 
                     "<span class='red-text'>No acronym is set. (Check spelling)</span>" : json[specie].name) + ")";
 
@@ -255,9 +255,12 @@ async function launchMapBuild(files) {
             body: 'file=' +  encodeURIComponent(f)
         }).then(function () {
             success++;
-        }).catch(function () {
+            current++;
+            // Actualiser la barre...
+            bar.style.width = String(Math.round((current / total) * 100)) + '%';
 
-        }).finally(function () {
+            num.innerText = current;
+        }).catch(function () {
             current++;
             // Actualiser la barre...
             bar.style.width = String(Math.round((current / total) * 100)) + '%';
@@ -279,11 +282,11 @@ async function launchMapBuild(files) {
 }
 
 function buildGenomeDbModal(file, trim_first, read_first) {
-    var modal = document.getElementById('modal-admin');
+    let modal = document.getElementById('modal-admin');
 
-    var species = document.getElementById('collection-build').innerHTML;
+    let species = document.getElementById('collection-build').innerHTML;
 
-    var text = '';
+    let text = '';
 
     if (read_first) {
         text = `First line of the file will be used to define specie name.<br>
@@ -299,7 +302,7 @@ function buildGenomeDbModal(file, trim_first, read_first) {
         Please be aware that if too many species are present, the build may fail.
         ${(trim_first ? '<br>First line of the file will be ignored.' : '')}`;
     }
-    var str = `<div class="modal-content">
+    let str = `<div class="modal-content">
         <h4>Build genome database</h4>
         <p>
             <span class="underline">
@@ -320,29 +323,29 @@ function buildGenomeDbModal(file, trim_first, read_first) {
 
     modal.innerHTML = str;
 
-    var reset = document.getElementById('reset-spec');
+    let reset = document.getElementById('reset-spec');
 
     if (reset) {
         document.getElementById('reset-spec').onclick = function () {
             document.getElementById('species-draggable').innerHTML = species;
             // Initialisation de sortable.js
-            var el = document.querySelector('.modal-content ul');
+            let el = document.querySelector('.modal-content ul');
             Sortable.create(el);
         }
     }
 
     document.getElementById('next-step-build').onclick = function () {
         // Récupération de l'ordre
-        var ord_sp = [];
+        let ord_sp = [];
 
         if (!read_first) {
             // Récupération de l'élément contenant les espèces
-            var contenant = document.querySelector('.modal-content ul');
+            let contenant = document.querySelector('.modal-content ul');
 
             if (contenant.hasChildNodes()) {
-                var childs = contenant.childNodes;
+                let childs = contenant.childNodes;
 
-                for (var i = 0; i < childs.length; i++) {
+                for (let i = 0; i < childs.length; i++) {
                     // Vérification que l'élément est bien un DocumentElement (les espaces vides de texte entre les balises
                     // sont des childNode) et vérifie que la classe spéciale "collection-specie" est bien présente
                     // pour assurer qu'on manipule forcément notre élément voulu
@@ -362,18 +365,18 @@ function buildGenomeDbModal(file, trim_first, read_first) {
     $(modal).modal({
         dismissible: false
     });
-    var inst = M.Modal.getInstance(modal);
+    let inst = M.Modal.getInstance(modal);
     inst.open();
 
 
     // Initialisation de sortable.js
-    var el = document.querySelector('.modal-content ul');
+    let el = document.querySelector('.modal-content ul');
     if (el)
         Sortable.create(el);
 }
 
 function deleteFile(file, mode = "") {
-    var modal = document.getElementById('modal_wipe');
+    let modal = document.getElementById('modal_wipe');
 
     modal.innerHTML = `<div class="modal-content">
         <h4 id="wipe_header">Delete this file ?</h4>
@@ -401,7 +404,7 @@ function deleteFile(file, mode = "") {
 }
 
 function deleteSpecie(specie) {
-    var modal = document.getElementById('modal_wipe');
+    let modal = document.getElementById('modal_wipe');
 
     modal.innerHTML = `<div class="modal-content">
         <h4 id="wipe_header">Delete ${specie} ?</h4>
@@ -429,19 +432,19 @@ function deleteSpecie(specie) {
 }
 
 function sendSpecieOrder() {
-    var coll = document.getElementById('specie_order');
-    var hidden = document.getElementById('hidden_order');
+    let coll = document.getElementById('specie_order');
+    let hidden = document.getElementById('hidden_order');
 
-    var modal = document.getElementById('modal_wipe');
-    var prec = document.getElementById('prec_order').innerText;
+    let modal = document.getElementById('modal_wipe');
+    let prec = document.getElementById('prec_order').innerText;
 
     // Récupération de l'ordre
-    var ord_sp = [];
+    let ord_sp = [];
 
     if (coll.hasChildNodes()) {
-        var childs = coll.childNodes;
+        let childs = coll.childNodes;
 
-        for (var i = 0; i < childs.length; i++) {
+        for (let i = 0; i < childs.length; i++) {
             // Explications : voir buildGenomeDbModal()
             if (childs[i].classList && childs[i].classList.contains('collection-specie')) {
                 ord_sp.push(childs[i].dataset.specie);
@@ -482,8 +485,8 @@ function sendSpecieOrder() {
 }
 
 function changeWebsiteAccess(ele) {
-    var st = (ele.dataset.access === "1" ? "maintenance" : "ok");
-    var txt = document.getElementById('accessible_text');
+    let st = (ele.dataset.access === "1" ? "maintenance" : "ok");
+    let txt = document.getElementById('accessible_text');
         
     request({
         url: '/api/tools/maintenance.php',
@@ -522,19 +525,19 @@ function initAdminModalForBlastBuild() {
 }
 
 function initAdminModalForSequenceBuild() {
-    var header = document.getElementById('build_header');
+    let header = document.getElementById('build_header');
     header.innerText = '';
 
-    var text = document.getElementById('build_text')
+    let text = document.getElementById('build_text')
     text.innerHTML = `<div class="center">${preloader_circle}</div>`;
     
-    var setter = document.getElementById('setter_builder');
+    let setter = document.getElementById('setter_builder');
     $(setter).hide(0);
 
     $.get('/api/tools/get_all_fasta_files.php', {}, function(data) {
-        var json = JSON.parse(data);
+        let json = JSON.parse(data);
 
-        var count = json.adn.length + json.pro.length;
+        let count = json.adn.length + json.pro.length;
 
         header.innerText = 'Insert sequences in database ?';
         text.innerHTML = '<p>' + count + ' file(s) will be parsed.<br>This operation may take a while.</p>';

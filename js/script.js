@@ -37,7 +37,6 @@ function enableNightMode() {
 
         document.head.appendChild(htmlToElement('<link type="text/css" rel="stylesheet" id="dark-mode-css" href="/css/dark.css">'));
 
-
         setTimeout(function() {
             document.querySelector('main').classList.remove('on-dark-mode');
         }, 500);
@@ -319,15 +318,19 @@ function addSpecie(spec) {
         return;
     }
 
+    // On recupère les checkbox
     var input = document.getElementById('new_specie');
     var checkboxes = document.getElementsByClassName('chk-spe');
     var species_actual = {};
 
+    // On construit le tableau de relation nom_espece => cochée
     for (var i = 0; i < checkboxes.length; i++) {
         species_actual[checkboxes[i].value] = checkboxes[i].checked;
     }
+    // On rajoute l'actuelle
     species_actual[spec] = true;
 
+    // On actualise le conteneur de checkbox en contruisant une nouvelle DOMString
     var checkboxes_container = document.getElementById('multiple_species');
 
     var str = '';
