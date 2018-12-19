@@ -42,6 +42,10 @@ const USER_PERM_CONTRIBUTOR = 1;
 // Vérifiée avec la fonction isAdminLogged()
 const USER_PERM_ADMINISTRATOR = 2;
 
+// Fonctionnalité inutilisable, par n'importe quel utilisateur
+// Un utilisateur n'est pas censé bénéficier de ces droits
+const USER_PERM_UNREACHABLE = 3;
+
 // Les fonctions de permissions sont avec "fallback" : si un admin est connecté, 
 // isBasicUserLogged(), isUserLogged(), isContributorLogged() et isAdminLogged() retourneront toutes vrai.
 // Pour tester les droits réels d'un utilisateur, utilisez $_SESSION['user']['rights'] === USER_PERM_*** 
@@ -61,7 +65,7 @@ const LIMIT_SEARCH_NUMBER = 2000;
 const LIMIT_SEARCH_LEVEL = USER_PERM_VISITOR;
 
 // Niveau pour lequel la recherche des "Miscellaneous informations" est possible
-const LIMIT_SEARCH_ADDITIONNAL = USER_PERM_VISITOR;
+const LIMIT_SEARCH_ADDITIONNAL = USER_PERM_ADMINISTRATOR;
 // ---------------------
 
 // Emplacements (par rapport à DOCUMENT_ROOT)

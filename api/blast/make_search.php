@@ -259,8 +259,6 @@ function blastControl(array &$stats) : int {
             `rm -f $temp_file`;
         }
 
-        $queries = [];
-
         $stats['len'] = strlen($html);
 
         if (strlen($html) > 5000000) { // Résultat très très long (5 millions de caractères)
@@ -282,6 +280,8 @@ function blastControl(array &$stats) : int {
 
         $st = microtime(true);
         // Création des liens vers queries
+        $queries = [];
+        
         $html = preg_replace_callback("/<b>Query=<\/b> (.+)\b/iu", function($matches) use (&$queries) {
             $match = htmlspecialchars($matches[1], ENT_QUOTES);
             $queries[] = $match;

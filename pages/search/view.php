@@ -219,7 +219,7 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
     </div>
 
     <script>
-        $(function() {$('.tooltipped').tooltip();});
+        $(function() { $('.tooltipped').tooltip(); });
     </script>
     <?php
 }
