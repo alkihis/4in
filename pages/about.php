@@ -18,7 +18,7 @@ function aboutControl(array $a) : Controller {
         'Msexta' => ['img' => 'man.jpg', 'dscr' => 'Manduca sexta'],
         'Nvitripennis' => ['img' => 'Nasoniavit.jpg', 'dscr' => 'Nasonia vitripennis'],
         'Phumanus' => ['img' => 'ped.jpg', 'dscr' => 'Pediculus humanus'],
-        'Soryzae' => ['img' => 'Maize_weevil.jpg', 'dscr' => 'Sitophilus oryzae'],
+        'Soryzae' => ['img' => 'Maize_weevil.png', 'dscr' => 'Sitophilus oryzae'],
         'Sinvicta' => ['img' => 'sinvi.jpg', 'dscr' => 'Solenopsis invicta'],
         'Bmori' => ['img' => 'bmori.JPG', 'dscr' => 'Bombyx mori'],
         'Cfloridanus' => ['img' => 'clo.jpg', 'dscr' => 'Camponotus floridanus'],
@@ -151,7 +151,24 @@ function aboutView(Controller $c) : void {
                 <?= ($i !== 0 ? '</div>' : '') ?>
             </div>
         </div>
+
+        <div class='row'>
+            <div class="col s12">
+                <h4 class="light-text">Relation between immunity pathways</h4>
+
+                <img alt="immunity pathways" class="materialboxed responsive-img" src="/img/team/immunity1.jpg">
+
+                <span class="very-tiny-text">
+                    Buchon, N., Silverman, N. and Cherry, S. (2014). 
+                    Immunity in Drosophila melanogaster--from microbial recognition to whole-organism physiology. 
+                    Nat Rev Immunol 14: 796-810. PubMed ID: 25421701
+                </span>
+            </div>
+        </div>
     </div>
     
+    <script>
+        $(function() { $('.materialboxed').materialbox(); });
+    </script>
     <?php
 }

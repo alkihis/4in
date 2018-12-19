@@ -103,7 +103,7 @@ function searchAdvanced() : array {
         }
 
         // ___ADDI KEYWORDS TREATEMENT__
-        if (!empty($_GET['addi'] && getLoggedUserLevel() >= LIMIT_SEARCH_ADDITIONNAL)) { // Autorise la recherche par mot additionnel
+        if (!empty($_GET['addi']) && getLoggedUserLevel() >= LIMIT_SEARCH_ADDITIONNAL) { // Autorise la recherche par mot additionnel
             // Recherche du mot dans la base de données
             // On éclate en fonction des ""
             $addi = [];
