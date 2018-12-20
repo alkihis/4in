@@ -8,10 +8,23 @@ const MYSQL_SERVER = 'localhost';
 
 // Nom textuel du site
 const SITE_NAME = '4IN';
+// Nom long du site
+const SITE_LONG_NAME = 'Insect Innate Immunity Interactive database';
+
+// Charge la configuration initiale:
+// Construit la base SQL,
+// le visiteur devient administrateur
+// Après activation à true, allez sur {site.address.com}/initial
+// pour débuter
+const INITIAL_CONFIGURATION = false;
 
 // ---------------------
 // Niveaux de permission
 // ---------------------
+
+// Aucune permission, non connecté
+// Présent pour des raisons techniques, n'a aucune valeur
+const USER_PERM_UNLOGGED = -2;
 
 // Permissions minimales; Pas de visiblité des espèces protégées
 // Vérifiée avec la fonction isBasicUserLogged()
@@ -29,10 +42,30 @@ const USER_PERM_CONTRIBUTOR = 1;
 // Vérifiée avec la fonction isAdminLogged()
 const USER_PERM_ADMINISTRATOR = 2;
 
+// Fonctionnalité inutilisable, par n'importe quel utilisateur
+// Un utilisateur n'est pas censé bénéficier de ces droits
+const USER_PERM_UNREACHABLE = 3;
+
 // Les fonctions de permissions sont avec "fallback" : si un admin est connecté, 
 // isBasicUserLogged(), isUserLogged(), isContributorLogged() et isAdminLogged() retourneront toutes vrai.
 // Pour tester les droits réels d'un utilisateur, utilisez $_SESSION['user']['rights'] === USER_PERM_*** 
 // Pour créer un utilisateur, toujours utiliser les constantes ci-dessus.
+// ---------------------
+
+// ------------------------
+// Limitations de recherche
+// ------------------------
+// Limiter les résultats de recherche
+const LIMIT_SEARCH_RESULTS = true;
+
+// Nombre de résultats maximum en limitant
+const LIMIT_SEARCH_NUMBER = 2000;
+
+// Niveau pour lequel la recherche n'est plus limitée
+const LIMIT_SEARCH_LEVEL = USER_PERM_VISITOR;
+
+// Niveau pour lequel la recherche des "Miscellaneous informations" est possible
+const LIMIT_SEARCH_ADDITIONNAL = USER_PERM_ADMINISTRATOR;
 // ---------------------
 
 // Emplacements (par rapport à DOCUMENT_ROOT)
@@ -44,7 +77,7 @@ const MAPPING_DIR = '/assets/mapping/';
 // Active l'affichage des erreurs BLAST dans l'HTML (sinon, l'erreur est loggée)
 // Active l'affichage des notices/warning à l'écran
 // Active l'affichage du texte des Exceptions lors d'une rencontre
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 
 // Protected genomes : hide species defined in PROTECTED_SPECIES
 const LIMIT_GENOMES = true;
@@ -59,6 +92,8 @@ const MAX_LEN_MESSAGE = 5000;
 // Limite de caractères (ISO-8859-1) d'un e-mail
 const MAX_LEN_EMAIL = 70;
 // _----- -----_
+
+const REGEX_USERNAME = "/^[A-Za-z]{1}[A-Za-z0-9_-]{3,31}$/";
 
 // Link save : Checker for link validity
 // First %s goes for specie acronym, second one for gene_id (or alias, if exists)
@@ -88,6 +123,7 @@ const PAGES_REF = [
     'add_o' => ['file' => 'pages/add_ortho.php', 'view' => 'addOView', 'controller' => 'addOControl'],
     'admin' => ['file' => 'pages/admin.php', 'view' => 'adminView', 'controller' => 'adminControl'],
     'contact' => ['file' => 'pages/contact.php', 'view' => 'contactView', 'controller' => 'contactControl'],
+    'initial' => ['file' => 'pages/initial.php', 'view' => 'iView', 'controller' => 'iControl'],
     '404' => ['file' => 'static/404.php', 'view' => 'notFoundView', 'controller' => 'notFoundControl'],
     '403' => ['file' => 'static/403.php', 'view' => 'forbiddenView', 'controller' => 'forbiddenControl'],
     '500' => ['file' => 'static/500.php', 'view' => 'serverErrorView', 'controller' => 'serverErrorControl'],

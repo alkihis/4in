@@ -521,8 +521,20 @@ textarea.materialize-textarea{
 }
 
 .footer-color {
-    background-color: #42A5F5;
+    background-color: #f8f8f8;
+    background-image: linear-gradient(#42A5F5, #52acf5, #aed1ee, #f8f8f8);
 }
+
+/* For white footer */
+/* .footer-color {
+    background-color: #ffffff;
+    border-top: #aaaaaa 1px solid;
+    color: black !important;
+}
+
+.footer-color .white-text {
+    color: inherit !important;
+} */
 
 main.on-dark-mode {
     transition: .3s;
@@ -615,7 +627,7 @@ main.on-dark-mode {
     background-color: #6c8da0;
 }
 
-.message-not-seen {
+.card-panel.message-not-seen {
     background-color: #0277bd;
 }
 
@@ -679,4 +691,20 @@ i.material-icons.custom-margin {
 
 .h45 {
     font-size: 2.10rem;
+}
+
+.jarallax {
+    position: relative;
+    z-index: 0;
+}
+.jarallax > .jarallax-img {
+    position: absolute;
+    object-fit: cover;
+    /* support for plugin https://github.com/bfred-it/object-fit-images */
+    font-family: 'object-fit: cover;';
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
 }

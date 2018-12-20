@@ -75,6 +75,7 @@ function searchAdvanced() : array {
         // Remet la chaîne global à zéro pour supprimer les mots vides/invalides
         // lors du traitement
         $_GET['global'] = "";
+        $global_array = [];
         $exact_keyword_query = (isset($_GET['exact_query']) && $_GET['exact_query'] === '1');
 
         // Traitement des mots clés
@@ -85,13 +86,69 @@ function searchAdvanced() : array {
                 continue;
 
             $query = makeAdvancedQuery($word, $query, $exact_keyword_query);
-            $_GET['global'] .= "\"$word\" ";
+            $global_array[] = $word;
+        }
+
+        // Construction de la chaîne JavaScript à injecter pour l'initialisation des
+        // chips
+        $r['form_data']['global_string'] = [];
+        foreach ($global_array as $e) { // Pour chaque mot défini
+            $r['form_data']['global_string'][] = ['tag' => $e]; // On écrit les tags dispos dans le tableau d'initialisation
         }
         
         if ($query) { 
             // Si jamais on a écrit une requête, on l'entoure de parenthèses pour pouvoir y
             // ajouter des composantes
             $query = "($query)";
+        }
+
+        // ___ADDI KEYWORDS TREATEMENT__
+        if (!empty($_GET['addi']) && getLoggedUserLevel() >= LIMIT_SEARCH_ADDITIONNAL) { // Autorise la recherche par mot additionnel
+            // Recherche du mot dans la base de données
+            // On éclate en fonction des ""
+            $addi = [];
+            preg_match_all('/"(.*?)"/um', $_GET['addi'], $addi);
+
+            if (!empty($addi) && isset($addi[1])) {
+                $addi = $addi[1];
+            }
+            else {
+                $addi = [];
+            }
+
+            // Remet la chaîne global à zéro pour supprimer les mots vides/invalides
+            // lors du traitement
+            $addi_array = [];
+            $like_reg = ($exact_keyword_query ? '' : '[^,]*');
+            $tmp_query = "";
+            $final_addi = [];
+
+            // Traitement des mots clés
+            foreach ($addi as $word) {
+                $word = trim($word);
+
+                if ($word === "" || strlen($word) < 2)
+                    continue;
+
+                $final_addi[] = "(" . mysqli_real_escape_string($sql, preg_quote($word)) . "$like_reg)";
+
+                $addi_array[] = $word;
+            }
+
+            $tmp_query = "[[:<:]](" . implode('|', $final_addi) . ")[[:>:]]";
+
+            if ($query) {
+                $query .= " AND ";
+            }
+
+            $query .= " (addi REGEXP '$tmp_query') ";
+
+            // Construction de la chaîne JavaScript à injecter pour l'initialisation des
+            // chips
+            $r['form_data']['addi_string'] = [];
+            foreach ($addi_array as $e) { // Pour chaque mot défini
+                $r['form_data']['addi_string'][] = ['tag' => $e]; // On écrit les tags dispos dans le tableau d'initialisation
+            }
         }
 
         // ___ PATHWAYS TREATEMENT ____
@@ -159,7 +216,7 @@ function searchAdvanced() : array {
             $q = mysqli_query($sql, $finalquery);
 
             if (!$q) {
-                throw new UnexpectedValueException("SQL request failed");
+                throw new UnexpectedValueException("SQL request failed :" . mysqli_error($sql));
             }
 
             if (mysqli_num_rows($q)) { // Il y a un nom trouvé, on le récupère

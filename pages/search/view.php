@@ -132,27 +132,6 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
 
                     <div class="clearb"></div>
 
-                    <script>
-                        var dat = [
-                            <?php if (isset($_GET['global'])) { // Si jamais on a déjà des keywords définis
-                                $words = [];
-                                preg_match_all('/"(.*?)"/um', $_GET['global'], $words);
-                                // On les récupère
-
-                                if (!empty($words) && !empty($words[1])) {
-                                    foreach ($words[1] as $e) { // Pour chaque mot défini
-                                        if ($e === "") continue;
-    
-                                        $t = addcslashes($e, "'");
-                                        echo "{tag: '$t'},"; // On écrit les tags dispos dans le tableau d'initialisation
-                                    }
-                                }
-                            } ?>
-                        ];
-
-                        $(function () { initGlobalSearchForm(dat); });
-                    </script>
-
                     <div style="margin-left: 10px; margin-bottom: 15px;">
                         Search keyword in
                     </div>
@@ -182,6 +161,45 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
                             <span>Roles</span>
                         </label>
                     </div>
+
+                    <?php if (getLoggedUserLevel() >= LIMIT_SEARCH_ADDITIONNAL) { ?>
+                        <div class="clearb"></div>
+                        <div class="divider divider-margin"></div>
+                        <div class="block_for_additionnal" <?= (empty($form_data['addi_string']) ? 'style="display: none;"' : "") ?>>
+                            <div class="very-tiny-text">Miscellaneous informations</div>
+                            <div class='col s12 chips addi' id="chip_container_addi" style="margin-bottom: 20px; margin-top: 10px;">
+                                <input type='text' style="width: 100% !important" autocomplete='off' name="addi_chip" id="addi_chip">
+                            </div>
+                            <input type='hidden' name="addi" id="addi">
+                        </div>
+                        <div id="show_block_additionnal" class="col s12" onclick="$('.block_for_additionnal').slideDown(200); $(this).slideUp(150);"
+                            <?= (!empty($form_data['addi_string']) ? 'style="display: none;"' : "") ?>>
+                            <div class="btn-flat btn-perso orange-text center-block center">
+                                <i class="material-icons left">unfold_more</i>Search in miscellaneous infos
+                            </div>
+                        </div>
+
+                        <div class="clearb"></div>
+                        <div class="divider divider-margin"></div>
+                    <?php } ?>
+
+                    <div class="clearb"></div>
+
+                    <span id="global_str_init" class="hide"><?= (isset($form_data['global_string']) ? 
+                        json_encode($form_data['global_string']) : 
+                        "[]" ) 
+                    ?></span>
+                    <span id="addi_str_init" class="hide"><?= (isset($form_data['addi_string']) ? 
+                        json_encode($form_data['addi_string']) : 
+                        "[]" ) 
+                    ?></span>
+                    <script>
+                        $(function () { 
+                            var dat = JSON.parse(document.getElementById('global_str_init').innerHTML);
+                            var addi = JSON.parse(document.getElementById('addi_str_init').innerHTML);
+                            initGlobalSearchForm(dat, addi); 
+                        });
+                    </script>
                 <?php }
                 
                 if ($mode !== 'pathway') { ?>
@@ -201,7 +219,7 @@ function generateSearchForm(string $mode = 'id', array $form_data = []) : void {
     </div>
 
     <script>
-        $(function() {$('.tooltipped').tooltip();});
+        $(function() { $('.tooltipped').tooltip(); });
     </script>
     <?php
 }
@@ -227,18 +245,31 @@ function constructSelectAdv(string $mode, array $options, array $form_data) {
     }
 }
 
-function generateSearchResultsArray(array $res) : void { ?>
+function generateSearchResultsArray(array $res) : void { 
+    $max_res = null;
+
+    // Si jamais on doit limiter, on initialise $max_res
+    if (LIMIT_SEARCH_RESULTS && getLoggedUserLevel() < LIMIT_SEARCH_LEVEL) {
+        if (count($res) > LIMIT_SEARCH_NUMBER) {
+            $max_res = LIMIT_SEARCH_NUMBER;
+        }
+    }
+    
+    ?>
     <div class='container'>
         <div class='row'>
             <div class='col s12'>
-                <!-- <h3>
-                    Search results
-                </h3> -->
-                <?php if (empty($res)) { ?>
+                <?php 
+                if ($max_res) {
+                    echo "<h5 class='red-text'>Your search has too many hits.</h5>";
+                    echo "<h6>Data may have been truncated. Please refine your search.</h6>";
+                }
+                
+                if (empty($res)) { ?>
                     <h4 class='red-text h45 medium-light-text header'>No gene has matched your search</h4>
                     <h6 class='black-text medium-light-text header' style="margin-bottom: 50px;">Please check search terms.</h6>
                 <?php } else { ?>
-                    <h5 class="medium-light-text"><?= count($res) ?> result<?= count($res) > 1 ? 's' : '' ?></h5>
+                    <h5 class="medium-light-text"><?= $max_res ?? count($res) ?> result<?= ($max_res ?? count($res)) > 1 ? 's' : '' ?></h5>
 
                     <div class='download-results col s12'>
                         <div class='col s6'>
@@ -274,8 +305,21 @@ function generateSearchResultsArray(array $res) : void { ?>
                         </thead>
                         <tbody id="tbody_sort">
                             <?php  
-                            foreach ($res as $key => $gene) {
-                                generateArrayLine($gene, $key, 100);
+                            if ($max_res) {
+                                $max_res = LIMIT_SEARCH_NUMBER;
+                                $count = count($res);
+                                if ($max_res > $count) {
+                                    $max_res = $count;
+                                }
+
+                                for ($i = 0; $i < $max_res; $i++) {
+                                    generateArrayLine($res[$i], $i, 100);
+                                }
+                            }
+                            else {
+                                foreach ($res as $key => $gene) {
+                                    generateArrayLine($gene, $key, 100);
+                                }
                             }
                             ?>
                         </tbody>

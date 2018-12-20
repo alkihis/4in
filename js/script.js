@@ -1,5 +1,7 @@
 $(document).ready(function () {
-    $('.parallax').parallax();
+    $('.jarallax').jarallax({
+        speed: 0.15,
+    });
 
     $('.dropdown-trigger').dropdown({
         coverTrigger: false,
@@ -34,7 +36,6 @@ function enableNightMode() {
         document.querySelector('main').classList.add('on-dark-mode');
 
         document.head.appendChild(htmlToElement('<link type="text/css" rel="stylesheet" id="dark-mode-css" href="/css/dark.css">'));
-
 
         setTimeout(function() {
             document.querySelector('main').classList.remove('on-dark-mode');
@@ -205,10 +206,7 @@ function sortTable(idTable, interval_for_view) {
 
                 initSegments(tbod, interval_for_view);
             });
-
         });
-
-    
 }
 
 function resetSegments(element) {
@@ -320,15 +318,19 @@ function addSpecie(spec) {
         return;
     }
 
+    // On recupère les checkbox
     var input = document.getElementById('new_specie');
     var checkboxes = document.getElementsByClassName('chk-spe');
     var species_actual = {};
 
+    // On construit le tableau de relation nom_espece => cochée
     for (var i = 0; i < checkboxes.length; i++) {
         species_actual[checkboxes[i].value] = checkboxes[i].checked;
     }
+    // On rajoute l'actuelle
     species_actual[spec] = true;
 
+    // On actualise le conteneur de checkbox en contruisant une nouvelle DOMString
     var checkboxes_container = document.getElementById('multiple_species');
 
     var str = '';
@@ -438,11 +440,36 @@ function searchFormMake(form) {
         form.global.value = str;
     }
 
+    // Chip additionnelles
+    instance = document.getElementById('chip_container_addi');
+    if (instance) {
+        instance = M.Chips.getInstance(instance);
+        str = "";
+    
+        for (var i = 0; i < instance.chipsData.length; i++) {
+            if (i > 0) {
+                str += " ";
+            }
+            // Entoure le texte de guillemets doubles ""
+            str += '"' + instance.chipsData[i].tag + '"'; 
+        } 
+    
+        var form_val = form.addi_chip.value.trim();
+    
+        if (form_val !== "") {
+            form.addi.value = str + ' "' + form_val + '"';
+        }
+        else {
+            form.addi.value = str;
+        }
+    }
+
     return true;
 }
 
 function checkChips(insts) {
     var e = insts[0];
+
     for (var i = 0; i < e.chipsData.length; i++) {
         e.chipsData[i].tag = e.chipsData[i].tag.trim();
 
@@ -453,7 +480,7 @@ function checkChips(insts) {
     } 
 }
 
-function initGlobalSearchForm(dat) {
+function initGlobalSearchForm(dat, addi) {
     var elems = document.querySelectorAll('.chips-autocomplete');
 
     var id_loading = "loading_block_form";
@@ -488,6 +515,15 @@ function initGlobalSearchForm(dat) {
     }).always(function() {
         $('#' + id_loading).slideUp(150, function() { $(this).remove() });
     });
+
+    // Chip additionnelles
+    var e = document.querySelectorAll('.chips.addi');
+    if (e) {
+        var ist = M.Chips.init(e, {
+            data: addi,
+            onChipAdd: function() { checkChips(ist) }
+        });
+    }
 
     $('#submit_form').on('submit', function() {
         return searchFormMake(this);

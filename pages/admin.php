@@ -95,6 +95,16 @@ function adminControl(array $args) : Controller {
 
         $page = messagesController();
     }
+    else if ($args[0] === 'create_user') {
+        require 'pages/adm/create_user.php';
+
+        $page = createUserController();
+    }
+    else if ($args[0] === 'manage_user') {
+        require 'pages/adm/manage_user.php';
+
+        $page = manageUserController();
+    }
     else {
         throw new PageNotFoundException();
     }
@@ -232,6 +242,12 @@ function adminView(Controller $c) : void {
             case 'messages':
                 messagesView($d);
                 break;
+            case 'create_user':
+                createUserView($d);
+                break;
+            case 'manage_user':
+                manageUserView($d);
+                break;
         }
         ?>
     <?= ($container_on ? '</div>' : '') ?>
@@ -318,9 +334,6 @@ function adminView(Controller $c) : void {
         </li>
         <li <?= ($d['active_page'] === 'checker' ? 'class="active"' : '') ?>>
             <a class="waves-effect" href="/admin/checker"><i class="material-icons">check</i>FASTA checker</a>
-        </li>
-        <li <?= ($d['active_page'] === 'verify' ? 'class="active"' : '') ?>>
-            <a class="waves-effect" href="/admin/verify"><i class="material-icons">done_all</i>Verify gene links</a>
         </li>
     </ul>
 

@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col l6 s12">
                 <h5 class="white-text">Interactive database for Insect Innate Immunity</h5>
-                <p class="grey-text text-lighten-4">
+                <p class="white-text">
                     Developed in order to facilitate access to the data harvested from different species of 
                     insects inside INSA's BF2i laboratory, 
                     This database is centered around the genetic study of the rice weevil.<br>
@@ -57,7 +57,5 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="footer-copyright" style='min-height: unset;'>
     </div>
 </footer>

@@ -57,7 +57,7 @@ function homeView(Controller $c) : void {
     $image = $data['image'];
 
     ?>
-    <div class="parallax-container parallax-home-page">
+    <div class="jarallax parallax-home-page">
         <div class="section no-pad-bot" style="position: relative; z-index: 1;">
             <div class="container">
                 <br><br>
@@ -71,7 +71,7 @@ function homeView(Controller $c) : void {
 
             </div>
         </div>
-        <div class="parallax"><img alt="Home image" src="/img/home/<?= $image ?>" style='filter: brightness(0.80)'></div>
+        <img class="jarallax-img" alt="Home image" src="/img/home/<?= $image ?>" style='filter: brightness(0.80)'>
     </div>
 
     <div class="container">
@@ -197,8 +197,8 @@ function homeView(Controller $c) : void {
         <br><br>
     </div>
 
-    <div class="parallax-container parallax-home-page">
-        <div class="parallax"><img alt="DNA image" src="/img/ADN.jpg"></div>
+    <div class="jarallax parallax-home-page">
+        <img alt="DNA image" class="jarallax-img" src="/img/ADN.jpg">
     </div>
 
     <?php 

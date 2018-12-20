@@ -88,7 +88,7 @@ function contactView(Controller $c) : void {
     $data = $c->getData();
 
     ?>
-    <div class="parallax-container parallax-contact-page">
+    <div class="parallax-contact-page">
         <div class="section no-pad-bot">
             <div class="container">
                 <h1 class="header center  white-text">Contact Us</h1>

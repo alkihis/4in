@@ -127,6 +127,8 @@ function tryLogIn() : void {
             logUser(mysqli_fetch_assoc($res));
         }
     }
+
+    // Normalement, il faudrait unlog l'utilisateur si la base de données ne le contient plus..
 }
 
 /**
@@ -216,6 +218,27 @@ function isUserLogged() : bool {
  */
 function isBasicUserLogged() : bool {
     return isset($_SESSION['user']['logged']) && $_SESSION['user']['logged'];
+}
+
+/**
+ * Get user log level
+ *
+ * @return integer
+ */
+function getLoggedUserLevel() : int {
+    if (isBasicUserLogged()) {
+        if (isUserLogged()) {
+            if (isContributorLogged()) {
+                if (isAdminLogged()) {
+                    return USER_PERM_ADMINISTRATOR;
+                }
+                return USER_PERM_CONTRIBUTOR;
+            }
+            return USER_PERM_VISITOR;
+        }
+        return USER_PERM_BASIC;
+    }
+    return USER_PERM_UNLOGGED;
 }
 
 /**
@@ -426,25 +449,23 @@ function checkSaveLinkValidity(string $specie, string $gene_id, bool $is_alias =
  * Cette fonction n'importe PAS de TSV !
  *
  * @param string $user_pw
- * @return void
+ * @return mixed
  */
-function buildDatabaseFromScratch(string $user_pw = 'admin') : void {
+function buildDatabaseFromScratch(string $user_pw = 'admin') {
     global $sql;
 
     $user_pw = trim($user_pw);
 
-    if ($user_pw === "") {
-        throw new RuntimeException("Password cannot be empty");
-    }
-
     $sql_file = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/assets/db/base.sql');
 
-    $sql_file .= "\nINSERT INTO Users (username, passw, rights) 
-    VALUES ('admin', '" 
-    . password_hash($user_pw, PASSWORD_BCRYPT) . 
-    "', 2);";
+    if ($user_pw !== "") {
+        $sql_file .= "\nINSERT INTO Users (username, passw, rights) 
+        VALUES ('admin', '" 
+        . password_hash($user_pw, PASSWORD_BCRYPT) . 
+        "', 2);";
+    }
 
-    mysqli_multi_query($sql, $sql_file);
+    return mysqli_multi_query($sql, $sql_file);
 }
 
 /**
