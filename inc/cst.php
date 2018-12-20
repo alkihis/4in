@@ -77,7 +77,7 @@ const MAPPING_DIR = '/assets/mapping/';
 // Active l'affichage des erreurs BLAST dans l'HTML (sinon, l'erreur est loggée)
 // Active l'affichage des notices/warning à l'écran
 // Active l'affichage du texte des Exceptions lors d'une rencontre
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 
 // Protected genomes : hide species defined in PROTECTED_SPECIES
 const LIMIT_GENOMES = true;

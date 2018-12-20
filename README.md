@@ -68,7 +68,7 @@ Au coeur de la fonction contrôleur, le développeur est libre de lancer toutes 
 Certaines exceptions sont particulières si elles ne sont pas attrapées:
 - `PageNotFoundException` déclenchera une page 404. Le texte de l'exception (facultatif) sera affiché à l'utilisateur.
 - `ForbiddenPageException` affichera une page 403.
-- `NotImplementedException` affichera un texte précisément que la fonctionnalité n'est pas implémentée actuellement.
+- `NotImplementedException` affichera un texte précisant que la fonctionnalité n'est pas implémentée actuellement.
 
 Toute autre exception non attrapée sera une erreur 500 et sera enregistrée dans les fichiers de log (voir [logging](#Logging)).
 
